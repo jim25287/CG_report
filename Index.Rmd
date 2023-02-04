@@ -1,22 +1,37 @@
 ---
-title: "Cofit x Genensis 醫療大數據 (分析報告)"
+title: "Cofit x Genensis"
+subtitle: " 醫療大數據 (分析報告)"
 author: "MA-DS TEAM"
 date: "`r Sys.Date()`"
+knit: "bookdown::render_book"
 site: bookdown::bookdown_site
 documentclass: book
 output:
   bookdown::gitbook:
     dev: svglite
+    css: css/style.css
     toc_depth: 2
     split_by: section
     number_sections: true
     split_bib: false
     anchor_sections: true
+    config:
+      toc:
+        scroll_highlight: yes
+        collapse: section
+    search: yes
+    
   bookdown::pdf_book:
     toc_depth: 2
     number_sections: true
     citation_package: default
     pandoc_args: [ "--csl", "chicago-fullnote-bibliography.csl" ]
+
+  bookdown::word_document2:
+    default
+
+  bookdown::markdown_document2:
+    default
 ---
 
 ```{r setup, include=FALSE}
@@ -24,7 +39,7 @@ knitr::opts_chunk$set(echo = FALSE)
 options(knitr.graphics.auto_pdf = TRUE)
 ```
 
-# Preface {#preface_overview .unnumbered}
+# Preface {#index .unnumbered}
 
 ![[Page Example]cover:](https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png){width="219"}
 

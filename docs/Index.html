@@ -32,15 +32,15 @@
   
 
 
-<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
-<link href="site_libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
-<link href="site_libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
-<link href="site_libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
-<link href="site_libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
-<link href="site_libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
-<link href="site_libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
-<link href="site_libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
 
 
 
@@ -49,9 +49,9 @@
 
 
 
-<link href="site_libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
-<link href="site_libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 
@@ -104,6 +104,7 @@
 <div id="disclaimer" class="section level4 unnumbered hasAnchor">
 <h4>Disclaimer<a href="#disclaimer" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>The information in this book is provided …(editing).</p>
+
 </div>
 </div>
             </section>
@@ -115,14 +116,14 @@
 
     </div>
   </div>
-<script src="site_libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="site_libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="site_libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="site_libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="site_libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="site_libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="site_libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="site_libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -155,7 +156,10 @@ gitbook.start({
 "text": null
 },
 "download": null,
-"search": false,
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

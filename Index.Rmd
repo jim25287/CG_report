@@ -1,0 +1,37 @@
+---
+title: "Cofit x Genensis 醫療大數據 (分析報告)"
+author: "MA-DS TEAM"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+output:
+  bookdown::gitbook:
+    dev: svglite
+    toc_depth: 2
+    split_by: section
+    number_sections: true
+    split_bib: false
+    anchor_sections: true
+  bookdown::pdf_book:
+    toc_depth: 2
+    number_sections: true
+    citation_package: default
+    pandoc_args: [ "--csl", "chicago-fullnote-bibliography.csl" ]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(knitr.graphics.auto_pdf = TRUE)
+```
+
+# Preface {#preface_overview .unnumbered}
+
+![[Page Example]cover:](https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png){width="219"}
+
+**Last updated on: `r format (Sys.Date(), '%d %b %Y')`**.
+
+Introduction context...(editing)
+
+#### Disclaimer {.unnumbered}
+
+The information in this book is provided ...(editing).

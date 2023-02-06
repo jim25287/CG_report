@@ -1,5 +1,0 @@
-efficacy---single-treatment
-vens_graph
-single_treatment_ob
-population-info
-global_result_ob

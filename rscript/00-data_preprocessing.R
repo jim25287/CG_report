@@ -3,7 +3,9 @@
   
   #load packages
   library(pacman)
-  pacman::p_load(magrittr, knitr, kableExtra, dplyr, readr, readxl, tibble, showtext, extraInserts, ggvenn, ggplot2,knitr, kableExtra, openxlsx, lubridate, cowplot, ggpubr, webshot)
+  pacman::p_load(magrittr, knitr, kableExtra, dplyr, readr, readxl, tibble, showtext, extraInserts,
+                 ggvenn, ggplot2,knitr, kableExtra, openxlsx, lubridate, cowplot, ggpubr, webshot,
+                 stringr)
   #font
   font_add(family = "berlin_default", regular = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/font/STHeiti Light.ttc")
   showtext_auto(enable = TRUE)
@@ -464,6 +466,10 @@
   
   ###join diet_record
   stat_table_1st <- full_join(stat_table_1st, diet_obedience, by = c("id", "client_type"))
+  
+  #add Doctor
+  stat_table_1st$doctor <- "宋醫師"
+  stat_table_1st <- lin_mapping(stat_table_1st, doctor, id, clinical_list, doctor, id, overwrite = TRUE)
   
 
 # Split into OB/DM --------------------------------------------------------

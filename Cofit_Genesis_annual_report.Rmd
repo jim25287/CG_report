@@ -1,3 +1,69 @@
+---
+title: "Cofit x Genensis"
+subtitle: " 醫療大數據 (分析報告)"
+author: "MA-DS TEAM"
+date: "`r Sys.Date()`"
+knit: "bookdown::render_book"
+site: bookdown::bookdown_site
+documentclass: book
+output:
+  bookdown::gitbook:
+    dev: svglite
+    css: css/style.css
+    toc_depth: 3
+    split_by: section
+    number_sections: true
+    split_bib: false
+    anchor_sections: true
+    config:
+      toc:
+        scroll_highlight: yes
+        collapse: section
+      sharing:
+        facebook: false
+        twitter: false
+    search: yes
+    
+  bookdown::pdf_book:
+    toc_depth: 3
+    number_sections: true
+    citation_package: default
+    pandoc_args: [ "--csl", "chicago-fullnote-bibliography.csl" ]
+
+  bookdown::word_document2:
+    default
+
+  bookdown::markdown_document2:
+    default
+---
+
+```{r setup, include=FALSE}
+library(googleVis)
+knitr::opts_chunk$set(echo = FALSE, comment = NA, results = 'asis')
+options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
+
+```
+
+# Preface {#index .unnumbered}
+
+![[Page Example]cover:](https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png){width="219"}
+
+**Last updated on: `r format (Sys.Date(), '%d %b %Y')`**.
+
+Introduction context...(editing)
+
+#### Disclaimer {.unnumbered}
+
+The information in this book is provided ...(editing).
+
+```{r}
+Sys.time()
+```
+
+
+
+<!--chapter:end:index.Rmd-->
+
 # Efficacy - Single Treatment
 
 ```{r input rscript, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
@@ -65,3 +131,6 @@ gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
 ```{r}
 plot(plot_stack_col)
 ```
+
+<!--chapter:end:01-single_treatment_efficacy.Rmd-->
+

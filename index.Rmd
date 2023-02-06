@@ -39,7 +39,7 @@ output:
 
 ```{r setup, include=FALSE}
 library(googleVis)
-knitr::opts_chunk$set(echo = FALSE, comment = NA)
+knitr::opts_chunk$set(echo = FALSE, comment = NA, results = 'asis')
 options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 
 ```
@@ -56,5 +56,8 @@ Introduction context...(editing)
 
 The information in this book is provided ...(editing).
 
-2022020611am
+```{r}
+Sys.time()
+```
+
 

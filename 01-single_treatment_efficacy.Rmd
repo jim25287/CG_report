@@ -1,0 +1,44 @@
+# Efficacy - Single Treatment
+
+
+
+```{r input rscript, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-data_preprocessing.R")
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.1-venns.R")
+
+```
+
+
+Test plot.
+
+```{r}
+plot(cars)
+```
+
+## Datasets (Vens Graph) {#vens_graph}
+
+Vens graph 1_plot1
+
+```{r}
+plot_1
+```
+
+Vens graph 2_plot2
+
+```{r}
+plot_2
+```
+
+## Treatment Effectiveness {#single_treatment}
+
+```{r}
+boxplot(cars)
+
+```
+
+### Global Evaluation {#global_result}
+
+```{r}
+plot(iris3)
+```

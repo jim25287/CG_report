@@ -10,7 +10,7 @@ output:
   bookdown::gitbook:
     dev: svglite
     css: css/style.css
-    toc_depth: 2
+    toc_depth: 3
     split_by: section
     number_sections: true
     split_bib: false
@@ -19,10 +19,13 @@ output:
       toc:
         scroll_highlight: yes
         collapse: section
+      sharing:
+        facebook: false
+        twitter: false
     search: yes
     
   bookdown::pdf_book:
-    toc_depth: 2
+    toc_depth: 3
     number_sections: true
     citation_package: default
     pandoc_args: [ "--csl", "chicago-fullnote-bibliography.csl" ]
@@ -51,9 +54,5 @@ Introduction context...(editing)
 
 The information in this book is provided ...(editing).
 
-00002
-
-```{r}
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
-```
+2022020611am
 

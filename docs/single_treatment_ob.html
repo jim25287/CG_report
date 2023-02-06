@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>1.2 Treatment Effectiveness(Obesity) | Cofit x Genensis</title>
+  <meta name="description" content="1.2 Treatment Effectiveness(Obesity) | Cofit x Genensis" />
+  <meta name="generator" content="bookdown 0.32 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="1.2 Treatment Effectiveness(Obesity) | Cofit x Genensis" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="1.2 Treatment Effectiveness(Obesity) | Cofit x Genensis" />
+  
+  
+  
+
+<meta name="author" content="MA-DS TEAM" />
+
+
+<meta name="date" content="2023-02-06" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="vens_graph.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="efficacy---single-treatment.html"><a href="efficacy---single-treatment.html"><i class="fa fa-check"></i><b>1</b> Efficacy - Single Treatment</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="vens_graph.html"><a href="vens_graph.html"><i class="fa fa-check"></i><b>1.1</b> Datasets (Vens Graph)</a></li>
+<li class="chapter" data-level="1.2" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html"><i class="fa fa-check"></i><b>1.2</b> Treatment Effectiveness(Obesity)</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#population-info"><i class="fa fa-check"></i><b>1.2.1</b> Population Info</a></li>
+<li class="chapter" data-level="1.2.2" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#global_result_ob"><i class="fa fa-check"></i><b>1.2.2</b> Global Evaluation</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Cofit x Genensis</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="single_treatment_ob" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> Treatment Effectiveness(Obesity)<a href="single_treatment_ob.html#single_treatment_ob" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="population-info" class="section level3 hasAnchor" number="1.2.1">
+<h3><span class="header-section-number">1.2.1</span> Population Info<a href="single_treatment_ob.html#population-info" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Subjects Distribution</strong> Age &amp; Gender分佈</p>
+<!-- PieChart generated in R 4.2.1 by googleVis 0.7.0 package -->
+<!-- Mon Feb  6 16:25:09 2023 -->
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataPieChartID1517850fe73ca () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+"<25",
+29
+],
+[
+"25-29",
+58
+],
+[
+"30-34",
+111
+],
+[
+"35-39",
+123
+],
+[
+"40-44",
+110
+],
+[
+"45-49",
+68
+],
+[
+"50-54",
+34
+],
+[
+"55-59",
+35
+],
+[
+"60-64",
+22
+],
+[
+"65-69",
+21
+],
+[
+">70",
+11
+] 
+];
+data.addColumn('string','age_gp');
+data.addColumn('number','n');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartPieChartID1517850fe73ca() {
+var data = gvisDataPieChartID1517850fe73ca();
+var options = {};
+options["allowHtml"] = true;
+options["title"] = "Age";
+options["legend"] = {position:'right'};
+options["pieHole"] = 0.5;
+options["backgroundColor"] = "#edeff2";
+options["width"] = "600";
+options["height"] = "400";
+
+    var chart = new google.visualization.PieChart(
+    document.getElementById('PieChartID1517850fe73ca')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "corechart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartPieChartID1517850fe73ca);
+})();
+function displayChartPieChartID1517850fe73ca() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+<!-- jsChart -->
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID1517850fe73ca"></script>
+<!-- divChart -->
+<div id="PieChartID1517850fe73ca" style="width: 600; height: 400;">
+
+</div>
+<!-- PieChart generated in R 4.2.1 by googleVis 0.7.0 package -->
+<!-- Mon Feb  6 16:25:09 2023 -->
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataPieChartID151787163fc50 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+"female",
+495
+],
+[
+"male",
+127
+] 
+];
+data.addColumn('string','gender');
+data.addColumn('number','n');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartPieChartID151787163fc50() {
+var data = gvisDataPieChartID151787163fc50();
+var options = {};
+options["allowHtml"] = true;
+options["title"] = "Gender";
+options["legend"] = {position:'right'};
+options["pieHole"] = 0.5;
+options["backgroundColor"] = "#edeff2";
+options["width"] = "600";
+options["height"] = "400";
+
+    var chart = new google.visualization.PieChart(
+    document.getElementById('PieChartID151787163fc50')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "corechart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartPieChartID151787163fc50);
+})();
+function displayChartPieChartID151787163fc50() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+<!-- jsChart -->
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID151787163fc50"></script>
+<!-- divChart -->
+<div id="PieChartID151787163fc50" style="width: 600; height: 400;">
+
+</div>
+<p>BMI分佈
+<!-- PieChart generated in R 4.2.1 by googleVis 0.7.0 package -->
+<!-- Mon Feb  6 16:25:09 2023 --></p>
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataPieChartID151785b4a2258 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+"normal",
+13
+],
+[
+"overweight",
+16
+],
+[
+"obesity",
+98
+] 
+];
+data.addColumn('string','bmi_gp');
+data.addColumn('number','n');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartPieChartID151785b4a2258() {
+var data = gvisDataPieChartID151785b4a2258();
+var options = {};
+options["allowHtml"] = true;
+options["title"] = "Male";
+options["legend"] = {position:'right'};
+options["pieHole"] = 0.5;
+options["backgroundColor"] = "#edeff2";
+options["width"] = "600";
+options["height"] = "400";
+
+    var chart = new google.visualization.PieChart(
+    document.getElementById('PieChartID151785b4a2258')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "corechart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartPieChartID151785b4a2258);
+})();
+function displayChartPieChartID151785b4a2258() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+<!-- jsChart -->
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID151785b4a2258"></script>
+<!-- divChart -->
+<div id="PieChartID151785b4a2258" style="width: 600; height: 400;">
+
+</div>
+<!-- PieChart generated in R 4.2.1 by googleVis 0.7.0 package -->
+<!-- Mon Feb  6 16:25:09 2023 -->
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataPieChartID151786014ee3a () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+"underweight",
+2
+],
+[
+"normal",
+116
+],
+[
+"overweight",
+129
+],
+[
+"obesity",
+248
+] 
+];
+data.addColumn('string','bmi_gp');
+data.addColumn('number','n');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartPieChartID151786014ee3a() {
+var data = gvisDataPieChartID151786014ee3a();
+var options = {};
+options["allowHtml"] = true;
+options["title"] = "Female";
+options["legend"] = {position:'right'};
+options["pieHole"] = 0.5;
+options["backgroundColor"] = "#edeff2";
+options["width"] = "600";
+options["height"] = "400";
+
+    var chart = new google.visualization.PieChart(
+    document.getElementById('PieChartID151786014ee3a')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "corechart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartPieChartID151786014ee3a);
+})();
+function displayChartPieChartID151786014ee3a() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+<!-- jsChart -->
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID151786014ee3a"></script>
+<!-- divChart -->
+<div id="PieChartID151786014ee3a" style="width: 600; height: 400;">
+
+</div>
+</div>
+<div id="global_result_ob" class="section level3 hasAnchor" number="1.2.2">
+<h3><span class="header-section-number">1.2.2</span> Global Evaluation<a href="single_treatment_ob.html#global_result_ob" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-5-1.svg" width="672" /></p>
+
+</div>
+</div>
+<!-- </div> -->
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="vens_graph.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+</body>
+
+</html>

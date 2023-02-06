@@ -38,8 +38,10 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-options(knitr.graphics.auto_pdf = TRUE)
+library(googleVis)
+knitr::opts_chunk$set(echo = FALSE, comment = NA)
+options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
+
 ```
 
 # Preface {#index .unnumbered}

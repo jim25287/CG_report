@@ -2,6 +2,8 @@
 
 library(magrittr)
 library(dplyr)
+library(googleVis)
+
 
 # Font --------------------------------------------------------------------
 

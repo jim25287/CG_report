@@ -1,43 +1,67 @@
 # Efficacy - Single Treatment
 
-
-
 ```{r input rscript, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-data_preprocessing.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.1-venns.R")
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.2-global_treatment.R")
 
 ```
 
-
-Test plot.
-
-```{r}
-plot(cars)
-```
+TBD...
 
 ## Datasets (Vens Graph) {#vens_graph}
 
-Vens graph 1_plot1
-
 ```{r}
+cat("Until 2022.11.01", "\n")
 plot_1
+cat(" Inbody(obs.):", clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique() %>% length(), "counts\n",
+    "Blood(obs.):", clinic_blood_data_ori %>% select(id) %>% pull() %>% unique() %>% length(), "counts\n",
+    "Genesis(obs.):", clinical_list %>% select(id) %>% pull() %>% unique() %>% length(), "counts\n",
+    "Extract obs. from 初日+北秀:", Reduce(dplyr::intersect, list(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
+                                                 clinic_blood_data_ori %>% select(id) %>% pull() %>% unique(),
+                                                 clinical_list %>% select(id) %>% pull() %>% unique())) %>% length(), "+",
+    dplyr::setdiff((dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
+                                                 clinic_blood_data_ori %>% select(id) %>% pull() %>% unique())),
+                   clinical_list %>% select(id) %>% pull() %>% unique()) %>% length(), "=",
+    dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
+                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length(),"counts\n")
 ```
 
-Vens graph 2_plot2
+**Inclusive Criteria:**
+
+1.  1st treatment: Ob.(Weight Loss Program)
+2.  At least 2 observations (Inbody & Blood)
+3.  At least 1mo interval
+4.  With OGTT baseline data(i.e., no missing value)
 
 ```{r}
-plot_2
+plot_3
+cat(" Total obs.:", dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
+                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length(),"counts\n",
+    "Excluded obs.:", (dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
+                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length()) - (stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique() %>% length()), "counts\n",
+    "Included obs.:", stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique() %>% length(), "counts\n")
 ```
 
-## Treatment Effectiveness {#single_treatment}
+## Treatment Effectiveness(Obesity) {#single_treatment_ob}
 
-```{r}
-boxplot(cars)
+### Population Info
 
+**Subjects Distribution** Age & Gender分佈
+
+```{r, results='asis'}
+pie_01 %>% plot() 
+pie_02 %>% plot()
 ```
 
-### Global Evaluation {#global_result}
+BMI分佈
+```{r, results='asis'}
+pie_03 %>% plot() 
+pie_04 %>% plot()
+```
+
+### Global Evaluation {#global_result_ob}
 
 ```{r}
 plot(iris3)

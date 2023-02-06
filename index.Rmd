@@ -52,3 +52,8 @@ Introduction context...(editing)
 The information in this book is provided ...(editing).
 
 00002
+
+```{r}
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
+```
+

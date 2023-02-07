@@ -63,27 +63,122 @@ gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
 
 ### Global Evaluation {#global_result_ob}
 
-```{r}
+```{r, results='asis'}
 gvisMerge(plot_stack_col_female, plot_stack_col_male, horizontal = FALSE) %>% plot()
+```
 
+```{r, results='asis'}
+line_plot
+```
+
+```{r, results='asis', warning=FALSE}
+corrplot(M1, 
+         p.mat = M_test1$p,
+         type = "lower",
+         insig = "label_sig",
+         sig.level = c(.001, .01, .05), pch.cex = .8, pch.col = "black",
+         tl.col = "black", tl.srt = 35, tl.cex = 1.0,
+         cl.ratio = 0.1,
+         col = M_col(200),
+         title = "[Correlation] Efficacy x Diet", 
+         #c(bottom, left, top, right)
+         mar = c(0,0,1,0))
+
+```
+
+```{r, results='asis', warning=FALSE}
+corrplot(M2, 
+         p.mat = M_test2$p,
+         type = "lower",
+         insig = "label_sig",
+         sig.level = c(.001, .01, .05), pch.cex = .8, pch.col = "black",
+         tl.col = "black", tl.srt = 35, tl.cex = 1.0,
+         cl.ratio = 0.1,
+         col = M_col(200),
+         title = "[Correlation] Efficacy x Baseline",
+         #c(bottom, left, top, right)
+         mar = c(0,0,1,0)) 
 ```
 
 ### Baseline {#ob_baseline}
 
 #### Inbody
 
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots[1:10], ncol = 2, labels = paste0(LETTERS[1], seq(1,10)))
+
+```
+
 #### Blood
+
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots[11:20], ncol = 2, labels = paste0(LETTERS[2], seq(1,10)))
+```
 
 ### Endpoint {#ob_endpoint}
 
 #### Inbody
 
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots[21:30], ncol = 2, labels = paste0(LETTERS[3], seq(1,10)))
+```
+
 #### Blood
+
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1,10)))
+```
 
 ### Diet {#ob_diet}
 
+```{r, results='asis', fig.width= 10, fig.height=30}
+plot_grid(plotlist = myplots[41:56], ncol = 2, labels = paste0(LETTERS[5], seq(1,10)))
+```
+
 ### Effectiveness {#ob_effectiveness}
 
-#### Difference(∆)
+#### Dif.(∆)-Inbody
 
-#### Difference(%)
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots[57:66], ncol = 2, labels = paste0(LETTERS[6], seq(1,10)))
+```
+
+#### Dif.(∆)-Blood
+
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots[67:76], ncol = 2, labels = paste0(LETTERS[7], seq(1,10)))
+```
+
+#### Dif.(%)-Inbody
+
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots[84:93], ncol = 2, labels = paste0(LETTERS[8], seq(1,10)))
+```
+
+#### Dif.(%)-Blood
+
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots[94:103], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -11,5 +11,7 @@ inbody-1
 blood-1
 ob_diet
 ob_effectiveness
-difference
-difference-1
+dif.-inbody
+dif.-blood
+dif.-inbody-1
+dif.-blood-1

@@ -209,11 +209,377 @@ library(ggplot2)
                                    backgroundColor = "#edeff2",
                                    width = "600",
                                    height = "600"))
-
   
 
 rm(list = c("a", "b", "data"))
 
+# Line plot ---------------------------------------------------------------
+#Establish summary table
+a <- stat_table_1st_ob %>% select(grep("baseline$", stat_table_1st_ob %>% names())) %>%
+  select(-c("date_baseline", "extracellular_water_ratio_baseline", "wepa50_baseline", "e2_baseline", "testosterone_baseline"))
+b <- stat_table_1st_ob %>% select(grep("endpoint$", stat_table_1st_ob %>% names())) %>%
+  select(-c("date_endpoint", "extracellular_water_ratio_endpoint", "wepa50_endpoint", "e2_endpoint", "testosterone_endpoint"))
+
+#[D0] mean
+stat_table_1st_ob_temp <- 
+  a %>%
+  apply(2, function(x) round(mean(x, na.rm = TRUE ), 2))
+
+#[D0] SEM
+stat_table_1st_ob_temp <- 
+  cbind(stat_table_1st_ob_temp, 
+        a %>%
+          apply(2, function(x) round(sd(x, na.rm = TRUE ), 2))
+  )
+
+#[D60] mean
+stat_table_1st_ob_temp <- 
+  cbind(stat_table_1st_ob_temp, 
+        b %>%
+          apply(2, function(x) round(mean(x, na.rm = TRUE ), 2))
+  )
+
+#[D60] SEM
+stat_table_1st_ob_temp <- 
+  cbind(stat_table_1st_ob_temp, 
+        b %>%
+          apply(2, function(x) round(sd(x, na.rm = TRUE ), 2))
+  )
+
+stat_table_1st_ob_temp <- stat_table_1st_ob_temp %>% as.data.frame()
+names(stat_table_1st_ob_temp) <-  c("D0_mean","D0_SEM","D60_mean","D60_SEM")
+
+#[∆] mean
+stat_table_1st_ob_temp <- 
+  cbind(stat_table_1st_ob_temp, 
+        ((b) - (a)) %>% 
+          apply(2, function(x) round(mean(x, na.rm = TRUE ), 2))
+  )
+
+#[∆] SEM
+stat_table_1st_ob_temp <- 
+  cbind(stat_table_1st_ob_temp, 
+        ((b) - (a)) %>%
+          apply(2, function(x) round(sd(x, na.rm = TRUE )/sqrt(length(x)), 2))
+  )
+
+#[∆%] mean
+stat_table_1st_ob_temp <- 
+  cbind(stat_table_1st_ob_temp, 
+        (
+          ((b) - (a)) / a *100) %>% 
+          apply(2, function(x) round(mean(x, na.rm = TRUE ), 2))
+  )
+
+#[∆%] SEM
+stat_table_1st_ob_temp <- 
+  cbind(stat_table_1st_ob_temp, 
+        (
+          ((b) - (a)) / a *100) %>% 
+          apply(2, function(x) round(sd(x, na.rm = TRUE )/sqrt(length(x)), 2))
+  )
+
+for (i in c(1:((stat_table_1st_ob_temp %>% nrow())))) {
+  if (!("p-value" %in% names(stat_table_1st_ob_temp))) {
+    stat_table_1st_ob_temp$`p-value` <- NA
+  }
+  stat_table_1st_ob_temp$`p-value`[i] <- t.test(a[i] %>% pull(),
+                                                b[i] %>% pull(),
+                                                paired = TRUE,
+                                                na.rm = TRUE,
+                                                alternative = c("two.sided", "less", "greater"))$p.value
+  if ( i == ((stat_table_1st_ob_temp %>% nrow()))) {
+    print("[completed!]")
+  }
+}
+#n()
+stat_table_1st_ob_temp <- 
+  cbind(stat_table_1st_ob_temp, 
+        a %>% apply(2, function(x) length(x))
+  )
+
+
+#df cleaning
+names(stat_table_1st_ob_temp) <-  c("D0_mean","D0_SEM","D60_mean","D60_SEM", "∆_mean", "∆_SEM", "∆%_mean", "∆%_SEM", "p-value", "N")
+stat_table_1st_ob_temp$variable <- gsub("_baseline$","", row.names(stat_table_1st_ob_temp))
+
+row.names(stat_table_1st_ob_temp) <- seq(1,nrow(stat_table_1st_ob_temp))
+library(dplyr)
+stat_table_1st_ob_temp <- stat_table_1st_ob_temp %>% relocate(variable)
+
+#before/after bar chart 
+library(reshape)
+stat_table_1st_ob_temp_barchart <- stat_table_1st_ob_temp %>% select("variable","∆%_mean", "∆%_SEM")
+stat_table_1st_ob_temp_barchart <- melt(stat_table_1st_ob_temp_barchart, c("variable"))
+colnames(stat_table_1st_ob_temp_barchart) <-  c("variable", "pre_post", "value")
+stat_table_1st_ob_temp_barchart <- cbind(stat_table_1st_ob_temp_barchart[grep("mean$", stat_table_1st_ob_temp_barchart$pre_post),],
+                                         stat_table_1st_ob_temp_barchart[grep("SEM$", stat_table_1st_ob_temp_barchart$pre_post),]["value"]
+)
+colnames(stat_table_1st_ob_temp_barchart) <-c("variable", "pre_post", "mean", "sem")
+
+#create baseline 0,  w/ rbind
+a <- stat_table_1st_ob_temp_barchart
+a$mean <- a$sem <- 0
+a$pre_post <- "Before"
+stat_table_1st_ob_temp_barchart <- rbind(a, stat_table_1st_ob_temp_barchart)
+rm(a)
+stat_table_1st_ob_temp_barchart$pre_post[grep("^∆%", stat_table_1st_ob_temp_barchart$pre_post)] <- "After"
+stat_table_1st_ob_temp_barchart$pre_post <-  stat_table_1st_ob_temp_barchart$pre_post %>% factor(levels = c("Before", "After"))
+stat_table_1st_ob_temp_barchart <- stat_table_1st_ob_temp_barchart[with(stat_table_1st_ob_temp_barchart, order(variable, pre_post)),]
+row.names(stat_table_1st_ob_temp_barchart) <- seq(1, nrow(stat_table_1st_ob_temp_barchart))
+stat_table_1st_ob_temp_barchart <- stat_table_1st_ob_temp_barchart %>% mutate(sd = round(sem * sqrt(stat_table_1st_ob %>% nrow()), 2)) 
+
+
+#line chart
+line_plot <- 
+  stat_table_1st_ob_temp_barchart[!is.element(stat_table_1st_ob_temp_barchart$variable, c("glucose_pc_1hr", "glucose_pc_2hr", "insulin_pc_1hr", "insulin_pc_2hr")),] %>% 
+  ggplot( aes(x = pre_post, group = 1)) + 
+  geom_point(aes(y = mean), size = 1.5, color = "red3",) +
+  geom_line(aes(y = mean), size = 0.3, color = "red3") +
+  labs(x = "", y = "∆Difference(%)", title = "")+
+  xlim("Before", "After") +
+  scale_y_continuous(expand = expansion(mult = c(0.3, 0.3))) +
+  facet_wrap(vars(variable), scales = "free") +
+  theme_linedraw() +
+  theme(
+    plot.title = element_text(face = "bold",
+                              hjust = 0.5),
+    axis.title.y = element_text(face = "bold", size = 15)
+  ) 
+
+
+#google viz
+a <- stat_table_1st_ob_temp_barchart[!is.element(stat_table_1st_ob_temp_barchart$variable, c("glucose_pc_1hr", "glucose_pc_2hr", "insulin_pc_1hr", "insulin_pc_2hr")),] %>% filter(pre_post == "After") %>% select(c("variable", "mean"))
+a <- a %>% add_column(before = 0)
+names(a) <- c("var", "post", "pre")
+a <- a %>% select(c("var", "pre", "post")) %>% t()
+colnames(a) <- a["var",]
+a <- a[2:3,] %>% as.tibble()  %>% lapply(as.numeric) %>% as.tibble()
+a$pre_post <- c("pre", "post")
+
+#line_plot <- 
+gvisLineChart(a, xvar = "pre_post", yvar = c("weight", "bf")) %>% plot()
+
+
+
+
+# cor_plot ----------------------------------------------------------------
+
+
+
+
+
+#[Create profile]  Efficacy, Baseline, Diet table
+profile_efficacy <- stat_table_1st_ob %>% 
+  select(c("∆weight%","∆bf%","∆bm%","∆vfa","∆wc","∆bmr","∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase"))
+
+profile_baseline <- stat_table_1st_ob %>% 
+  select(c("bmi_baseline","pbf_baseline","vfa_baseline","bsmi_baseline","bm_baseline","wc_baseline","bmr_baseline",
+           "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline"))
+
+profile_diet <- stat_table_1st_ob %>% 
+  select(c("upload_day_%", "pic_count","carb_E%","protein_E%","fat_E%","calorie","light_G_%","light_Y_%","light_R_%"))
+
+
+
+##[Method 2] corrplot
+
+library(corrplot)
+#[Correlation r] Efficacy x Diet
+M1 <- cor(cbind(-profile_efficacy, profile_diet), use = "pairwise.complete.obs")
+#[2Do]change row,col names into chinese
+M_test1 <- cor.mtest(cbind(-profile_efficacy, profile_diet) , conf.level = .95)
+M_col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+
+colnames(M1) <- row.names(M1) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)","∆內臟脂肪","∆腰圍", "∆BMR", #6
+                                   "∆糖化血色素","∆空服血糖","∆空腹胰島素","∆Homa_IR","∆Homa_ß","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL", "解脂酶", #10
+                                   "上傳天數%","上傳照片數","總碳水比_E%","總蛋白比_E%","總脂肪比_E%", "總攝取卡路里","綠燈比_%","黃燈比_%","紅燈比_%") #9
+
+#run corrplot plot
+# corrplot(M1, 
+#          p.mat = M_test1$p,
+#          type = "lower",
+#          insig = "label_sig",
+#          sig.level = c(.001, .01, .05), pch.cex = .8, pch.col = "black",
+#          tl.col = "black", tl.srt = 35, tl.cex = 1.0,
+#          cl.ratio = 0.1,
+#          col = M_col(200),
+#          title = "[Correlation] Efficacy x Diet", 
+#          #c(bottom, left, top, right)
+#          mar = c(0,0,1,0))
+
+
+
+
+
+
+#[Correlation r] Efficacy x Baseline
+#[Correlation r] Efficacy x Diet
+M2 <- cor(cbind(-profile_efficacy, profile_baseline), use = "pairwise.complete.obs")
+#[2Do]change row,col names into chinese
+M_test2 <- cor.mtest(cbind(-profile_efficacy, profile_baseline) , conf.level = .95)
+M_col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+
+colnames(M2) <- row.names(M2) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)","∆內臟脂肪","∆腰圍", "∆BMR", #6
+                                   "∆糖化血色素","∆空服血糖","∆空腹胰島素","∆Homa_IR","∆Homa_ß","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL", "解脂酶", #10
+                                   "BMI(T0)", "體脂率(T0)", "內臟脂肪(T0)", "BSMI(T0)", "肌肉重(T0)", "腰圍(T0)", "BMR(T0)",
+                                   "糖化血色素(T0)", "空服血糖(T0)", "空腹胰島素(T0)", "HOMA_IR(T0)", "HOMA_ß(T0)", "三酸甘油脂(T0)", "總膽固醇(T0)", #17
+                                   "HDL(T0)", "LDL(T0)", "解脂酶(T0)") #
+
+#run corrplot plot
+# corrplot(M2, 
+#          p.mat = M_test2$p,
+#          type = "lower",
+#          insig = "label_sig",
+#          sig.level = c(.001, .01, .05), pch.cex = .8, pch.col = "black",
+#          tl.col = "black", tl.srt = 35, tl.cex = 1.0,
+#          cl.ratio = 0.1,
+#          col = M_col(200),
+#          title = "[Correlation] Efficacy x Baseline",
+#          #c(bottom, left, top, right)
+#          mar = c(0,0,1,0)) 
+
+
+
+# Effi.  stratification ---------------------------------------------------
+
+#Divide into 3 group based on ∆weight
+QQ1_stat_table_1st_bad <- stat_table_1st %>% filter(client_type != 1) %>% filter(`∆weight%` > -3)
+QQ1_stat_table_1st_bad$`∆weight%` %>%summary()
+QQ1_stat_table_1st_bad$id %>% unique() %>% length()
+QQ1_stat_table_1st_bad %>% summary()
+QQ1_stat_table_1st_bad$gp <- "Poor"
+
+QQ1_stat_table_1st_medium <- stat_table_1st %>% filter(client_type != 1) %>% filter((`∆weight%` > -10) & (`∆weight%` < -5) )
+QQ1_stat_table_1st_medium$`∆weight%` %>%summary()
+QQ1_stat_table_1st_medium$id %>% unique() %>% length()
+QQ1_stat_table_1st_medium %>% summary()
+QQ1_stat_table_1st_medium$gp <- "Medium"
+
+QQ1_stat_table_1st_good <- stat_table_1st %>% filter(client_type != 1) %>% filter(`∆weight%` < -10)
+QQ1_stat_table_1st_good$`∆weight%` %>%summary()
+QQ1_stat_table_1st_good$id %>% unique() %>% length()
+QQ1_stat_table_1st_good %>% summary()
+QQ1_stat_table_1st_good$gp <- "Good"
+
+QQ1_stat_table_1st <- rbind(QQ1_stat_table_1st_bad, QQ1_stat_table_1st_good)
+QQ1_stat_table_1st <- rbind(QQ1_stat_table_1st, QQ1_stat_table_1st_medium)
+QQ1_stat_table_1st$gp %<>% factor(levels = c("Poor", "Medium", "Good"))
+
+
+
+#turn ∆ into positve(reverse)
+QQ1_stat_table_1st_a <- QQ1_stat_table_1st %>% select(-grep("∆", names(QQ1_stat_table_1st))) 
+#rm NA vars
+QQ1_stat_table_1st_a %<>% select(-grep("extracellular", names(QQ1_stat_table_1st_a)))
+QQ1_stat_table_1st_a %<>% select(-grep("wepa50", names(QQ1_stat_table_1st_a)))
+QQ1_stat_table_1st_a %<>% select(-grep("e2", names(QQ1_stat_table_1st_a)))
+QQ1_stat_table_1st_a %<>% select(-grep("testosterone", names(QQ1_stat_table_1st_a)))
+QQ1_stat_table_1st_a %<>% select(-grep("hr", names(QQ1_stat_table_1st_a)))
+
+
+#Setting improvement direction
+##Improvement: Uncertain, default setting
+QQ1_stat_table_1st_b <- QQ1_stat_table_1st %>% 
+  select(c("∆bmr","∆bmr%", "∆lipase","∆lipase%"))
+#觀察值不夠: select(c("∆extracellular_water_ratio","∆wepa50","∆bmr","∆extracellular_water_ratio%","∆wepa50%","∆bmr%","∆e2","∆testosterone","∆e2%","∆testosterone%"))
+
+##Improvement: negative
+QQ1_stat_table_1st_c <- QQ1_stat_table_1st %>% select(c("∆weight","∆bmi","∆bf","∆pbf","∆vfa","∆wc","∆ffm","∆weight%","∆bmi%","∆bf%","∆pbf%","∆vfa%","∆wc%","∆ffm%","∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆tg","∆tc","∆ldl","∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆tg%","∆tc%","∆ldl%")) %>% multiply_by(-1)
+##Improvement: positive
+QQ1_stat_table_1st_d <- QQ1_stat_table_1st %>% select(c("∆bsmi","∆bm","∆bsmi%","∆bm%","∆homa_beta","∆hdl","∆homa_beta%","∆hdl%"))
+
+QQ1_stat_table_1st <- Reduce(cbind,list(QQ1_stat_table_1st_a, QQ1_stat_table_1st_b, QQ1_stat_table_1st_c, QQ1_stat_table_1st_d), accumulate =FALSE) 
+
+
+
+#Sort var order: baseline, endpoint, diet, ∆, ∆%
+vars <- c("id","client_type","age","gender","date_baseline","date_endpoint",
+          "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","bm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
+          "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
+          "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","bm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
+          "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint","lipase_endpoint",
+          "day_count","upload_day_%","note_count","light_G","light_Y","light_R","pic_count","carb_E%","protein_E%","fat_E%","calorie","pic_per_note","light_G_%","light_Y_%","light_R_%","gp",
+          "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
+          "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase",
+          "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",
+          "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆lipase%"
+)
+QQ1_stat_table_1st %<>% select(vars)
+
+
+#change colname to run plot
+QQ1_stat_table_1st_for_plot <- QQ1_stat_table_1st
+names(QQ1_stat_table_1st_for_plot) <- gsub("∆", "delta_", names(QQ1_stat_table_1st_for_plot))
+names(QQ1_stat_table_1st_for_plot) <- gsub("%", "_percent", names(QQ1_stat_table_1st_for_plot))
+
+
+#var_vector <- which(!(vars %in% c("id","client_type","gender","date_baseline","date_endpoint", "gp"))) #old method
+#new
+var_vector <- c(setdiff(vars %>% grep("baseline$", .), vars %>% grep("date", .)),
+                setdiff(vars %>% grep("endpoint$", .), vars %>% grep("date", .)),
+                vars %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE),
+                setdiff(vars %>% grep("[∆]", .), vars %>% grep("[%]", .)),
+                vars %>% grep("[%]", .)
+)
+
+
+#layout alphebetic index
+label_index <- c(
+  setdiff(vars %>% grep("baseline$", .), vars %>% grep("date", .)) %>% length(),
+  setdiff(vars %>% grep("endpoint$", .), vars %>% grep("date", .)) %>% length(),
+  vars %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE) %>% length(),
+  setdiff(vars %>% grep("[∆]", .), vars %>% grep("[%]", .)) %>% length(),
+  vars %>% grep("[∆]\\S*[%]", .) %>% length()
+)
+
+
+myplots <- vector('list', length(var_vector))
+
+for (i in c(var_vector)) {
+  j <- match(i, var_vector)
+  if (j == 1) {
+    vector_pvalue <- c()
+  }
+  
+  a <- QQ1_stat_table_1st_for_plot %>% colnames() %>% head(i) %>% tail(1)
+  a_title <- a %>% gsub("delta_", "∆", .) %>% gsub("percent", "(%)", .)
+  
+  #p.sign?
+  stat.test <- 
+    QQ1_stat_table_1st_for_plot %>%
+    group_by(gender) %>%
+    rstatix::t_test(as.formula(paste(a, "gp", sep = " ~ ")), ref.group = "Poor") 
+  stat.test <- stat.test %>% rstatix::add_xy_position(x = "gender", fun = "mean_se", dodge = 0.8)
+  
+  #for customed summary table - part 1/4 [p value]
+  vector_pvalue <- append(vector_pvalue, 
+                          stat.test %>% select(p.adj.signif) %>% pull() %>% head(2) %>% tail(1)
+  )
+  
+  #plot
+  plot <- 
+    QQ1_stat_table_1st_for_plot %>% 
+    ggbarplot(x = "gender", y = a, fill = "gp", alpha = 0.5,
+              add = "mean_se", add.params = list(group = "gp"),
+              position = position_dodge(0.8), legend = "right", legend.title = "") +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+    labs(x = "", y = "Mean ± SE", title = a_title) +
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5, size = 15)
+    ) +
+    stat_pvalue_manual(
+      stat.test, label = "p.adj.signif", tip.length = 0.0,
+      bracket.nudge.y = 1, step.increase = 0.01, hide.ns = FALSE 
+    )
+  
+  myplots[[j]] <- plot
+  
+  progress(j, max = length(var_vector))
+  if (j == length(var_vector)) {
+    cat("-----[Completed!!]-----", rep("\n", 3))
+  }
+}
 
 
 

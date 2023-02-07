@@ -10,36 +10,33 @@ output:
   bookdown::gitbook:
     dev: svglite
     css: css/style.css
-    toc_depth: 3
     split_by: section
-    number_sections: true
-    split_bib: false
-    anchor_sections: true
     config:
       toc:
-        scroll_highlight: yes
-        collapse: section
-      sharing:
-        facebook: false
-        twitter: false
-    search: yes
+        collapse: none
+      download: null
+      edit: null
+      sharing: null
+      search: yes
     
+
+  bookdown::html_chapters:
+    css: [css/style.css, css/toc.css]
+
   bookdown::pdf_book:
+    pandoc_args: --top-level-division=chapter
     toc_depth: 3
-    number_sections: true
-    citation_package: default
-    pandoc_args: [ "--csl", "chicago-fullnote-bibliography.csl" ]
-
-  bookdown::word_document2:
-    default
-
-  bookdown::markdown_document2:
-    default
+    toc_unnumbered: no
+    toc_appendix: yes
+    quote_footer: ["\\VA{", "}{}"]
+  bookdown::epub_book:
+    dev: svglite
+    stylesheet: css/style.css
 ---
 
 ```{r setup, include=FALSE}
 library(googleVis)
-knitr::opts_chunk$set(echo = FALSE, comment = NA, results = 'asis')
+knitr::opts_chunk$set(echo = FALSE, comment = NA, results = 'asis', warning = FALSE)
 options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 
 ```
@@ -59,5 +56,3 @@ The information in this book is provided ...(editing).
 ```{r}
 Sys.time()
 ```
-
-

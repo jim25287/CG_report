@@ -583,3 +583,82 @@ for (i in c(var_vector)) {
 
 
 
+#(2.)Gender x Group table
+table_01 <- 
+  table(QQ1_stat_table_1st$gender, QQ1_stat_table_1st$gp) %>% addmargins() %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c("Categorization:  ∆weight(%)"), general = c(rbind("\n", c("- Poor: Less than 3%", "- Medium: Between 5~10%", "- Good: More than 10%"))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
+
+
+#(3.)output statistics table
+#for customed summary table - part 2/4 [summary table]
+summary_table <- 
+  QQ1_stat_table_1st %>% 
+  group_by(gender, gp) %>% 
+  summarize_at(vars[!(vars %in% c("id","client_type","gender","date_baseline","date_endpoint", "gp"))],
+               function(x) paste(mean(x, na.rm = TRUE) %>% round(2), (sd(x, na.rm = TRUE)/sqrt(n())) %>% round(2), sep = " ± ")
+  )
+
+vector_improve <- c(rep("", length(var_vector)))
+
+#for customed summary table - part 3/4 [Improvement]
+summary_table_a <- summary_table[, -1:-2]
+#Improvement + (1)unknown (2)∆positive
+vector_improve[names(QQ1_stat_table_1st_b) %>% match(., names(summary_table_a))] <- "TBD"
+vector_improve[names(QQ1_stat_table_1st_d) %>% match(., names(summary_table_a))] <- "∆>0(+)"
+
+#Improvement - (1)∆negative
+vector_improve[names(QQ1_stat_table_1st_c) %>% match(., names(summary_table_a))] <- "∆<0(-)"
+
+
+#for customed summary table - part 4/4 [DIfference ∆]
+a <- stat_table_1st %>% filter(client_type != 1) %>% filter(`∆weight%` < -10)
+a_vars <- a %>% select(vars[!(vars %in% c("id","client_type","gender","date_baseline","date_endpoint", "gp"))]) %>% names()
+
+#paste to index
+a_vector <- a_vars %>% grep("∆", .) %>% a_vars[.] %>% match(., names(summary_table_a))
+
+a_vars %>% match(., names(summary_table_a))
+
+a <- 
+  a %>% 
+  select(a_vars) %>% select(grep("∆", names(.))) %>% filter(!is.na(`∆hba1c`)) %>% 
+  summarise_all(list(mean)) %>% round(1) %>% as.character()
+
+b <- c(rep("+", length(a)))
+b[a %>% grep("NA", .)] <- "NA"
+b[a %>% grep("-", .)] <- "-"
+
+vector_dif <- c(rep("", length(var_vector)))
+vector_dif[a_vector] <- b
+
+#rbind: summary_table, p.adj.sign, dif, improvement
+summary_table <- Reduce(rbind, list(summary_table_a, vector_pvalue, vector_dif, vector_improve)) 
+
+summary_table <- summary_table %>% t() %>% as.data.frame()
+names(summary_table) <- c(rep(c("Poor", "Medium", "Good"), 2), "Significance", "Diff(∆)", "Improvement")
+
+
+table_02 <- 
+  summary_table %>% 
+  kbl(format = "html", caption = "<b>Statistics:</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  add_header_above(c(" " = 1, "Female" = 3, "Male" = 3, " " = 3)) %>% 
+  footnote(general_title = c("Significance:"), general = "\n Comparison: Good vs. Poor in female population.",
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .) %>% 
+  scroll_box(height = "500px", width = "100%")
+
+
+

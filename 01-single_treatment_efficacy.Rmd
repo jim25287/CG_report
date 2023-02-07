@@ -71,6 +71,8 @@ gvisMerge(plot_stack_col_female, plot_stack_col_male, horizontal = FALSE) %>% pl
 line_plot
 ```
 
+### Correlation
+
 ```{r, results='asis', warning=FALSE}
 corrplot(M1, 
          p.mat = M_test1$p,
@@ -100,85 +102,93 @@ corrplot(M2,
          mar = c(0,0,1,0)) 
 ```
 
-### Baseline {#ob_baseline}
+### 分層分析-1: 減重成效
 
-#### Inbody
+```{r, fig.align='left'}
+table_01
+```
+
+#### Baseline {#ob_baseline}
+
+Inbody
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[1:10], ncol = 2, labels = paste0(LETTERS[1], seq(1,10)))
 
 ```
 
-#### Blood
+Blood
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[11:20], ncol = 2, labels = paste0(LETTERS[2], seq(1,10)))
 ```
 
-### Endpoint {#ob_endpoint}
+#### Endpoint {#ob_endpoint}
 
-#### Inbody
+Inbody
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[21:30], ncol = 2, labels = paste0(LETTERS[3], seq(1,10)))
 ```
 
-#### Blood
+Blood
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1,10)))
 ```
 
-### Diet {#ob_diet}
+#### Diet {#ob_diet}
 
 ```{r, results='asis', fig.width= 10, fig.height=30}
 plot_grid(plotlist = myplots[41:56], ncol = 2, labels = paste0(LETTERS[5], seq(1,10)))
 ```
 
-### Effectiveness {#ob_effectiveness}
+#### Effectiveness {#ob_effectiveness}
 
-#### Dif.(∆)-Inbody
+Dif.(∆)-Inbody
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[57:66], ncol = 2, labels = paste0(LETTERS[6], seq(1,10)))
 ```
 
-#### Dif.(∆)-Blood
+Dif.(∆)-Blood
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[67:76], ncol = 2, labels = paste0(LETTERS[7], seq(1,10)))
 ```
 
-#### Dif.(%)-Inbody
+Dif.(%)-Inbody
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[84:93], ncol = 2, labels = paste0(LETTERS[8], seq(1,10)))
 ```
 
-#### Dif.(%)-Blood
+Dif.(%)-Blood
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[94:103], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
 ```
 
+#### Summary
 
+1.  Baseline: 無顯著差異。
 
+2.  Endpoint: 整體而言，各組間Inbody, Blood具顯著差異。(PBF, HOMA-ß, Lipid profile(TG, TC, LDL)無顯著差異)
 
+3.  Diet Profile: 飲食遵從度, 具顯著差異;攝取總熱量無顯著差異。
 
+4.  減重成效: 整體具有顯著差異，但HOMA-ß, Lipid profile(TG, TC, LDL),無顯著差異
 
+5.  Question:
 
+    1.  攝取總熱量無顯著差異，但BMR呈下降趨勢。
 
+    2.  Endpoint體脂率沒差，但∆體脂率有差。
 
+    3.  Lipid profile整體沒差異，但減重成效越好，HDL降幅越明顯。
 
+    *(PBF= Body fat percentage; TG: Triglyceride; TC: Total cholesterol; )*
 
-
-
-
-
-
-
-
-
-
-
-
+```{r, fig.align='left'}
+table_02
+```

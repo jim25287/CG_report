@@ -1,23 +1,25 @@
-# #OGTT胰島素分型
+# OGTT胰島素分型
 
-**診斷標準：** ![](image/girc_class.png)
+**診斷標準：**
+
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png)
 
 ## Pattern I
 
-![](image/00.auto_scale/01.Pattern%20I%20(Low)_2022-12-22.jpg){width="200"} ![](image/00.auto_scale/01.Pattern%20I%20(High.0)_2022-12-22.jpg) ![](image/00.auto_scale/01.Pattern%20I%20(High.1)_2022-12-22.jpg) ![](image/00.auto_scale/01.Pattern%20I%20(High.B)_2022-12-22.jpg)
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/01.Pattern%2520I%2520(Low).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/02.Pattern%2520I%2520(High.0).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/03.Pattern%2520I%2520(High.1).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/04.Pattern%2520I%2520(High.B).jpg){width="150"}
 
 ## Pattern II
 
-te
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/05.Pattern%2520II%2520(Low).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/06.Pattern%2520II%2520(High.0).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/07.Pattern%2520II%2520(High.1).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/08.Pattern%2520II%2520(High.B).jpg){width="150"}
 
 ## Pattern III
 
-te
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/09.Pattern%2520III%2520(Low).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/10.Pattern%2520III%2520(High.0).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/11.Pattern%2520III%2520(High.1).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/12.Pattern%2520III%2520(High.B).jpg){width="150"}
 
 ## Pattern IV
 
-te
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/13.Pattern%20IV.jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/14.Pattern%20IV%20(I-alike%252C%20High).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/15.Pattern%20IV%20(II-alike%252C%20Low).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/16.Pattern%20IV%20(II-alike%252C%20High).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/17.Pattern%20IV%20(III-alike).jpg){width="150"}
 
 ## Pattern V
 
-te
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/18.Pattern%2520V%2520(T1DM).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/19.Pattern%20V%20(Late%20DM).jpg){width="150"}

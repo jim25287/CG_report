@@ -104,7 +104,7 @@ corrplot(M2,
 
 ### 分層分析-1: 減重成效
 
-```{r, fig.align='left'}
+```{r fig.align='left', paged.print=TRUE}
 table_01
 ```
 
@@ -189,6 +189,6 @@ plot_grid(plotlist = myplots[94:103], ncol = 2, labels = paste0(LETTERS[9], seq(
 
     *(PBF= Body fat percentage; TG: Triglyceride; TC: Total cholesterol; )*
 
-```{r, fig.align='left'}
+```{r fig.align='left', paged.print=TRUE}
 table_02
 ```

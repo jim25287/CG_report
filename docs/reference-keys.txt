@@ -10,3 +10,9 @@ ob_endpoint
 ob_diet
 ob_effectiveness
 summary
+ogtt胰島素分型
+pattern-i
+pattern-ii
+pattern-iii
+pattern-iv
+pattern-v

@@ -665,9 +665,10 @@ lin_AUC_calc <- function(df, variables, increment_value = 0){
 
 # [Function 10:] Insulin Response Pattern Categorization -------------------------------
 #****[20221219 version, confirmed]
-lin_insulin_rsp_pattern <- function(df, variables, pattern = 1, plot = NULL, table_img = FALSE){
+lin_insulin_rsp_pattern <- function(df, variables, pattern = 1, plot = NULL, table_img = FALSE, layout = FALSE){
   
   plot_chr <- deparse(substitute(plot))
+  
   
   # Start the clock!
   ptm <- proc.time()
@@ -845,6 +846,7 @@ lin_insulin_rsp_pattern <- function(df, variables, pattern = 1, plot = NULL, tab
          "font-size: 12pt !important;", 
          .)
   
+  
   #add percentage
   setDT(summary_table)[, percent := (prop.table(N)*100) %>% round(2) ]
   
@@ -891,24 +893,7 @@ lin_insulin_rsp_pattern <- function(df, variables, pattern = 1, plot = NULL, tab
           axis.text.y = element_text(face = "bold", size = 12))+
     coord_flip()
   
-  #
   
-  cat("\n[Completed!]\n")
-  cat("\n[執行時間]\n")
-  print(proc.time() - ptm)
-  
-  cat("\n[Result]\n")
-  
-  result <- table(df[["I"]]) %>% addmargins() %>% as.data.frame()
-  
-  print(result)
-  print(summary_table_kable)
-  
-  if (plot_chr == "count") {
-    print(count_plot)
-  }else if (plot_chr == "percentage") {
-    print(percentage_plot)
-  }
   
   if (table_img == TRUE) {
     summary_table_kable %>% 
@@ -917,6 +902,38 @@ lin_insulin_rsp_pattern <- function(df, variables, pattern = 1, plot = NULL, tab
                  zoom = 5, bs_theme = "journal")
   }
   
+  if (layout == FALSE) {
+    
+    if (plot_chr == "count") {
+      print(count_plot)
+    }else if (plot_chr == "percentage") {
+      print(percentage_plot)
+    }
+    
+    cat("\n[Completed!]\n")
+    cat("\n[執行時間]\n")
+    print(proc.time() - ptm)
+    
+    cat("\n[Result]\n")
+    
+    result <- table(df[["I"]]) %>% addmargins() %>% as.data.frame()
+    
+    print(result)
+    print(summary_table_kable)
+    return(df)
+  }else{
+    
+    if (plot_chr == "count") {
+      plot <- count_plot
+      print(count_plot)
+    }else if (plot_chr == "percentage") {
+      plot <- percentage_plot
+      print(percentage_plot)
+    }
+    print(summary_table_kable)
+    a <- list(summary_table_kable, plot)
+    return(a)
+  }
   
-  return(df)
+  
 }

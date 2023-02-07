@@ -1,3 +1,4 @@
+tab:unnamed-chunk-21
 efficacy---single-treatment
 vens_graph
 single_treatment_ob
@@ -10,9 +11,11 @@ ob_endpoint
 ob_diet
 ob_effectiveness
 summary
-ogtt胰島素分型
+glucose-insulin-response-curvegirc
+ogtt胰島素反應分型
 pattern-i
 pattern-ii
 pattern-iii
 pattern-iv
 pattern-v
+temp

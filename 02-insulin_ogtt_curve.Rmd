@@ -1,25 +1,96 @@
-# OGTT胰島素分型
+# Glucose Insulin Response Curve(GIRC)
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/02.girc.R")
+
+```
 
 **診斷標準：**
 
 ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png)
 
-## Pattern I
+**Pattern分佈：**
 
-![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/01.Pattern%2520I%2520(Low).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/02.Pattern%2520I%2520(High.0).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/03.Pattern%2520I%2520(High.1).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/04.Pattern%2520I%2520(High.B).jpg){width="150"}
+## OGTT胰島素反應分型
 
-## Pattern II
+### Pattern I
 
-![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/05.Pattern%2520II%2520(Low).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/06.Pattern%2520II%2520(High.0).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/07.Pattern%2520II%2520(High.1).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/08.Pattern%2520II%2520(High.B).jpg){width="150"}
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png)
 
-## Pattern III
+```{r, out.width = "350px"}
+url <- c("https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/1.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/2.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/3.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/4.jpg"
+         )
+knitr::include_graphics(url)
 
-![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/09.Pattern%2520III%2520(Low).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/10.Pattern%2520III%2520(High.0).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/11.Pattern%2520III%2520(High.1).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/12.Pattern%2520III%2520(High.B).jpg){width="150"}
+```
 
-## Pattern IV
+### Pattern II
 
-![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/13.Pattern%20IV.jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/14.Pattern%20IV%20(I-alike%252C%20High).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/15.Pattern%20IV%20(II-alike%252C%20Low).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/16.Pattern%20IV%20(II-alike%252C%20High).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/17.Pattern%20IV%20(III-alike).jpg){width="150"}
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png)
 
-## Pattern V
+```{r, out.width = "350px"}
+url <- c("https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/5.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/6.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/7.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/8.jpg"
+         )
+knitr::include_graphics(url)
 
-![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/18.Pattern%2520V%2520(T1DM).jpg){width="150"} ![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/19.Pattern%20V%20(Late%20DM).jpg){width="150"}
+```
+
+### Pattern III
+
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png)
+
+```{r, out.width = "350px"}
+url <- c("https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/9.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/10.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/11.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/12.jpg"
+         )
+knitr::include_graphics(url)
+
+```
+
+### Pattern IV
+
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png)
+
+```{r, out.width = "350px"}
+url <- c("https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/13.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/14.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/15.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/16.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/17.jpg"
+         )
+knitr::include_graphics(url)
+
+```
+
+### Pattern V
+
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png)
+
+```{r, out.width = "350px"}
+url <- c("https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/18.jpg",
+         "https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/19.jpg"
+         )
+knitr::include_graphics(url)
+
+```
+
+## temp
+
+```{r}
+plot_M[[1]]
+plot_M[[2]]
+```
+
+```{r}
+plot_m[[1]]
+plot_m[[2]]
+```

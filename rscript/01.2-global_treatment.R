@@ -658,7 +658,7 @@ table_02 <-
   gsub("font-size: initial !important;", 
        "font-size: 15pt !important;", 
        .) %>% 
-  scroll_box(height = "500px", width = "800px")
+  scroll_box(height = "500px", width = "100%")
 
 
 

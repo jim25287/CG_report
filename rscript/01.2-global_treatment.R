@@ -20,7 +20,7 @@ pie_02 <-
 stat_table_1st_ob %>% group_by(gender) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Gender',
                                                                                            legend = "{position:'right'}",
                                                                                            pieHole = 0.5,
-                                                                                           slices = "{0:{offset:0.1}}",
+                                                                                           #slices = "{0:{offset:0.1}}",
                                                                                            backgroundColor = "#edeff2",
                                                                                            colors = "['#DC3912', '#3366CC']",
                                                                                            width = "600",
@@ -158,43 +158,62 @@ library(ggplot2)
 
 
 #ggviz_bar_stack
-  #create df
-  b <- a %>% filter((gender == "female") & (variable == levels(a$variable)[1])) %>% select(c("Group", "N")) %>% as.data.frame() %>% select(-gender) %>% t()
-  colnames(b) <- b["Group",]
-  b <- b %>%  as.data.frame()
-  b <- b["N",]
-  #transform ori table
-  b <- 
-    Reduce(rbind,list(b,
-                      a %>% filter((gender == "female") & (variable == levels(a$variable)[2])) %>% select(c("Group", "N")) %>% as.data.frame() %>% select("N") %>% t() %>%  as.vector(),
-                      a %>% filter((gender == "female") & (variable == levels(a$variable)[3])) %>% select(c("Group", "N")) %>% as.data.frame() %>% select("N") %>% t() %>%  as.vector()
-    ))
-  #adjust df
-  b <- b %>% lapply(as.numeric) %>% as.tibble()
-  b$var <- levels(a$variable)
+  global_eff_bar_df <- function(data, gender){
+    sex <- deparse(substitute(gender))
+    data <- data %>% as.tibble()
+    #create df
+    b <- data %>% filter((gender == sex) & (variable == levels(data[[deparse(substitute(variable))]])[1])) %>% select(c("Group", "N")) %>% as.data.frame() %>% t()
+    colnames(b) <- b["Group",]
+    b <- b %>%  as.data.frame()
+    b <- b["N",]
+    #transform ori table
+    b <-
+      Reduce(rbind,list(b,
+                        data %>% filter((gender == sex) & (variable == levels(data$variable)[2])) %>% select(c("Group", "N")) %>% as.data.frame() %>% select("N") %>% t() %>%  as.vector(),
+                        data %>% filter((gender == sex) & (variable == levels(data$variable)[3])) %>% select(c("Group", "N")) %>% as.data.frame() %>% select("N") %>% t() %>%  as.vector()
+      ))
+    #adjust df
+    b <- b %>% lapply(as.numeric) %>% as.tibble()
+    b$var <- levels(a$variable)
+    return(b)
+  }
   
-  
-  
-  
+  b <- global_eff_bar_df(data = a, female)
   #plot
   col_color <- 
     paste0("[", RColorBrewer::brewer.pal(11, 'RdYlBu')[c(2,3,4,5,7,9,10)] %>% rev() %>% 
              stringr::str_c('\'', ., '\'') %>% 
              stringr::str_c(collapse = ","), "]")
   
-  plot_stack_col <-
+  plot_stack_col_female <-
     gvisColumnChart(b , xvar = "var", yvar = b %>% select(-var) %>% names() %>% rev(),
                     options = list(isStacked = 'percent',
-                                   title = '控糖減重成效-身體組成(OB)',
+                                   title = '控糖減重成效-身體組成(Female)',
+                                   legend = "{position:'right'}",
+                                   colors = col_color,
+                                   backgroundColor = "#edeff2",
+                                   width = "600",
+                                   height = "600"))
+  
+  b <- global_eff_bar_df(data = a, male)
+  col_color <- 
+    paste0("[", RColorBrewer::brewer.pal(11, 'RdYlBu')[c(2,3,4,5,7,9,10)] %>% rev() %>% 
+             stringr::str_c('\'', ., '\'') %>% 
+             stringr::str_c(collapse = ","), "]")
+  plot_stack_col_male <-
+    gvisColumnChart(b , xvar = "var", yvar = b %>% select(-var) %>% names() %>% rev(),
+                    options = list(isStacked = 'percent',
+                                   title = '控糖減重成效-身體組成(Male)',
                                    legend = "{position:'right'}",
                                    colors = col_color,
                                    backgroundColor = "#edeff2",
                                    width = "600",
                                    height = "600"))
 
-
+  
 
 rm(list = c("a", "b", "data"))
+
 
 
 

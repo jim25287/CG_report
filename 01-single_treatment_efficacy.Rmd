@@ -55,6 +55,7 @@ gvisMerge(pie_01, pie_02, horizontal = FALSE) %>% plot()
 ```
 
 BMI分佈
+
 ```{r, results='asis'}
 gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
 
@@ -63,5 +64,26 @@ gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
 ### Global Evaluation {#global_result_ob}
 
 ```{r}
-plot(plot_stack_col)
+gvisMerge(plot_stack_col_female, plot_stack_col_male, horizontal = FALSE) %>% plot()
+
 ```
+
+### Baseline {#ob_baseline}
+
+#### Inbody
+
+#### Blood
+
+### Endpoint {#ob_endpoint}
+
+#### Inbody
+
+#### Blood
+
+### Diet {#ob_diet}
+
+### Effectiveness {#ob_effectiveness}
+
+#### Difference(∆)
+
+#### Difference(%)

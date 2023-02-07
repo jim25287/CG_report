@@ -23,7 +23,7 @@
 <meta name="author" content="MA-DS TEAM" />
 
 
-<meta name="date" content="2023-02-06" />
+<meta name="date" content="2023-02-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -77,6 +77,10 @@
 <ul>
 <li class="chapter" data-level="1.2.1" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#population-info"><i class="fa fa-check"></i><b>1.2.1</b> Population Info</a></li>
 <li class="chapter" data-level="1.2.2" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#global_result_ob"><i class="fa fa-check"></i><b>1.2.2</b> Global Evaluation</a></li>
+<li class="chapter" data-level="1.2.3" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#ob_baseline"><i class="fa fa-check"></i><b>1.2.3</b> Baseline</a></li>
+<li class="chapter" data-level="1.2.4" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#ob_endpoint"><i class="fa fa-check"></i><b>1.2.4</b> Endpoint</a></li>
+<li class="chapter" data-level="1.2.5" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#ob_diet"><i class="fa fa-check"></i><b>1.2.5</b> Diet</a></li>
+<li class="chapter" data-level="1.2.6" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#ob_effectiveness"><i class="fa fa-check"></i><b>1.2.6</b> Effectiveness</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -102,12 +106,12 @@
 <h3><span class="header-section-number">1.2.1</span> Population Info<a href="single_treatment_ob.html#population-info" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><strong>Subjects Distribution</strong> Age &amp; Gender分佈</p>
 <!-- PieChart generated in R 4.2.1 by googleVis 0.7.0 package -->
-<!-- Mon Feb  6 22:52:55 2023 -->
+<!-- Tue Feb  7 11:30:05 2023 -->
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataPieChartID160771e5a08e4 () {
+function gvisDataPieChartID1682892654c5 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -164,7 +168,7 @@ return(data);
 
 
 // jsData 
-function gvisDataPieChartID1607728fdc04d () {
+function gvisDataPieChartID1682833875634 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -184,8 +188,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartPieChartID160771e5a08e4() {
-var data = gvisDataPieChartID160771e5a08e4();
+function drawChartPieChartID1682892654c5() {
+var data = gvisDataPieChartID1682892654c5();
 var options = {};
 options["allowHtml"] = true;
 options["title"] = "Age";
@@ -196,7 +200,7 @@ options["width"] = "600";
 options["height"] = "400";
 
     var chart = new google.visualization.PieChart(
-    document.getElementById('PieChartID160771e5a08e4')
+    document.getElementById('PieChartID1682892654c5')
     );
     chart.draw(data,options);
     
@@ -206,21 +210,20 @@ options["height"] = "400";
 
 
 // jsDrawChart
-function drawChartPieChartID1607728fdc04d() {
-var data = gvisDataPieChartID1607728fdc04d();
+function drawChartPieChartID1682833875634() {
+var data = gvisDataPieChartID1682833875634();
 var options = {};
 options["allowHtml"] = true;
 options["title"] = "Gender";
 options["legend"] = {position:'right'};
 options["pieHole"] = 0.5;
-options["slices"] = {0:{offset:0.1}};
 options["backgroundColor"] = "#edeff2";
 options["colors"] = ['#DC3912', '#3366CC'];
 options["width"] = "600";
 options["height"] = "400";
 
     var chart = new google.visualization.PieChart(
-    document.getElementById('PieChartID1607728fdc04d')
+    document.getElementById('PieChartID1682833875634')
     );
     chart.draw(data,options);
     
@@ -244,9 +247,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartPieChartID160771e5a08e4);
+callbacks.push(drawChartPieChartID1682892654c5);
 })();
-function displayChartPieChartID160771e5a08e4() {
+function displayChartPieChartID1682892654c5() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -283,9 +286,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartPieChartID1607728fdc04d);
+callbacks.push(drawChartPieChartID1682833875634);
 })();
-function displayChartPieChartID1607728fdc04d() {
+function displayChartPieChartID1682833875634() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -308,14 +311,14 @@ callbacks.shift()();
 // jsFooter
 </script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID160771e5a08e4"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID1682892654c5"></script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID1607728fdc04d"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID1682833875634"></script>
 <table border="0">
 <tr>
 <td>
 <!-- divChart -->
-<div id="PieChartID160771e5a08e4" style="width: 600; height: 400;">
+<div id="PieChartID1682892654c5" style="width: 600; height: 400;">
 
 </div>
 </td>
@@ -323,20 +326,20 @@ callbacks.shift()();
 <tr>
 <td>
 <!-- divChart -->
-<div id="PieChartID1607728fdc04d" style="width: 600; height: 400;">
+<div id="PieChartID1682833875634" style="width: 600; height: 400;">
 
 </div>
 </td>
 </tr>
 </table>
-<p>BMI分佈
+<p>BMI分佈</p>
 <!-- PieChart generated in R 4.2.1 by googleVis 0.7.0 package -->
-<!-- Mon Feb  6 22:52:55 2023 --></p>
+<!-- Tue Feb  7 11:30:06 2023 -->
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataPieChartID160772b5c1441 () {
+function gvisDataPieChartID168287a2c8a59 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -361,7 +364,7 @@ return(data);
 
 
 // jsData 
-function gvisDataPieChartID160772a35cda4 () {
+function gvisDataPieChartID1682822f17b9 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -385,8 +388,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartPieChartID160772b5c1441() {
-var data = gvisDataPieChartID160772b5c1441();
+function drawChartPieChartID168287a2c8a59() {
+var data = gvisDataPieChartID168287a2c8a59();
 var options = {};
 options["allowHtml"] = true;
 options["title"] = "Male";
@@ -397,7 +400,7 @@ options["width"] = "600";
 options["height"] = "400";
 
     var chart = new google.visualization.PieChart(
-    document.getElementById('PieChartID160772b5c1441')
+    document.getElementById('PieChartID168287a2c8a59')
     );
     chart.draw(data,options);
     
@@ -407,8 +410,8 @@ options["height"] = "400";
 
 
 // jsDrawChart
-function drawChartPieChartID160772a35cda4() {
-var data = gvisDataPieChartID160772a35cda4();
+function drawChartPieChartID1682822f17b9() {
+var data = gvisDataPieChartID1682822f17b9();
 var options = {};
 options["allowHtml"] = true;
 options["title"] = "Female";
@@ -419,7 +422,7 @@ options["width"] = "600";
 options["height"] = "400";
 
     var chart = new google.visualization.PieChart(
-    document.getElementById('PieChartID160772a35cda4')
+    document.getElementById('PieChartID1682822f17b9')
     );
     chart.draw(data,options);
     
@@ -443,9 +446,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartPieChartID160772b5c1441);
+callbacks.push(drawChartPieChartID168287a2c8a59);
 })();
-function displayChartPieChartID160772b5c1441() {
+function displayChartPieChartID168287a2c8a59() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -482,9 +485,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartPieChartID160772a35cda4);
+callbacks.push(drawChartPieChartID1682822f17b9);
 })();
-function displayChartPieChartID160772a35cda4() {
+function displayChartPieChartID1682822f17b9() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -507,14 +510,14 @@ callbacks.shift()();
 // jsFooter
 </script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID160772b5c1441"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID168287a2c8a59"></script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID160772a35cda4"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID1682822f17b9"></script>
 <table border="0">
 <tr>
 <td>
 <!-- divChart -->
-<div id="PieChartID160772b5c1441" style="width: 600; height: 400;">
+<div id="PieChartID168287a2c8a59" style="width: 600; height: 400;">
 
 </div>
 </td>
@@ -522,7 +525,7 @@ callbacks.shift()();
 <tr>
 <td>
 <!-- divChart -->
-<div id="PieChartID160772a35cda4" style="width: 600; height: 400;">
+<div id="PieChartID1682822f17b9" style="width: 600; height: 400;">
 
 </div>
 </td>
@@ -532,12 +535,12 @@ callbacks.shift()();
 <div id="global_result_ob" class="section level3 hasAnchor" number="1.2.2">
 <h3><span class="header-section-number">1.2.2</span> Global Evaluation<a href="single_treatment_ob.html#global_result_ob" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <!-- ColumnChart generated in R 4.2.1 by googleVis 0.7.0 package -->
-<!-- Mon Feb  6 22:52:56 2023 -->
+<!-- Tue Feb  7 11:30:06 2023 -->
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataColumnChartID16077324fdfa2 () {
+function gvisDataColumnChartID1682861be73cd () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -583,14 +586,63 @@ data.addColumn('number','<-15%');
 data.addRows(datajson);
 return(data);
 }
+
+
+// jsData 
+function gvisDataColumnChartID168281ea4c9dd () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+"Weight",
+0,
+0,
+0,
+12,
+32,
+33,
+3
+],
+[
+"Fat",
+0,
+0,
+2,
+3,
+15,
+23,
+37
+],
+[
+"Muscle",
+0,
+0,
+7,
+31,
+35,
+7,
+0
+] 
+];
+data.addColumn('string','var');
+data.addColumn('number','>15%');
+data.addColumn('number','5~15%');
+data.addColumn('number','0~5%');
+data.addColumn('number','-4~0%');
+data.addColumn('number','-4~8%');
+data.addColumn('number','-8~15%');
+data.addColumn('number','<-15%');
+data.addRows(datajson);
+return(data);
+}
  
 // jsDrawChart
-function drawChartColumnChartID16077324fdfa2() {
-var data = gvisDataColumnChartID16077324fdfa2();
+function drawChartColumnChartID1682861be73cd() {
+var data = gvisDataColumnChartID1682861be73cd();
 var options = {};
 options["allowHtml"] = true;
 options["isStacked"] = "percent";
-options["title"] = "控糖減重成效-身體組成(OB)";
+options["title"] = "控糖減重成效-身體組成(Female)";
 options["legend"] = {position:'right'};
 options["colors"] = ['#4575B4','#74ADD1','#E0F3F8','#FEE090','#FDAE61','#F46D43','#D73027'];
 options["backgroundColor"] = "#edeff2";
@@ -598,7 +650,30 @@ options["width"] = "600";
 options["height"] = "600";
 
     var chart = new google.visualization.ColumnChart(
-    document.getElementById('ColumnChartID16077324fdfa2')
+    document.getElementById('ColumnChartID1682861be73cd')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+
+
+// jsDrawChart
+function drawChartColumnChartID168281ea4c9dd() {
+var data = gvisDataColumnChartID168281ea4c9dd();
+var options = {};
+options["allowHtml"] = true;
+options["isStacked"] = "percent";
+options["title"] = "控糖減重成效-身體組成(Male)";
+options["legend"] = {position:'right'};
+options["colors"] = ['#4575B4','#74ADD1','#E0F3F8','#FEE090','#FDAE61','#F46D43','#D73027'];
+options["backgroundColor"] = "#edeff2";
+options["width"] = "600";
+options["height"] = "600";
+
+    var chart = new google.visualization.ColumnChart(
+    document.getElementById('ColumnChartID168281ea4c9dd')
     );
     chart.draw(data,options);
     
@@ -622,9 +697,48 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartColumnChartID16077324fdfa2);
+callbacks.push(drawChartColumnChartID1682861be73cd);
 })();
-function displayChartColumnChartID16077324fdfa2() {
+function displayChartColumnChartID1682861be73cd() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+
+
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "corechart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartColumnChartID168281ea4c9dd);
+})();
+function displayChartColumnChartID168281ea4c9dd() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -647,12 +761,58 @@ callbacks.shift()();
 // jsFooter
 </script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartColumnChartID16077324fdfa2"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartColumnChartID1682861be73cd"></script>
+<!-- jsChart -->
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartColumnChartID168281ea4c9dd"></script>
+<table border="0">
+<tr>
+<td>
 <!-- divChart -->
-<div id="ColumnChartID16077324fdfa2" style="width: 600; height: 600;">
+<div id="ColumnChartID1682861be73cd" style="width: 600; height: 600;">
 
 </div>
+</td>
+</tr>
+<tr>
+<td>
+<!-- divChart -->
+<div id="ColumnChartID168281ea4c9dd" style="width: 600; height: 600;">
 
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="ob_baseline" class="section level3 hasAnchor" number="1.2.3">
+<h3><span class="header-section-number">1.2.3</span> Baseline<a href="single_treatment_ob.html#ob_baseline" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="inbody" class="section level4 hasAnchor" number="1.2.3.1">
+<h4><span class="header-section-number">1.2.3.1</span> Inbody<a href="single_treatment_ob.html#inbody" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+</div>
+<div id="blood" class="section level4 hasAnchor" number="1.2.3.2">
+<h4><span class="header-section-number">1.2.3.2</span> Blood<a href="single_treatment_ob.html#blood" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+</div>
+</div>
+<div id="ob_endpoint" class="section level3 hasAnchor" number="1.2.4">
+<h3><span class="header-section-number">1.2.4</span> Endpoint<a href="single_treatment_ob.html#ob_endpoint" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="inbody-1" class="section level4 hasAnchor" number="1.2.4.1">
+<h4><span class="header-section-number">1.2.4.1</span> Inbody<a href="single_treatment_ob.html#inbody-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+</div>
+<div id="blood-1" class="section level4 hasAnchor" number="1.2.4.2">
+<h4><span class="header-section-number">1.2.4.2</span> Blood<a href="single_treatment_ob.html#blood-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+</div>
+</div>
+<div id="ob_diet" class="section level3 hasAnchor" number="1.2.5">
+<h3><span class="header-section-number">1.2.5</span> Diet<a href="single_treatment_ob.html#ob_diet" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+<div id="ob_effectiveness" class="section level3 hasAnchor" number="1.2.6">
+<h3><span class="header-section-number">1.2.6</span> Effectiveness<a href="single_treatment_ob.html#ob_effectiveness" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="difference" class="section level4 hasAnchor" number="1.2.6.1">
+<h4><span class="header-section-number">1.2.6.1</span> Difference(∆)<a href="single_treatment_ob.html#difference" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+</div>
+<div id="difference-1" class="section level4 hasAnchor" number="1.2.6.2">
+<h4><span class="header-section-number">1.2.6.2</span> Difference(%)<a href="single_treatment_ob.html#difference-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+
+</div>
 </div>
 </div>
 <!-- </div> -->

@@ -67,13 +67,13 @@ gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
 gvisMerge(plot_stack_col_female, plot_stack_col_male, horizontal = FALSE) %>% plot()
 ```
 
-```{r, results='asis'}
+```{r, results='asis', fig.width = 3, fig.height= 3.2}
 line_plot
 ```
 
 ### Correlation
 
-```{r, results='asis', warning=FALSE}
+```{r, results='asis', fig.width = 3, fig.height= 3.5, warning=FALSE}
 corrplot(M1, 
          p.mat = M_test1$p,
          type = "lower",
@@ -88,7 +88,7 @@ corrplot(M1,
 
 ```
 
-```{r, results='asis', warning=FALSE}
+```{r, results='asis', fig.width = 4, fig.height= 4.5, warning=FALSE}
 corrplot(M2, 
          p.mat = M_test2$p,
          type = "lower",

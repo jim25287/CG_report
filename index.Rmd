@@ -9,6 +9,8 @@ output:
   bookdown::gitbook:
     dev: svglite
     css: css/style.css
+    includes:
+      in_header: GA_script.html
     split_by: section
     config:
       toc:

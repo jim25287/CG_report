@@ -247,7 +247,7 @@ plot_grid(plotlist = myplots[100:109], ncol = 2, labels = paste0(LETTERS[9], seq
 
 1.  減重成效與初始狀態(Baseline)無關。
 
-2.  減重成效與飲食紀律，且具有統計上顯著差異。
+2.  減重成效與飲食紀律有關，且具有統計上顯著差異。
 
 3.  減重成效: 整體具有顯著差異，但HOMA-ß, Lipid profile(TG, TC, LDL),無顯著差異
 

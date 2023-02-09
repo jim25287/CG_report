@@ -54,7 +54,18 @@
   
   
 
-# 02.3-input_client_info --------------------------------------------------
+  
+
+# 02.3-input 3d -----------------------------------------------------------
+  
+  #3d datasets
+  # clinic_3d_data <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/clinic_3d_data.csv")
+  # clinic_3d_data <- clinic_3d_data %>% dplyr::select(c("member_id","date","weight","bmi","body_fat_mass","body_fat_mass_percentage", "bsmi", "muscle_mass","vfa_level","waist_circumference","weight_without_fat","extracellular_water_ratio", "wepa50","bmr"))
+  # colnames(clinic_3d_data)[c(1,2,5,6,8,9,10,11)] <- c("id","date_inbody","bf","pbf","bm","vfa","wc","ffm")
+  
+  
+  
+# 02.4-input_client_info --------------------------------------------------
   #clients datasets
   clinic_client_data <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/client_info.csv")
   clinic_client_data[c("btd","date_1st","date_T0","date_T1","date_T2","date_T3","date_T4")] %<>% lapply(as.Date)
@@ -63,7 +74,7 @@
   
   
 
-# 02.4-input_(non)genesis_list -------------------------------------------------
+# 02.5-input_(non)genesis_list -------------------------------------------------
 
   #clinic_cliet_list datasets
   clinical_list <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/genesis_list.csv")
@@ -370,21 +381,59 @@
   
   # 06 input_diet ---------------------------------------------------------
   
-  diet_record <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/diet_record.csv", 
-                                 col_names = FALSE)
-  names(diet_record) <- c("id","date_diet","note_counts","pic_counts","essay_counts","light_green",
-                          "light_yellow","light_red","Cal","fat","protein","carb","x1","x2")
-  #data wrangling
-  diet_record <- diet_record %>% mutate(calorie = carb*4 + protein*4 + fat*9)
-  diet_record <- diet_record %>% mutate(`carb_E%` = round((carb*4/calorie) *100,2))
-  diet_record <- diet_record %>% mutate(`protein_E%` = round((protein*4/calorie) *100,2))
-  diet_record <- diet_record %>% mutate(`fat_E%` = round((fat*9/calorie) *100,2))
+    #1-1. input diet record by day
+    diet_record <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/diet_record.csv", 
+                                   col_names = FALSE)
+    names(diet_record) <- c("id","date_diet","note_counts","pic_counts","essay_counts","light_green",
+                            "light_yellow","light_red","Cal","fat","protein","carb","x1","x2")
+    #data wrangling
+    diet_record <- diet_record %>% mutate(calorie = carb*4 + protein*4 + fat*9)
+    diet_record <- diet_record %>% mutate(`carb_E%` = round((carb*4/calorie) *100,2))
+    diet_record <- diet_record %>% mutate(`protein_E%` = round((protein*4/calorie) *100,2))
+    diet_record <- diet_record %>% mutate(`fat_E%` = round((fat*9/calorie) *100,2))
+  
+    #1-2. input diet meal by meal
+    diet_meal <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/diet_meal.csv")
+    diet_meal$client_id %<>% as.integer()
+    diet_meal$date %<>% as.Date()
+    diet_meal[c("calorie","carbohydrate","fat","protein","fruits","vegetables","grains","meat_beans_low_fat",
+                "meat_beans_medium_fat","meat_beans_high_fat","milk_whole_fat","milk_low_fat","milk_skim",
+                "oil","meal_order","water_intake")] %<>% lapply(as.numeric)
+    diet_meal %<>% dplyr::rename(id = client_id)
+    diet_meal %<>% mutate(meat_bean = rowSums(select(., meat_beans_low_fat, meat_beans_medium_fat, meat_beans_high_fat), na.rm = TRUE) )
+    diet_meal %<>% mutate(milk = rowSums(select(., milk_whole_fat, milk_low_fat, milk_skim), na.rm = TRUE) )
+    diet_meal %<>% select(-c("meat_beans_low_fat", "meat_beans_medium_fat","meat_beans_high_fat","milk_whole_fat","milk_low_fat","milk_skim"))
+    diet_meal %<>% select(c("id","date","type","calorie","carbohydrate","fat","protein","fruits","vegetables","grains","meat_bean","milk", "oil","meal_order","water_intake"))
+    
+    diet_meal <- diet_meal[with(diet_meal, order(id, date)),]
+    
+    diet_meal <- diet_meal %>% select(c("id","date","fruits","vegetables","grains","meat_bean","milk","oil"))
+    diet_meal %<>% dplyr::rename(date_diet = date)
+    
+    #condense df by id, date
+    diet_meal <- 
+      diet_meal %>% 
+      group_by(id, date_diet) %>% 
+      summarise(fruits = sum(fruits, na.rm = TRUE),
+                vegetables = sum(vegetables, na.rm = TRUE),
+                grains = sum(grains, na.rm = TRUE),
+                meat_bean = sum(meat_bean, na.rm = TRUE),
+                milk = sum(milk, na.rm = TRUE),
+                oil = sum(oil, na.rm = TRUE),
+      )
+    
+  #merge w/ diet_record
+  diet_record <- merge(diet_record, diet_meal, by.x = c("id", "date_diet"), all.x = TRUE)
+  
+  
   
   #Sorting by Multiple Columns
   diet_record <- diet_record[with(diet_record, order(id, date_diet)),]
   
   library(dplyr)
-  diet_record <- diet_record %>% select("id","date_diet","carb_E%","protein_E%","fat_E%","calorie","note_counts","pic_counts","essay_counts","light_green","light_yellow","light_red")
+  diet_record <- diet_record %>% select("id","date_diet","carb_E%","protein_E%","fat_E%","calorie","note_counts","pic_counts","essay_counts",
+                                        "light_green","light_yellow","light_red",
+                                        "fruits","vegetables","grains","meat_bean","milk","oil")
   
   #filter by id
   diet_record <- diet_record[which(diet_record$id %in% stat_table_1st$id),]
@@ -398,6 +447,19 @@
   diet_record <- diet_record %>% filter( (date_diet >= date_baseline) & (date_diet <= date_endpoint) )
   
   
+  ##[20230208] adjust low calorie outliers
+  cut_off_calorie <- 500
+  diet_record[diet_record$calorie < cut_off_calorie, "calorie"] <- NA
+  pool_id <- diet_record %>% filter(is.na(calorie)) %>% select(id) %>% unique() %>% pull()
+  for (i in pool_id) {
+    diet_record[(diet_record$id == i) & (is.na(diet_record$calorie)), "calorie"] <- 
+      diet_record %>% filter(id == i) %>% select(calorie) %>% pull() %>% mean(na.rm = TRUE)
+    if (i == pool_id %>% tail(1)) {
+      rm(pool_id)
+    }
+  }
+  
+  
   #****1st nutritient_E% correlation with ∆HDL, ∆LDL[Q1.怎麼吃幅度最低??!]
   
   #****[Q2. Obedience with Inbody data, ∆HDL, ∆LDL?]
@@ -409,9 +471,12 @@
   
   for (i in c(diet_obedience$id)) {
     #create new col 
-    if ((c("day_count","upload_day_%","note_count","light_G","light_Y","light_R","pic_count","carb_E%","protein_E%","fat_E%", "calorie") %in% names(diet_obedience)) %>% sum() != 11) {
-      diet_obedience[,c("day_count","upload_day_%","note_count","light_G","light_Y","light_R","pic_count","carb_E%","protein_E%","fat_E%", "calorie")] <- NA
+    if (i == c(diet_obedience$id) %>% head(1)) {
+      diet_obedience[,c("day_count","upload_day_%","note_count","light_G","light_Y","light_R","pic_count",
+                        "carb_E%","protein_E%","fat_E%", "calorie",
+                        "fruits","vegetables","grains","meat_bean","milk","oil")] <- NA
       j = 1
+      cat("\n[Establish diet table...]\n")
     }
     
     #inbody_T0 inbody_T1
@@ -421,31 +486,48 @@
     
     diet_record_temp <- diet_record %>% filter( (date_diet >= diet_T0) & (date_diet <= diet_T1) )
     
+    
     #upload calorie
-    diet_obedience[which(diet_obedience$id == i),"calorie"] <- (diet_record_temp %>% filter(id == i) %>% select(calorie) %>% sum()) / (diet_record_temp %>% filter(id == i) %>% nrow()) %>% round(2)
+      diet_obedience[which(diet_obedience$id == i),"calorie"] <- (diet_record_temp %>% filter(id == i) %>% select(calorie) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% nrow()) %>% round(2)
     #upload day count
-    diet_obedience[which(diet_obedience$id == i),"day_count"] <- diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow()
+      diet_obedience[which(diet_obedience$id == i),"day_count"] <- diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow()
     #upload day count%
-    diet_obedience[which(diet_obedience$id == i),"upload_day_%"] <- ((diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())*100/ ((diet_T1 - diet_T0 + 1) %>% as.numeric())) %>% round(2)
+      diet_obedience[which(diet_obedience$id == i),"upload_day_%"] <- ((diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())*100/ ((diet_T1 - diet_T0 + 1) %>% as.numeric())) %>% round(2)
     #upload meal_note count
-    diet_obedience[which(diet_obedience$id == i),"note_count"] <- diet_record_temp %>% filter(id == i) %>% select(note_counts) %>% sum()
+      diet_obedience[which(diet_obedience$id == i),"note_count"] <- diet_record_temp %>% filter(id == i) %>% select(note_counts) %>% sum(na.rm = TRUE)
     #Light counts: green, yellow, red
-    diet_obedience[which(diet_obedience$id == i),"light_G"] <- diet_record_temp %>% filter(id == i) %>% select(light_green) %>% sum()
-    diet_obedience[which(diet_obedience$id == i),"light_Y"] <- diet_record_temp %>% filter(id == i) %>% select(light_yellow) %>% sum()
-    diet_obedience[which(diet_obedience$id == i),"light_R"] <- diet_record_temp %>% filter(id == i) %>% select(light_red) %>% sum()
+      diet_obedience[which(diet_obedience$id == i),"light_G"] <- diet_record_temp %>% filter(id == i) %>% select(light_green) %>% sum(na.rm = TRUE)
+      diet_obedience[which(diet_obedience$id == i),"light_Y"] <- diet_record_temp %>% filter(id == i) %>% select(light_yellow) %>% sum(na.rm = TRUE)
+      diet_obedience[which(diet_obedience$id == i),"light_R"] <- diet_record_temp %>% filter(id == i) %>% select(light_red) %>% sum(na.rm = TRUE)
     #Pic count
-    diet_obedience[which(diet_obedience$id == i),"pic_count"] <- diet_record_temp %>% filter(id == i) %>% select(pic_counts) %>% sum()
-    #calorie_%
-    diet_obedience[which(diet_obedience$id == i),"carb_E%"] <- 
-      round((sum((diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`carb_E%`)) %>% select(`carb_E%`)*0.01) * diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`carb_E%`)) %>% select(`calorie`)) / sum(diet_record_temp %>% filter(id == i) %>% select(`calorie`)))*100,2)
-    diet_obedience[which(diet_obedience$id == i),"protein_E%"] <- 
-      round((sum((diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`protein_E%`)) %>% select(`protein_E%`)*0.01) * diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`protein_E%`)) %>% select(`calorie`)) / sum(diet_record_temp %>% filter(id == i) %>% select(`calorie`)))*100,2)
-    diet_obedience[which(diet_obedience$id == i),"fat_E%"] <- 
-      round((sum((diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`fat_E%`)) %>% select(`fat_E%`)*0.01) * diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`fat_E%`)) %>% select(`calorie`)) / sum(diet_record_temp %>% filter(id == i) %>% select(`calorie`)))*100,2)
+      diet_obedience[which(diet_obedience$id == i),"pic_count"] <- diet_record_temp %>% filter(id == i) %>% select(pic_counts) %>% sum(na.rm = TRUE)
+    #3 types of nutrients calorie_%
+      diet_obedience[which(diet_obedience$id == i),"carb_E%"] <- 
+        round((sum((diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`carb_E%`)) %>% select(`carb_E%`)*0.01) * diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`carb_E%`)) %>% select(`calorie`)) / sum(diet_record_temp %>% filter(id == i) %>% select(`calorie`)))*100,2)
+      diet_obedience[which(diet_obedience$id == i),"protein_E%"] <- 
+        round((sum((diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`protein_E%`)) %>% select(`protein_E%`)*0.01) * diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`protein_E%`)) %>% select(`calorie`)) / sum(diet_record_temp %>% filter(id == i) %>% select(`calorie`)))*100,2)
+      diet_obedience[which(diet_obedience$id == i),"fat_E%"] <- 
+        round((sum((diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`fat_E%`)) %>% select(`fat_E%`)*0.01) * diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`fat_E%`)) %>% select(`calorie`)) / sum(diet_record_temp %>% filter(id == i) %>% select(`calorie`)))*100,2)
+      
+    #6 types of food
+      #fruits / upload day count
+      diet_obedience[which(diet_obedience$id == i),"fruits"] <- (diet_record_temp %>% filter(id == i) %>% select(fruits) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
+      #vegetables / upload day count
+      diet_obedience[which(diet_obedience$id == i),"vegetables"] <- (diet_record_temp %>% filter(id == i) %>% select(vegetables) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
+      #grains / upload day count
+      diet_obedience[which(diet_obedience$id == i),"grains"] <- (diet_record_temp %>% filter(id == i) %>% select(grains) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
+      #meat_bean / upload day count
+      diet_obedience[which(diet_obedience$id == i),"meat_bean"] <- (diet_record_temp %>% filter(id == i) %>% select(meat_bean) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
+      #milk / upload day count
+      diet_obedience[which(diet_obedience$id == i),"milk"] <- (diet_record_temp %>% filter(id == i) %>% select(milk) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
+      #oil / upload day count
+      diet_obedience[which(diet_obedience$id == i),"oil"] <- (diet_record_temp %>% filter(id == i) %>% select(oil) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
+    
     
     
     if (i == c(diet_obedience$id) %>% tail(1)) {
       rm(diet_record_temp)
+      cat("\n[Completed!]\n")
     }
     progress(j, length(c(diet_obedience$id)))
     j = j + 1

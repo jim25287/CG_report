@@ -188,6 +188,7 @@ library(ggplot2)
   plot_stack_col_female <-
     gvisColumnChart(b , xvar = "var", yvar = b %>% select(-var) %>% names() %>% rev(),
                     options = list(isStacked = 'percent',
+                                   bar="{groupWidth:'50%'}",
                                    title = '控糖減重成效-身體組成(Female)',
                                    legend = "{position:'right'}",
                                    colors = col_color,
@@ -203,6 +204,7 @@ library(ggplot2)
   plot_stack_col_male <-
     gvisColumnChart(b , xvar = "var", yvar = b %>% select(-var) %>% names() %>% rev(),
                     options = list(isStacked = 'percent',
+                                   bar="{groupWidth:'50%'}",
                                    title = '控糖減重成效-身體組成(Male)',
                                    legend = "{position:'right'}",
                                    colors = col_color,
@@ -378,7 +380,7 @@ profile_baseline <- stat_table_1st_ob %>%
            "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline"))
 
 profile_diet <- stat_table_1st_ob %>% 
-  select(c("upload_day_%", "pic_count","carb_E%","protein_E%","fat_E%","calorie","light_G_%","light_Y_%","light_R_%"))
+  select(c("upload_day_%", "pic_count","calorie","carb_E%","protein_E%","fat_E%","fruits","vegetables","grains","meat_bean","milk", "oil","light_G_%","light_Y_%","light_R_%"))
 
 
 
@@ -393,7 +395,9 @@ M_col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444
 
 colnames(M1) <- row.names(M1) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)","∆內臟脂肪","∆腰圍", "∆BMR", #6
                                    "∆糖化血色素","∆空服血糖","∆空腹胰島素","∆Homa_IR","∆Homa_ß","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL", "解脂酶", #10
-                                   "上傳天數%","上傳照片數","總碳水比_E%","總蛋白比_E%","總脂肪比_E%", "總攝取卡路里","綠燈比_%","黃燈比_%","紅燈比_%") #9
+                                   "上傳天數%","上傳照片數", "總攝取卡路里","總碳水比_E%","總蛋白比_E%","總脂肪比_E%",
+                                   "水果(日)","蔬菜(日)","全穀雜糧(日)","蛋豆魚肉(日)","乳品(日)","油脂(日)",
+                                   "綠燈比_%","黃燈比_%","紅燈比_%") #15
 
 #run corrplot plot
 # corrplot(M1, 
@@ -499,7 +503,8 @@ vars <- c("id","client_type","age","gender","date_baseline","date_endpoint",
           "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
           "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","bm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
           "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint","lipase_endpoint",
-          "day_count","upload_day_%","note_count","light_G","light_Y","light_R","pic_count","carb_E%","protein_E%","fat_E%","calorie","pic_per_note","light_G_%","light_Y_%","light_R_%","gp",
+          "day_count","upload_day_%","note_count","light_G","light_Y","light_R","pic_count","carb_E%","protein_E%","fat_E%","calorie","pic_per_note","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
+          "gp",
           "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
           "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase",
           "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",

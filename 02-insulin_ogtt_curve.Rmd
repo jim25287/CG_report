@@ -12,6 +12,16 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 
 **Pattern分佈：**
 
+```{r}
+plot_M[[1]]
+plot_M[[2]]
+```
+
+```{r}
+plot_m[[1]]
+plot_m[[2]]
+```
+
 ## OGTT胰島素反應分型
 
 ### Pattern I
@@ -85,12 +95,4 @@ knitr::include_graphics(url)
 
 ## temp
 
-```{r}
-plot_M[[1]]
-plot_M[[2]]
-```
 
-```{r}
-plot_m[[1]]
-plot_m[[2]]
-```

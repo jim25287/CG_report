@@ -124,6 +124,29 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
 
   
 
+# test --------------------------------------------------------------------
+
+  line_plot_df %>% 
+    ggplot( aes(x = pre_post, group = 1)) + 
+    geom_point(aes(y = mean), size = 1.5, color = "red3",) +
+    geom_line(aes(y = mean), size = 0.3, color = "red3") +
+    geom_text(data = . %>% filter(pre_post == "After"),
+              aes(y = mean, label = paste0(round(mean, 1),"%")), 
+              nudge_x = -0.5, size = 3,
+              show.legend = FALSE) +
+    labs(x = "", y = "成效(%)", title = "")+
+    xlim("Before", "After") +
+    scale_y_continuous(expand = expansion(mult = c(0.3, 0.3))) +
+    facet_wrap(vars(variable), scales = "free") +
+    theme_linedraw() +
+    theme(
+      plot.title = element_text(face = "bold",
+                                hjust = 0.5),
+      axis.title.y = element_text(face = "bold", size = 15)
+    ) 
+  
+  
+  
   
   
   

@@ -93,6 +93,3 @@ knitr::include_graphics(url)
 
 ```
 
-## temp
-
-

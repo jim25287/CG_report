@@ -1,4 +1,4 @@
-# Efficacy - Single Treatment
+# 減重成效 - 單次療程
 
 ```{r input rscript, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
@@ -8,70 +8,118 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 
 ```
 
-TBD...
+本節主要分析與探討「首次減重方案：在初始狀態(baseline)和飲食紀律(diet discipline)下的成效」。
 
-## Datasets (Vens Graph) {#vens_graph}
+在各小節中，將逐一說明如何針對「減重方案」數據源進行資料清洗，並運用清洗後數據，篩選出最終導入分析之「資料集」(dataset)，進行「減重成效」的資料探勘、分析與解讀，並描繪出初日診所(Genesis)減重策略下的成效輪廓。
+
+同時，此次分析將聚焦「初始狀態」、「飲食紀律」對於減重成效的影響，作為未來幫助客戶達到最佳成效的依據與利器。
+
+## 資料集(Datasets) {#vens_graph}
 
 ```{r}
-cat("Until 2022.11.01", " \n")
 plot_1
-cat(" Inbody(obs.):", clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique() %>% length(), "counts \n<br>",
-    "Blood(obs.):", clinic_blood_data_ori %>% select(id) %>% pull() %>% unique() %>% length(), "counts \n<br>",
-    "Genesis(obs.):", clinical_list %>% select(id) %>% pull() %>% unique() %>% length(), "counts \n<br>",
-    "Extract obs. from 初日+北秀:", Reduce(dplyr::intersect, list(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
+cat(" 體組成Inbody:", clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>",
+    "血檢報告:", clinic_blood_data_ori %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>",
+    "初日診所:", clinical_list %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>",
+    "初日+北秀:", Reduce(dplyr::intersect, list(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
                                                  clinic_blood_data_ori %>% select(id) %>% pull() %>% unique(),
                                                  clinical_list %>% select(id) %>% pull() %>% unique())) %>% length(), "+",
     dplyr::setdiff((dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
                                                  clinic_blood_data_ori %>% select(id) %>% pull() %>% unique())),
                    clinical_list %>% select(id) %>% pull() %>% unique()) %>% length(), "=",
     dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length(),"counts \n<br>")
+                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length(),"筆 \n<br>")
 ```
 
-**Inclusive Criteria:**
+**納入標準:**
 
-1.  1st treatment: Ob.(Weight Loss Program)
-2.  At least 2 observations (Inbody & Blood)
-3.  At least 1mo interval
-4.  With OGTT baseline data(i.e., no missing value)
+1.  首次方案：減重療程
+2.  至少有2筆體組成(Inbody)、血檢報告資料
+3.  評估成效資料時間差:大於1個月
+4.  有完整初始狀態OGTT血檢報告
+5.  各項變數均無遺漏值(missing value)
 
 ```{r}
 plot_3
-cat(" Total obs.:", dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length(),"counts \n<br>",
-    "Excluded obs.:", (dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length()) - (stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique() %>% length()), "counts \n<br>",
-    "Included obs.:", stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique() %>% length(), "counts \n<br>")
+cat(" 總共:", dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
+                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length(),"筆 \n<br>",
+    "排除:", (dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
+                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length()) - (stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique() %>% length()), "筆 \n<br>",
+    "納入分析:", stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>")
 ```
 
-## Treatment Effectiveness(Obesity) {#single_treatment_ob}
+## 成效分析(減重方案) {#single_treatment_ob}
 
-### Population Info
+### 客戶輪廓分析
 
-**Subjects Distribution** Age & Gender分佈
+**Subjects Distribution:** 年齡(Age) & 性別(Gender)分佈
 
 ```{r, results='asis'}
 gvisMerge(pie_01, pie_02, horizontal = FALSE) %>% plot()
 ```
 
-BMI分佈
+**Subjects Distribution:** 身體質量指數(BMI)分佈
 
 ```{r, results='asis'}
 gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
 
 ```
 
-### Global Evaluation {#global_result_ob}
+### 整體成效分析 {#global_result_ob}
 
-```{r, results='asis', fig.width = 4, fig.height= 8}}
-gvisMerge(plot_stack_col_female, plot_stack_col_male, horizontal = FALSE) %>% plot()
+**減重成效(各區間百分比%):**
+
+減重部分：
+
+在女性客戶中，高達98%在療程中實現減重目的(目標設定不同)。其中將近45％表現優異(降幅\>8%)，40%表現良好(降幅4\~8%)。
+
+在男性客戶中，100%在療程中實現減重目的(目標設定不同)。其中將近4％表現超乎預期(降幅\>15%)、40％表現優異(降幅\>8%)，40%表現良好(降幅4\~8%)。
+
+減脂部分：
+
+在女性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近35％表現超乎預期(降幅\>15%)，40%表現優異(降幅\>8%)，16%表現良好(降幅4\~8%)。
+
+在男性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近46％表現超乎預期(降幅\>15%)，29%表現優異(降幅\>8%)，19%表現良好(降幅4\~8%)。
+
+```{r, results='asis', fig.width = 4, fig.height= 4}
+plot_stack_col_female %>% plot()
 ```
+
+-   Weight: 體重降幅(%)
+-   Fat: 脂肪降幅(%)
+-   Muscle: 肌肉降幅(%)
+
+```{r, results='asis', fig.width = 4, fig.height= 4}
+plot_stack_col_male %>% plot()
+```
+
+-   Weight: 體重降幅(%)
+-   Fat: 脂肪降幅(%)
+-   Muscle: 肌肉降幅(%)
+
+**體組成及血生化值成效(%):**
 
 ```{r, results='asis', fig.width = 6, fig.height= 6.2}
 line_plot
 ```
 
-### Correlation
+### 相關分析(Correlation Analysis)
+
+**飲食紀錄(diet) x 成效**
+
+減重表現與「飲食紀律」呈現顯著正相關。(飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等)。
+
+-   **「飲食紀錄完成度」與飲食紀律有關**：
+
+    -   「飲食紀錄完成度」與「綠燈率」、「平均攝取熱量」、「蛋白質、脂肪攝取率」、「蔬菜、蛋豆魚肉、油脂攝取量」呈現正相關。
+
+    -   與「黃、紅燈率」、「碳水化合物攝取率」呈負相關。
+
+    -   六大類食物攝取量：
+
+        -   「蔬菜」、「蛋豆魚肉」、「油脂」與減重成效呈現正相關；且這三類食物彼此呈現正相關。
+
+        -   「水果」、「五穀雜糧」與減重成效成負相關。
 
 ```{r, results='asis', fig.width = 7, fig.height= 7.5, warning=FALSE}
 corrplot(M1, 
@@ -88,6 +136,16 @@ corrplot(M1,
 
 ```
 
+```{r, results='asis', warning=FALSE}
+cor_table_01 %>% plot()
+```
+
+**初始狀態(baseline) x 成效**
+
+減重表現與初始狀態沒有顯著相關；「減脂」表現但BMI、體脂率、腰圍、空腹胰島素、HOMA-IR等初始狀態呈現負相關(i.e., 越胖的人減脂%較低)，可能是因為體脂初始值較高，而導致降幅%變小所致。
+
+此外，根據1.2.2 整體成效分析，體脂肪降幅相較體重降幅明顯，顯示不論初始狀態如何，每一個人在單次療程中減少去的體脂重「可能」差不多(待進一步分析)。
+
 ```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
 corrplot(M2, 
          p.mat = M_test2$p,
@@ -102,13 +160,25 @@ corrplot(M2,
          mar = c(0,0,1,0)) 
 ```
 
+```{r, results='asis', warning=FALSE}
+cor_table_02 %>% plot()
+```
+
 ### 分層分析-1: 減重成效
+
+**依據減重成效進行分層分析，分成三個組別：**
+
+-   **成效「優異」: (減重\>10%)**
+-   **「良好」: (減重介於 5 \~ 10%)**
+-   **「低於預期」: (減重\< 3%)**
 
 ```{r fig.align='left', paged.print=TRUE}
 table_01
 ```
 
-#### Baseline {#ob_baseline}
+#### 初始狀態(Baseline) {#ob_baseline}
+
+[在目前的初日診所減重客群中]{.underline}，我們的控糖減重策略成效跟「介入前狀態」 (包括年齡、性別、BMI、體脂率、糖化血色素、空腹血糖、胰島素值等) 無顯著相關。
 
 **Inbody**
 
@@ -138,6 +208,8 @@ plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1
 ```
 
 #### **Diet** {#ob_diet}
+
+在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
 ```{r, results='asis', fig.width= 10, fig.height=44}
 plot_grid(plotlist = myplots[41:62], ncol = 2, labels = paste0(LETTERS[5], seq(1,26)))
@@ -171,21 +243,11 @@ plot_grid(plotlist = myplots[100:109], ncol = 2, labels = paste0(LETTERS[9], seq
 
 #### Summary
 
-1.  Baseline: 無顯著差異。
+1.  減重成效與初始狀態(Baseline)無關。
 
-2.  Endpoint: 整體而言，各組間Inbody, Blood具顯著差異。(PBF, HOMA-ß, Lipid profile(TG, TC, LDL)無顯著差異)
+2.  減重成效與飲食紀律，且具有統計上顯著差異。
 
-3.  Diet Profile: 飲食遵從度, 具顯著差異;攝取總熱量無顯著差異。
-
-4.  減重成效: 整體具有顯著差異，但HOMA-ß, Lipid profile(TG, TC, LDL),無顯著差異
-
-5.  Question:
-
-    1.  攝取總熱量無顯著差異，但BMR呈下降趨勢。
-
-    2.  Endpoint體脂率沒差，但∆體脂率有差。
-
-    3.  Lipid profile整體沒差異，但減重成效越好，HDL降幅越明顯。
+3.  減重成效: 整體具有顯著差異，但HOMA-ß, Lipid profile(TG, TC, LDL),無顯著差異
 
     *(PBF= Body fat percentage; TG: Triglyceride; TC: Total cholesterol; )*
 

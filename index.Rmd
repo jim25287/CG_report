@@ -1,8 +1,7 @@
 ---
-title: "Cofit x Genensis"
-subtitle: " 醫療大數據 (分析報告)"
-author: "MA-DS TEAM"
-date: "`r Sys.Date()`"
+title: "Cofit x Genensis 醫療大數據 (分析報告)"
+author: "By BigData Team"
+date: "Last Updated On `r Sys.Date()`"
 knit: "bookdown::render_book"
 site: bookdown::bookdown_site
 documentclass: book
@@ -43,16 +42,9 @@ options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 
 # Preface {#index .unnumbered}
 
-![[Page Example]cover:](https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/1200px-Wikipedia-logo-v2.svg.png){width="219"}
+<!-- Introduction context...(editing) -->
 
-**Last updated on: `r format (Sys.Date(), '%d %b %Y')`**.
+<!-- #### Disclaimer {.unnumbered} -->
 
-Introduction context...(editing)
+<!-- The information in this report is provided ...(editing). -->
 
-#### Disclaimer {.unnumbered}
-
-The information in this book is provided ...(editing).
-
-```{r}
-Sys.time()
-```

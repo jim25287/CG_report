@@ -1,10 +1,10 @@
-tab:unnamed-chunk-21
-efficacy---single-treatment
+tab:unnamed-chunk-23
+減重成效---單次療程
 vens_graph
 single_treatment_ob
-population-info
+客戶輪廓分析
 global_result_ob
-correlation
+相關分析correlation-analysis
 分層分析-1-減重成效
 ob_baseline
 ob_endpoint
@@ -18,4 +18,3 @@ pattern-ii
 pattern-iii
 pattern-iv
 pattern-v
-temp

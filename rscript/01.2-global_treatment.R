@@ -333,12 +333,24 @@ stat_table_1st_ob_temp_barchart <- stat_table_1st_ob_temp_barchart %>% mutate(sd
 
 
 #line chart
+line_plot_df <- stat_table_1st_ob_temp_barchart[!is.element(stat_table_1st_ob_temp_barchart$variable, c("glucose_pc_1hr", "glucose_pc_2hr", "insulin_pc_1hr", "insulin_pc_2hr")),]
+var_ch <- c("體重", "BMI", "體脂重", "體脂率", "骨骼肌指數", "肌肉重", "內臟脂肪", "腰圍", "除脂體重", "基礎代謝率", "糖化血色素",
+            "空腹血糖", "空腹胰島素", "HOMA-IR", "HOMA-Beta", "三酸甘油脂", "總膽固醇", "HDL", "LDL", "解脂酶")
+line_plot_df$variable <- var_ch %>% rep(each = 2)
+line_plot_df$variable <- line_plot_df$variable %>% factor(levels = c("體重", "BMI", "體脂重", "體脂率", "骨骼肌指數", "肌肉重", "內臟脂肪", "腰圍", "除脂體重", "基礎代謝率", "糖化血色素",
+                                                               "空腹血糖", "空腹胰島素", "HOMA-IR", "HOMA-Beta", "三酸甘油脂", "總膽固醇", "HDL", "LDL", "解脂酶"))
+
+
 line_plot <- 
-  stat_table_1st_ob_temp_barchart[!is.element(stat_table_1st_ob_temp_barchart$variable, c("glucose_pc_1hr", "glucose_pc_2hr", "insulin_pc_1hr", "insulin_pc_2hr")),] %>% 
+  line_plot_df %>% 
   ggplot( aes(x = pre_post, group = 1)) + 
   geom_point(aes(y = mean), size = 1.5, color = "red3",) +
   geom_line(aes(y = mean), size = 0.3, color = "red3") +
-  labs(x = "", y = "∆Difference(%)", title = "")+
+  geom_text(data = . %>% filter(pre_post == "After"),
+            aes(y = mean, label = paste0(round(mean, 1),"%")), 
+            nudge_x = -0.7, size = 3,
+            show.legend = FALSE) +
+  labs(x = "", y = "成效(%)", title = "")+
   xlim("Before", "After") +
   scale_y_continuous(expand = expansion(mult = c(0.3, 0.3))) +
   facet_wrap(vars(variable), scales = "free") +
@@ -374,14 +386,22 @@ gvisLineChart(a, xvar = "pre_post", yvar = c("weight", "bf")) %>% plot()
 #[Create profile]  Efficacy, Baseline, Diet table
 profile_efficacy <- stat_table_1st_ob %>% 
   select(c("∆weight%","∆bf%","∆bm%","∆vfa","∆wc","∆bmr","∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase"))
+names(profile_efficacy) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)","∆內臟脂肪","∆腰圍", "∆BMR", #6
+                             "∆糖化血色素","∆空服血糖","∆空腹胰島素","∆Homa_IR","∆Homa_ß","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL", "∆解脂酶") #10
 
 profile_baseline <- stat_table_1st_ob %>% 
   select(c("bmi_baseline","pbf_baseline","vfa_baseline","bsmi_baseline","bm_baseline","wc_baseline","bmr_baseline",
            "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline"))
 
+names(profile_baseline) <- c("BMI(T0)", "體脂率(T0)", "內臟脂肪(T0)", "BSMI(T0)", "肌肉重(T0)", "腰圍(T0)", "BMR(T0)",
+                             "糖化血色素(T0)", "空服血糖(T0)", "空腹胰島素(T0)", "HOMA_IR(T0)", "HOMA_ß(T0)", "三酸甘油脂(T0)", "總膽固醇(T0)", #17
+                             "HDL(T0)", "LDL(T0)", "解脂酶(T0)")
+
 profile_diet <- stat_table_1st_ob %>% 
   select(c("upload_day_%", "pic_count","calorie","carb_E%","protein_E%","fat_E%","fruits","vegetables","grains","meat_bean","milk", "oil","light_G_%","light_Y_%","light_R_%"))
-
+names(profile_diet) <- c("上傳天數%","上傳照片數", "總攝取卡路里","總碳水比_E%","總蛋白比_E%","總脂肪比_E%",
+                         "水果(日)","蔬菜(日)","全穀雜糧(日)","蛋豆魚肉(日)","乳品(日)","油脂(日)",
+                         "綠燈比_%","黃燈比_%","紅燈比_%")
 
 
 ##[Method 2] corrplot
@@ -393,11 +413,11 @@ M1 <- cor(cbind(-profile_efficacy, profile_diet), use = "pairwise.complete.obs")
 M_test1 <- cor.mtest(cbind(-profile_efficacy, profile_diet) , conf.level = .95)
 M_col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
 
-colnames(M1) <- row.names(M1) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)","∆內臟脂肪","∆腰圍", "∆BMR", #6
-                                   "∆糖化血色素","∆空服血糖","∆空腹胰島素","∆Homa_IR","∆Homa_ß","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL", "解脂酶", #10
-                                   "上傳天數%","上傳照片數", "總攝取卡路里","總碳水比_E%","總蛋白比_E%","總脂肪比_E%",
-                                   "水果(日)","蔬菜(日)","全穀雜糧(日)","蛋豆魚肉(日)","乳品(日)","油脂(日)",
-                                   "綠燈比_%","黃燈比_%","紅燈比_%") #15
+# colnames(M1) <- row.names(M1) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)","∆內臟脂肪","∆腰圍", "∆BMR", #6
+#                                    "∆糖化血色素","∆空服血糖","∆空腹胰島素","∆Homa_IR","∆Homa_ß","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL", "∆解脂酶", #10
+#                                    "上傳天數%","上傳照片數", "總攝取卡路里","總碳水比_E%","總蛋白比_E%","總脂肪比_E%",
+#                                    "水果(日)","蔬菜(日)","全穀雜糧(日)","蛋豆魚肉(日)","乳品(日)","油脂(日)",
+#                                    "綠燈比_%","黃燈比_%","紅燈比_%") #15
 
 #run corrplot plot
 # corrplot(M1, 
@@ -413,7 +433,25 @@ colnames(M1) <- row.names(M1) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)"
 #          mar = c(0,0,1,0))
 
 
+for (i in c(1:length(colnames(M1)))) {
+  if (i == 1) {
+    M1_value <- M1 %>% round(2) 
+    M1_sign <- M_test1$p %>% stats::symnum(corr = FALSE, na = FALSE, cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", "**", "*", ".", "ns")) %>% as.data.frame.matrix()
+    M1_df <- M1_value
+    M1_df[,] <- NA
+  }
+  
+  M1_df[,i] <- paste0(M1_value[,i], " (", M1_sign[,i], ")")
+  
+  if (i ==  length(colnames(M1))) {
+    rm(list = c("M1_value", "M1_sign"))
+    M1_df <- M1_df %>% as.data.frame()
+    M1_df <- M1_df %>% add_column(vars = rownames(M1_df), .before = names(M1_df)[1])
+  }
+  
+} 
 
+cor_table_01 <- M1_df %>% gvisTable(options=list(height=300))
 
 
 
@@ -424,11 +462,11 @@ M2 <- cor(cbind(-profile_efficacy, profile_baseline), use = "pairwise.complete.o
 M_test2 <- cor.mtest(cbind(-profile_efficacy, profile_baseline) , conf.level = .95)
 M_col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
 
-colnames(M2) <- row.names(M2) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)","∆內臟脂肪","∆腰圍", "∆BMR", #6
-                                   "∆糖化血色素","∆空服血糖","∆空腹胰島素","∆Homa_IR","∆Homa_ß","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL", "解脂酶", #10
-                                   "BMI(T0)", "體脂率(T0)", "內臟脂肪(T0)", "BSMI(T0)", "肌肉重(T0)", "腰圍(T0)", "BMR(T0)",
-                                   "糖化血色素(T0)", "空服血糖(T0)", "空腹胰島素(T0)", "HOMA_IR(T0)", "HOMA_ß(T0)", "三酸甘油脂(T0)", "總膽固醇(T0)", #17
-                                   "HDL(T0)", "LDL(T0)", "解脂酶(T0)") #
+# colnames(M2) <- row.names(M2) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)","∆內臟脂肪","∆腰圍", "∆BMR", #6
+#                                    "∆糖化血色素","∆空服血糖","∆空腹胰島素","∆Homa_IR","∆Homa_ß","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL", "解脂酶", #10
+#                                    "BMI(T0)", "體脂率(T0)", "內臟脂肪(T0)", "BSMI(T0)", "肌肉重(T0)", "腰圍(T0)", "BMR(T0)",
+#                                    "糖化血色素(T0)", "空服血糖(T0)", "空腹胰島素(T0)", "HOMA_IR(T0)", "HOMA_ß(T0)", "三酸甘油脂(T0)", "總膽固醇(T0)", #17
+#                                    "HDL(T0)", "LDL(T0)", "解脂酶(T0)") #
 
 #run corrplot plot
 # corrplot(M2, 
@@ -443,6 +481,24 @@ colnames(M2) <- row.names(M2) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)"
 #          #c(bottom, left, top, right)
 #          mar = c(0,0,1,0)) 
 
+for (i in c(1:length(colnames(M2)))) {
+  if (i == 1) {
+    M2_value <- M2 %>% round(2) 
+    M2_sign <- M_test2$p %>% stats::symnum(corr = FALSE, na = FALSE, cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", "**", "*", ".", "ns")) %>% as.data.frame.matrix()
+    M2_df <- M2_value
+    M2_df[,] <- NA
+  }
+  
+  M2_df[,i] <- paste0(M2_value[,i], " (", M2_sign[,i], ")")
+  
+  if (i ==  length(colnames(M2))) {
+    rm(list = c("M2_value", "M2_sign"))
+    M2_df <- M2_df %>% as.data.frame()
+    M2_df <- M2_df %>% add_column(vars = rownames(M2_df), .before = names(M2_df)[1])
+  }
+  
+} 
+cor_table_02 <- M2_df %>% gvisTable(options=list(height=300))
 
 
 # Effi.  stratification ---------------------------------------------------

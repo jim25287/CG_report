@@ -455,6 +455,7 @@ cor_table_01 <- M1_df %>% gvisTable(options=list(height=300))
 
 
 
+
 #[Correlation r] Efficacy x Baseline
 #[Correlation r] Efficacy x Diet
 M2 <- cor(cbind(-profile_efficacy, profile_baseline), use = "pairwise.complete.obs")
@@ -554,19 +555,37 @@ QQ1_stat_table_1st <- Reduce(cbind,list(QQ1_stat_table_1st_a, QQ1_stat_table_1st
 
 
 #Sort var order: baseline, endpoint, diet, ∆, ∆%
-vars <- c("id","client_type","age","gender","date_baseline","date_endpoint",
-          "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","bm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
-          "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
-          "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","bm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
-          "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint","lipase_endpoint",
-          "day_count","upload_day_%","note_count","light_G","light_Y","light_R","pic_count","carb_E%","protein_E%","fat_E%","calorie","pic_per_note","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
+  vars_en <- c("id","client_type","age","gender","date_baseline","date_endpoint",
+            "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","bm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
+            "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
+            "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","bm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
+            "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint","lipase_endpoint",
+            "day_count","upload_day_%","note_count","light_G","light_Y","light_R","pic_count","carb_E%","protein_E%","fat_E%","calorie","pic_per_note","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
+            "gp",
+            "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
+            "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase",
+            "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",
+            "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆lipase%"
+  )
+
+QQ1_stat_table_1st %<>% select(vars_en)
+
+
+vars_ch <- c("id","client_type","年齡","gender","date_baseline","date_endpoint",
+          "體重_baseline","BMI_baseline","體脂重_baseline","體脂率_baseline","骨骼肌指數_baseline","肌肉重_baseline","內臟脂肪_baseline","腰圍_baseline","除脂體重_baseline","基礎代謝率_baseline",
+          "糖化血色素_baseline","空腹血糖_baseline","空腹胰島素_baseline","HOMA_IR_baseline","HOMA_Beta_baseline","三酸甘油脂_baseline","總膽固醇_baseline","HDL_baseline","LDL_baseline","解脂酶_baseline",
+          "體重_endpoint","BMI_endpoint","體脂重_endpoint","體脂率_endpoint","骨骼肌指數_endpoint","肌肉重_endpoint","內臟脂肪_endpoint","腰圍_endpoint","除脂體重_endpoint","基礎代謝率_endpoint",
+          "糖化血色素_endpoint","空腹血糖_endpoint","空腹胰島素_endpoint","HOMA_IR_endpoint","HOMA_Beta_endpoint","三酸甘油脂_endpoint","總膽固醇_endpoint","HDL_endpoint","LDL_endpoint","解脂酶_endpoint",
+          "飲食紀錄日數","飲食紀錄完成率_%","飲食紀錄篇數","綠燈數","黃燈數","紅燈數","上傳照片數","碳水化合物_E%","蛋白質_E%","脂肪_E%","攝取熱量","每篇上傳照片數","綠燈率","黃燈率","紅燈率","水果攝取量_日","蔬菜攝取量_日","全穀雜糧攝取量_日","蛋豆魚肉攝取量_日","乳品攝取量_日","油脂攝取量_日",
           "gp",
-          "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
-          "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase",
-          "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",
-          "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆lipase%"
+          "∆體重","∆BMI","∆體脂重","∆體脂率","∆骨骼肌指數","∆肌肉重","∆內臟脂肪","∆腰圍","∆除脂體重","∆基礎代謝率",
+          "∆糖化血色素","∆空腹血糖","∆空腹胰島素","∆HOMA_IR","∆HOMA_Beta","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL","∆解脂酶",
+          "∆體重%","∆BMI%","∆體脂重%","∆體脂率%","∆骨骼肌指數%","∆肌肉重%","∆內臟脂肪%","∆腰圍%","∆除脂體重%","∆基礎代謝率%",
+          "∆糖化血色素%","∆空腹血糖%","∆空腹胰島素%","∆HOMA_IR%","∆HOMA_Beta%","∆三酸甘油脂%","∆總膽固醇%","∆HDL%","∆LDL%","∆解脂酶%"
 )
-QQ1_stat_table_1st %<>% select(vars)
+
+names(QQ1_stat_table_1st) <- vars_ch
+
 
 
 #change colname to run plot
@@ -576,23 +595,21 @@ names(QQ1_stat_table_1st_for_plot) <- gsub("%", "_percent", names(QQ1_stat_table
 
 
 #var_vector <- which(!(vars %in% c("id","client_type","gender","date_baseline","date_endpoint", "gp"))) #old method
+  # #new
+  # var_vector <- c(setdiff(vars %>% grep("baseline$", .), vars %>% grep("date", .)),
+  #                 setdiff(vars %>% grep("endpoint$", .), vars %>% grep("date", .)),
+  #                 vars %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE),
+  #                 setdiff(vars %>% grep("[∆]", .), vars %>% grep("[%]", .)),
+  #                 vars %>% grep("[%]", .)
+  # )
 #new
-var_vector <- c(setdiff(vars %>% grep("baseline$", .), vars %>% grep("date", .)),
-                setdiff(vars %>% grep("endpoint$", .), vars %>% grep("date", .)),
-                vars %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE),
-                setdiff(vars %>% grep("[∆]", .), vars %>% grep("[%]", .)),
-                vars %>% grep("[%]", .)
+var_vector <- c(setdiff(vars_ch %>% grep("baseline$", .), vars_ch %>% grep("date", .)),
+                setdiff(vars_ch %>% grep("endpoint$", .), vars_ch %>% grep("date", .)),
+                vars_ch %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE),
+                setdiff(vars_ch %>% grep("[∆]", .), vars_ch %>% grep("[%]", .)),
+                intersect(vars_ch %>% grep("[∆]", .), vars_ch %>% grep("[%]", .))
 )
 
-
-#layout alphebetic index
-label_index <- c(
-  setdiff(vars %>% grep("baseline$", .), vars %>% grep("date", .)) %>% length(),
-  setdiff(vars %>% grep("endpoint$", .), vars %>% grep("date", .)) %>% length(),
-  vars %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE) %>% length(),
-  setdiff(vars %>% grep("[∆]", .), vars %>% grep("[%]", .)) %>% length(),
-  vars %>% grep("[∆]\\S*[%]", .) %>% length()
-)
 
 
 myplots <- vector('list', length(var_vector))
@@ -659,60 +676,27 @@ table_01 <-
 
 
 #(3.)output statistics table
-#for customed summary table - part 2/4 [summary table]
+#for customed summary table [summary table]
 summary_table <- 
   QQ1_stat_table_1st %>% 
   group_by(gender, gp) %>% 
-  summarize_at(vars[!(vars %in% c("id","client_type","gender","date_baseline","date_endpoint", "gp"))],
+  summarize_at(vars_ch[!(vars_ch %in% c("id","client_type","gender","date_baseline","date_endpoint", "gp"))],
                function(x) paste(mean(x, na.rm = TRUE) %>% round(2), (sd(x, na.rm = TRUE)/sqrt(n())) %>% round(2), sep = " ± ")
   )
 
-vector_improve <- c(rep("", length(var_vector)))
 
-#for customed summary table - part 3/4 [Improvement]
-summary_table_a <- summary_table[, -1:-2]
-#Improvement + (1)unknown (2)∆positive
-vector_improve[names(QQ1_stat_table_1st_b) %>% match(., names(summary_table_a))] <- "TBD"
-vector_improve[names(QQ1_stat_table_1st_d) %>% match(., names(summary_table_a))] <- "∆>0(+)"
-
-#Improvement - (1)∆negative
-vector_improve[names(QQ1_stat_table_1st_c) %>% match(., names(summary_table_a))] <- "∆<0(-)"
-
-
-#for customed summary table - part 4/4 [DIfference ∆]
-a <- stat_table_1st %>% filter(client_type != 1) %>% filter(`∆weight%` < -10)
-a_vars <- a %>% select(vars[!(vars %in% c("id","client_type","gender","date_baseline","date_endpoint", "gp"))]) %>% names()
-
-#paste to index
-a_vector <- a_vars %>% grep("∆", .) %>% a_vars[.] %>% match(., names(summary_table_a))
-
-a_vars %>% match(., names(summary_table_a))
-
-a <- 
-  a %>% 
-  select(a_vars) %>% select(grep("∆", names(.))) %>% filter(!is.na(`∆hba1c`)) %>% 
-  summarise_all(list(mean)) %>% round(1) %>% as.character()
-
-b <- c(rep("+", length(a)))
-b[a %>% grep("NA", .)] <- "NA"
-b[a %>% grep("-", .)] <- "-"
-
-vector_dif <- c(rep("", length(var_vector)))
-vector_dif[a_vector] <- b
 
 #rbind: summary_table, p.adj.sign, dif, improvement
-summary_table <- Reduce(rbind, list(summary_table_a, vector_pvalue, vector_dif, vector_improve)) 
+summary_table <- cbind(summary_table %>% as.data.frame() %>% select(-c("gender", "gp")) %>% t(), as.data.frame(vector_pvalue)) 
 
-summary_table <- summary_table %>% t() %>% as.data.frame()
-names(summary_table) <- c(rep(c("Poor", "Medium", "Good"), 2), "Significance", "Diff(∆)", "Improvement")
-
+names(summary_table) <- c(rep(c("Poor", "Medium", "Good"), 2), "顯著差異")
 
 table_02 <- 
   summary_table %>% 
   kbl(format = "html", caption = "<b>Statistics:</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  add_header_above(c(" " = 1, "Female" = 3, "Male" = 3, " " = 3)) %>% 
+  add_header_above(c(" " = 1, "Female" = 3, "Male" = 3, " " = 1)) %>% 
   footnote(general_title = c("Significance:"), general = "\n Comparison: Good vs. Poor in female population.",
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 

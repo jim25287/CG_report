@@ -1,4 +1,4 @@
-# 減重成效 - 單次療程
+# 減重成效 - (單次療程)
 
 ```{r input rscript, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
@@ -14,7 +14,7 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 
 同時，此次分析將聚焦「初始狀態」、「飲食紀律」對於減重成效的影響，作為未來幫助客戶達到最佳成效的依據與利器。
 
-## 資料集(Datasets) {#vens_graph}
+## 資料集(Datasets) {#vens_grap_ob}
 
 ```{r}
 plot_1
@@ -50,9 +50,7 @@ cat(" 總共:", dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull(
     "納入分析:", stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>")
 ```
 
-## 成效分析(減重方案) {#single_treatment_ob}
-
-### 客戶輪廓分析
+## 客戶輪廓分析 {#porfile_ob}
 
 **Subjects Distribution:** 年齡(Age) & 性別(Gender)分佈
 
@@ -67,7 +65,7 @@ gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
 
 ```
 
-### 整體成效分析 {#global_result_ob}
+## 整體成效分析 {#global_result_ob}
 
 **減重成效(各區間百分比%):**
 
@@ -105,7 +103,7 @@ plot_stack_col_male %>% plot()
 line_plot
 ```
 
-### 相關分析(Correlation Analysis)
+## 相關分析(Correlation Analysis) {#cor_ob}
 
 **飲食紀錄(diet) x 成效**
 
@@ -139,7 +137,11 @@ corrplot(M1,
 ```
 
 ```{r, results='asis', warning=FALSE}
-cor_table_01 %>% plot()
+knitr::kable(
+  cor_table_01 %>% plot(), caption = 'Correlation: Diet and  Effectiveness',
+  booktabs = TRUE
+)
+
 ```
 
 **初始狀態(baseline) x 成效**
@@ -163,10 +165,13 @@ corrplot(M2,
 ```
 
 ```{r, results='asis', warning=FALSE}
-cor_table_02 %>% plot()
+knitr::kable(
+  cor_table_02 %>% plot(), caption = 'Correlation: Diet and  Effectiveness',
+  booktabs = TRUE
+)
 ```
 
-### 分層分析-1: 減重成效
+## 分層分析-1: 減重成效 {#strat_1_ob}
 
 **依據減重成效進行分層分析，分成三個組別：**
 
@@ -178,38 +183,38 @@ cor_table_02 %>% plot()
 table_01
 ```
 
-#### 初始狀態(Baseline) {#ob_baseline}
+### 初始狀態(Baseline) {#baseline_ob}
 
 [在目前的初日診所減重客群中]{.underline}，我們的控糖減重策略成效跟「介入前狀態」 (包括年齡、性別、BMI、體脂率、糖化血色素、空腹血糖、胰島素值等) 無顯著相關。
 
-**Inbody**
+#### **Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[1:10], ncol = 2, labels = paste0(LETTERS[1], seq(1,10)))
 
 ```
 
-**Blood**
+#### **Blood**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[11:20], ncol = 2, labels = paste0(LETTERS[2], seq(1,10)))
 ```
 
-#### Endpoint {#ob_endpoint}
+### 介入後狀態(Endpoint) {#endpoint_ob}
 
-**Inbody**
+#### **Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[21:30], ncol = 2, labels = paste0(LETTERS[3], seq(1,10)))
 ```
 
-**Blood**
+#### **Blood**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1,10)))
 ```
 
-#### **Diet** {#ob_diet}
+### Diet {#diet_ob}
 
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
@@ -217,42 +222,42 @@ plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1
 plot_grid(plotlist = myplots[41:62], ncol = 2, labels = paste0(LETTERS[5], seq(1,26)))
 ```
 
-#### Effectiveness {#ob_effectiveness}
+### Effectiveness {#effectiveness_ob}
 
-**Difference(∆)-Inbody**
+#### **成效(∆)-Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[63:72], ncol = 2, labels = paste0(LETTERS[6], seq(1,10)))
 ```
 
-**Difference**(∆)-Blood
+#### **成效**(∆)-Blood
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[73:82], ncol = 2, labels = paste0(LETTERS[7], seq(1,10)))
 ```
 
-**Difference(%)-Inbody**
+#### **成效(%)-Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[90:99], ncol = 2, labels = paste0(LETTERS[8], seq(1,10)))
 ```
 
-**Difference(%)-Blood**
+#### **成效(%)-Blood**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots[100:109], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
 ```
 
-#### Summary
+### Summary {#Summary_ob}
 
-1.  減重成效與初始狀態(Baseline)無關。
+在我們的客群中：
 
-2.  減重成效與飲食紀律有關，且具有統計上顯著差異。
+1.  **成效**：在體重(脂)、內臟脂肪、腰圍、糖化血色素、空腹血糖(胰島素)、胰島阻抗值等，均呈現具有[**顯著改善**]{.underline}趨勢。
 
-3.  減重成效: 整體具有顯著差異，但HOMA-ß, Lipid profile(TG, TC, LDL),無顯著差異
+2.  控糖減重策略的「成效」跟[**「介入前狀態」(Baseline)無關**]{.underline}。
 
-    *(PBF= Body fat percentage; TG: Triglyceride; TC: Total cholesterol; )*
+3.  減重「成效」與[**「飲食紀律」(Obedience)有關**]{.underline}(例如：飲食紀錄完成率、上傳照片數、綠燈率等)，且具有統計上顯著差異。
 
-```{r fig.align='left', paged.print=TRUE}
+```{r, results='asis', fig.align='left', paged.print=TRUE}
 table_02
 ```

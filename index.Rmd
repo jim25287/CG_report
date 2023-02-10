@@ -11,10 +11,11 @@ output:
     css: css/style.css
     includes:
       in_header: GA_script.html
+      after_body: string_rm.html
     split_by: section
     config:
       toc:
-        collapse: none
+        collapse: section
       download: null
       edit: null
       sharing: null

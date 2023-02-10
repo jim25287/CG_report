@@ -80,15 +80,19 @@
 
 <ul class="summary">
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
-<li class="chapter" data-level="1" data-path="減重成效---單次療程.html"><a href="減重成效---單次療程.html"><i class="fa fa-check"></i><b>1</b> 減重成效 - 單次療程</a>
+<li class="chapter" data-level="1" data-path="減重成效---單次療程.html"><a href="減重成效---單次療程.html"><i class="fa fa-check"></i><b>1</b> 減重成效 - (單次療程)</a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="vens_graph.html"><a href="vens_graph.html"><i class="fa fa-check"></i><b>1.1</b> 資料集(Datasets)</a></li>
-<li class="chapter" data-level="1.2" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html"><i class="fa fa-check"></i><b>1.2</b> 成效分析(減重方案)</a>
+<li class="chapter" data-level="1.1" data-path="vens_grap_ob.html"><a href="vens_grap_ob.html"><i class="fa fa-check"></i><b>1.1</b> 資料集(Datasets)</a></li>
+<li class="chapter" data-level="1.2" data-path="porfile_ob.html"><a href="porfile_ob.html"><i class="fa fa-check"></i><b>1.2</b> 客戶輪廓分析</a></li>
+<li class="chapter" data-level="1.3" data-path="global_result_ob.html"><a href="global_result_ob.html"><i class="fa fa-check"></i><b>1.3</b> 整體成效分析</a></li>
+<li class="chapter" data-level="1.4" data-path="cor_ob.html"><a href="cor_ob.html"><i class="fa fa-check"></i><b>1.4</b> 相關分析(Correlation Analysis)</a></li>
+<li class="chapter" data-level="1.5" data-path="strat_1_ob.html"><a href="strat_1_ob.html"><i class="fa fa-check"></i><b>1.5</b> 分層分析-1: 減重成效</a>
 <ul>
-<li class="chapter" data-level="1.2.1" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#客戶輪廓分析"><i class="fa fa-check"></i><b>1.2.1</b> 客戶輪廓分析</a></li>
-<li class="chapter" data-level="1.2.2" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#global_result_ob"><i class="fa fa-check"></i><b>1.2.2</b> 整體成效分析</a></li>
-<li class="chapter" data-level="1.2.3" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#相關分析correlation-analysis"><i class="fa fa-check"></i><b>1.2.3</b> 相關分析(Correlation Analysis)</a></li>
-<li class="chapter" data-level="1.2.4" data-path="single_treatment_ob.html"><a href="single_treatment_ob.html#分層分析-1-減重成效"><i class="fa fa-check"></i><b>1.2.4</b> 分層分析-1: 減重成效</a></li>
+<li class="chapter" data-level="1.5.1" data-path="strat_1_ob.html"><a href="strat_1_ob.html#baseline_ob"><i class="fa fa-check"></i><b>1.5.1</b> 初始狀態(Baseline)</a></li>
+<li class="chapter" data-level="1.5.2" data-path="strat_1_ob.html"><a href="strat_1_ob.html#endpoint_ob"><i class="fa fa-check"></i><b>1.5.2</b> 介入後狀態(Endpoint)</a></li>
+<li class="chapter" data-level="1.5.3" data-path="strat_1_ob.html"><a href="strat_1_ob.html#diet_ob"><i class="fa fa-check"></i><b>1.5.3</b> Diet</a></li>
+<li class="chapter" data-level="1.5.4" data-path="strat_1_ob.html"><a href="strat_1_ob.html#effectiveness_ob"><i class="fa fa-check"></i><b>1.5.4</b> Effectiveness</a></li>
+<li class="chapter" data-level="1.5.5" data-path="strat_1_ob.html"><a href="strat_1_ob.html#Summary_ob"><i class="fa fa-check"></i><b>1.5.5</b> Summary</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="glucose-insulin-response-curvegirc.html"><a href="glucose-insulin-response-curvegirc.html"><i class="fa fa-check"></i><b>2</b> Glucose Insulin Response Curve(GIRC)</a>
@@ -149,6 +153,14 @@
 </div>
 </div>
 <!-- </div> -->
+
+<script>
+let elements = document.getElementsByTagName("*");
+for (let i = 0; i < elements.length; i++) {
+    let element = elements[i];
+    element.innerHTML = element.innerHTML.replace(/\(#tab:input rscript\)/g, "");
+}
+</script>
             </section>
 
           </div>
@@ -190,7 +202,7 @@ gitbook.start({
 "options": null
 },
 "toc": {
-"collapse": "none"
+"collapse": "section"
 }
 });
 });

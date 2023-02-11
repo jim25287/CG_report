@@ -92,4 +92,3 @@ url <- c("https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.aut
 knitr::include_graphics(url)
 
 ```
-

@@ -126,24 +126,38 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
 
 # test --------------------------------------------------------------------
 
-  line_plot_df %>% 
-    ggplot( aes(x = pre_post, group = 1)) + 
-    geom_point(aes(y = mean), size = 1.5, color = "red3",) +
-    geom_line(aes(y = mean), size = 0.3, color = "red3") +
-    geom_text(data = . %>% filter(pre_post == "After"),
-              aes(y = mean, label = paste0(round(mean, 1),"%")), 
-              nudge_x = -0.5, size = 3,
-              show.legend = FALSE) +
-    labs(x = "", y = "成效(%)", title = "")+
-    xlim("Before", "After") +
-    scale_y_continuous(expand = expansion(mult = c(0.3, 0.3))) +
-    facet_wrap(vars(variable), scales = "free") +
-    theme_linedraw() +
-    theme(
-      plot.title = element_text(face = "bold",
-                                hjust = 0.5),
-      axis.title.y = element_text(face = "bold", size = 15)
-    ) 
+  stat_table_1st_ob_lm <- stat_table_1st_ob %>% select(vars_en[vars_en != "gp"])
+  names(stat_table_1st_ob_lm) <- vars_ch[vars_ch != "gp"]
+  
+  # Diet x Eff.
+  stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm %>% select("∆體重%") %>% cbind(stat_table_1st_ob_lm %>% select(vars_ch[vars_ch %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE)]))
+  stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm_diet %>% select(c("∆體重%","年齡","飲食紀錄完成率_%","每篇上傳照片數","綠燈率","黃燈率","紅燈率","碳水化合物_E%","蛋白質_E%","脂肪_E%","攝取熱量","水果攝取量_日","蔬菜攝取量_日","全穀雜糧攝取量_日","蛋豆魚肉攝取量_日","乳品攝取量_日","油脂攝取量_日"))
+  
+  model <- lm(stat_table_1st_ob_lm_diet$`∆體重%` ~ ., data = stat_table_1st_ob_lm_diet)
+  model %>% summary()
+  k <- olsrr::ols_step_both_p(model)
+  
+  plot(k)
+  
+  # final model
+  k$model
+  
+  
+  #All
+  # stepwise regression
+  model <- lm(m$`∆weight_%%` ~ ., data = m)
+  model %>% summary()
+  k <- ols_step_both_p(model)
+  
+  plot(k)
+  # final model
+  k$model
+  
+  
+  
+  
+  
+  
   
   
   

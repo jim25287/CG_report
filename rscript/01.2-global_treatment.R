@@ -390,10 +390,10 @@ names(profile_efficacy) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)","∆�
                              "∆糖化血色素","∆空服血糖","∆空腹胰島素","∆Homa_IR","∆Homa_ß","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL", "∆解脂酶") #10
 
 profile_baseline <- stat_table_1st_ob %>% 
-  select(c("bmi_baseline","pbf_baseline","vfa_baseline","bsmi_baseline","bm_baseline","wc_baseline","bmr_baseline",
+  select(c("age", "bmi_baseline","pbf_baseline","vfa_baseline","bsmi_baseline","bm_baseline","wc_baseline","bmr_baseline",
            "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline"))
 
-names(profile_baseline) <- c("BMI(T0)", "體脂率(T0)", "內臟脂肪(T0)", "BSMI(T0)", "肌肉重(T0)", "腰圍(T0)", "BMR(T0)",
+names(profile_baseline) <- c("年齡", "BMI(T0)", "體脂率(T0)", "內臟脂肪(T0)", "BSMI(T0)", "肌肉重(T0)", "腰圍(T0)", "BMR(T0)",
                              "糖化血色素(T0)", "空服血糖(T0)", "空腹胰島素(T0)", "HOMA_IR(T0)", "HOMA_ß(T0)", "三酸甘油脂(T0)", "總膽固醇(T0)", #17
                              "HDL(T0)", "LDL(T0)", "解脂酶(T0)")
 

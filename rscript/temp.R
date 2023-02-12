@@ -130,14 +130,32 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   names(stat_table_1st_ob_lm) <- vars_ch[vars_ch != "gp"]
   
   # Diet x Eff.
-  stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm %>% select("∆體重%") %>% cbind(stat_table_1st_ob_lm %>% select(vars_ch[vars_ch %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE)]))
-  stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm_diet %>% select(c("∆體重%","年齡","飲食紀錄完成率_%","每篇上傳照片數","綠燈率","黃燈率","紅燈率","碳水化合物_E%","蛋白質_E%","脂肪_E%","攝取熱量","水果攝取量_日","蔬菜攝取量_日","全穀雜糧攝取量_日","蛋豆魚肉攝取量_日","乳品攝取量_日","油脂攝取量_日"))
+    #∆體重%
+    stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm %>% select("∆體重%") %>% cbind(stat_table_1st_ob_lm %>% select(vars_ch[vars_ch %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE)]))
+    stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm_diet %>% select(c("∆體重%","年齡","飲食紀錄完成率_%","每篇上傳照片數","綠燈率","黃燈率","紅燈率","碳水化合物_E%","蛋白質_E%","脂肪_E%","攝取熱量","水果攝取量_日","蔬菜攝取量_日","全穀雜糧攝取量_日","蛋豆魚肉攝取量_日","乳品攝取量_日","油脂攝取量_日"))
+    
+    model <- lm(-stat_table_1st_ob_lm_diet$`∆體重%` ~ ., data = stat_table_1st_ob_lm_diet)
+    model %>% summary()
+    k <- olsrr::ols_step_both_p(model)
+    k$model
+    k$model %>% summary()
+    a <- k$model %>% model_equation(digits = 3, trim = TRUE)
+    a
+    
+    #∆體脂重%
+    stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm %>% select("∆體脂重%") %>% cbind(stat_table_1st_ob_lm %>% select(vars_ch[vars_ch %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE)]))
+    stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm_diet %>% select(c("∆體脂重%","年齡","飲食紀錄完成率_%","每篇上傳照片數","綠燈率","黃燈率","紅燈率","碳水化合物_E%","蛋白質_E%","脂肪_E%","攝取熱量","水果攝取量_日","蔬菜攝取量_日","全穀雜糧攝取量_日","蛋豆魚肉攝取量_日","乳品攝取量_日","油脂攝取量_日"))
+    
+    model <- lm(-stat_table_1st_ob_lm_diet$`∆體脂重%` ~ ., data = stat_table_1st_ob_lm_diet)
+    model %>% summary()
+    k <- olsrr::ols_step_both_p(model)
+    k$model
+    k$model %>% summary()
+    b <- k$model %>% model_equation(digits = 3, trim = TRUE)
+    b
+
+      
   
-  model <- lm(stat_table_1st_ob_lm_diet$`∆體重%` ~ ., data = stat_table_1st_ob_lm_diet)
-  model %>% summary()
-  k <- olsrr::ols_step_both_p(model)
-  
-  plot(k)
   
   # final model
   k$model

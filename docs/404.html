@@ -129,6 +129,18 @@
 <p>You may want to try searching to find the page's new location, or use
 the table of contents to find the page you are looking for.</p>
 </div>
+<!-- table string rm (string_rm.js) -->
+<script>
+  let tables = document.getElementsByTagName("table");
+for (let i = 0; i < tables.length; i++) {
+    let table = tables[i];
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input rscript\)/g, "");
+}
+</script>
+
+
+
+
             </section>
 
           </div>

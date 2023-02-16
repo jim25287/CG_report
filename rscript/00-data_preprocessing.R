@@ -476,7 +476,7 @@
                         "carb_E%","protein_E%","fat_E%", "calorie",
                         "fruits","vegetables","grains","meat_bean","milk","oil")] <- NA
       j = 1
-      cat("\n[Establish diet table...]\n")
+      cat("\n\n[Establish diet table...]\n")
     }
     
     #inbody_T0 inbody_T1

@@ -138,6 +138,15 @@ a <- rbind(a,b)
 a$Group <-  factor(a$Group, levels = c("<-15%","-8~15%","-4~8%", "-4~0%","0~5%","5~15%",">15%"))
 a$variable <-  factor(a$variable, levels = c("Weight","Fat","Muscle"))
 
+
+#*** for Index.Rmd highlight
+success_df <- a %>% filter(variable == "Weight") %>% filter(!is.nan(Value)) %>% dplyr::mutate(., success = cut(Value, c(-Inf, 0, Inf), c(1, 0)))
+success_df_freq <- data.frame(gender = c("female", "male"),
+                              success = success_df %>% group_by(gender, success, .drop = FALSE) %>% summarise(N = sum(N)) %>% filter(success == 1) %>% pull(),
+                              failure = success_df %>% group_by(gender, success, .drop = FALSE) %>% summarise(N = sum(N)) %>% filter(success == 0) %>% pull()) %>% janitor::adorn_totals("row") %>% janitor::adorn_totals("col")
+success_df_pct <- success_df_freq %>% janitor::adorn_percentages() %>% janitor::adorn_pct_formatting()
+rm(success_df)
+
 # Stacked + percent
 library(ggplot2)
 # plot_stack_col <- 
@@ -179,6 +188,8 @@ library(ggplot2)
   }
   
   b <- global_eff_bar_df(data = a, female)
+  
+  
   #plot
   col_color <- 
     paste0("[", RColorBrewer::brewer.pal(11, 'RdYlBu')[c(2,3,4,5,7,9,10)] %>% rev() %>% 
@@ -197,6 +208,7 @@ library(ggplot2)
                                    height = "600"))
   
   b <- global_eff_bar_df(data = a, male)
+  
   col_color <- 
     paste0("[", RColorBrewer::brewer.pal(11, 'RdYlBu')[c(2,3,4,5,7,9,10)] %>% rev() %>% 
              stringr::str_c('\'', ., '\'') %>% 

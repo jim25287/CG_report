@@ -134,7 +134,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
     stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm %>% select("∆體重%") %>% cbind(stat_table_1st_ob_lm %>% select(vars_ch[vars_ch %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE)]))
     stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm_diet %>% select(c("∆體重%","年齡","飲食紀錄完成率_%","每篇上傳照片數","綠燈率","黃燈率","紅燈率","碳水化合物_E%","蛋白質_E%","脂肪_E%","攝取熱量","水果攝取量_日","蔬菜攝取量_日","全穀雜糧攝取量_日","蛋豆魚肉攝取量_日","乳品攝取量_日","油脂攝取量_日"))
     
-    model <- lm(-stat_table_1st_ob_lm_diet$`∆體重%` ~ ., data = stat_table_1st_ob_lm_diet)
+    model <- lm(-`∆體重%` ~ ., data = stat_table_1st_ob_lm_diet)
     model %>% summary()
     k <- olsrr::ols_step_both_p(model)
     k$model
@@ -146,7 +146,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
     stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm %>% select("∆體脂重%") %>% cbind(stat_table_1st_ob_lm %>% select(vars_ch[vars_ch %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE)]))
     stat_table_1st_ob_lm_diet <- stat_table_1st_ob_lm_diet %>% select(c("∆體脂重%","年齡","飲食紀錄完成率_%","每篇上傳照片數","綠燈率","黃燈率","紅燈率","碳水化合物_E%","蛋白質_E%","脂肪_E%","攝取熱量","水果攝取量_日","蔬菜攝取量_日","全穀雜糧攝取量_日","蛋豆魚肉攝取量_日","乳品攝取量_日","油脂攝取量_日"))
     
-    model <- lm(-stat_table_1st_ob_lm_diet$`∆體脂重%` ~ ., data = stat_table_1st_ob_lm_diet)
+    model <- lm(-`∆體脂重%` ~ ., data = stat_table_1st_ob_lm_diet)
     model %>% summary()
     k <- olsrr::ols_step_both_p(model)
     k$model
@@ -156,24 +156,50 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
 
       
   
-  
-  # final model
-  k$model
-  
+
   
   #All
   # stepwise regression
-  model <- lm(m$`∆weight_%%` ~ ., data = m)
-  model %>% summary()
-  k <- ols_step_both_p(model)
+  stat_table_1st_ob_lm_diet <-  stat_table_1st_ob_lm %>% select(
+    (stat_table_1st_ob_lm %>% names() %>% grep("date|endpoint|id|type|∆", ., value = TRUE, invert = TRUE) %>% append(stat_table_1st_ob_lm %>% names() %>% grep("%", ., , value = TRUE)))
+  )
+  # stat_table_1st_ob_lm_diet <-  stat_table_1st_ob_lm %>% select(
+  #    "∆體重%" %>% append(stat_table_1st_ob_lm %>% names() %>% grep("date|endpoint|id|type|∆", ., value = TRUE, invert = TRUE))
+  # )
   
-  plot(k)
+  model <- lm(-`∆體重%` ~ ., data = stat_table_1st_ob_lm_diet)
+  model %>% summary()
+  k <- olsrr::ols_step_both_p(model)
+  k$model
+  k$model %>% summary()
+  c <- k$model %>% model_equation(digits = 3, trim = TRUE)
+  c
+  #plot(k)
   # final model
   k$model
   
   
   
   
+  #[Prediction accuracy]
+  ##1. create predict_table
+  predict_table <- stat_table_1st_ob_lm_diet %>% select(k$predictors %>% gsub("`", "", .) %>% append("∆體重%"))
+  ##2. create actual/forcast
+  predict_table$actual <- -predict_table$`∆體重%`
+  predict_table$forcast <- stats::predict(k$model, predict_table)
+  #rm NA row
+  predict_table <- predict_table %>% lin_exclude_NA_col(variables = names(.))
+  ##3. calculate MAPE
+  cat(paste("\n\n", "平均絕對百分比誤差(MAPE):", (MLmetrics::MAPE(predict_table$forcast, predict_table$actual) *100) %>% round(2), "%", "\n\n"))
+  
+
+  predict_table$residue <- abs((predict_table$actual - predict_table$forcast)/predict_table$actual *100) %>% round(2)
+  predict_table$true <- predict_table$residue %>% cut(c(0, 10 , Inf), c(1, 0))
+  predict_table$true %>% table() %>% prop.table() %>% multiply_by(100) %>% round(2)
+  
+  
+  MLmetrics::Accuracy(predict_table$forcast, predict_table$true)
+  MLmetrics::Precision(predict_table$forcast, predict_table$actual)
   
   
   
@@ -181,6 +207,21 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   
   
   
+  #install.packages("Metrics")
+  library(Metrics)
+
+  
+  set.seed(777)
+  split <- caTools::sample.split(stat_table_1st_ob_lm_diet, SplitRatio = 0.8)
+  
+  train <- subset(stat_table_1st_ob_lm_diet, split == TRUE)
+  test <- subset(stat_table_1st_ob_lm_diet, split == FALSE)
+  
+  
+  
+  
+
+
   
   
   

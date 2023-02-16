@@ -1,12 +1,10 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
 # 減重成效 - (單次療程)
 
-```{r input rscript, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-data_preprocessing.R")
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.1-venns.R")
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.2-global_treatment.R")
-
-```
 
 本節主要分析與探討「首次減重方案：在初始狀態(baseline)和飲食紀律(diet discipline)下的成效」。
 
@@ -73,7 +71,7 @@ gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
 
 在女性客戶中，高達98%在療程中實現減重目的(目標設定不同)。其中將近45％表現優異(降幅\>8%)，40%表現良好(降幅4\~8%)。
 
-在男性客戶中，100%在療程中實現減重目的(目標設定不同)。其中將近4％表現超乎預期(降幅\>15%)、40％表現優異(降幅\>8%)，40%表現良好(降幅4\~8%)。
+在男性客戶中，100%在療程中實現減重目的(目標設定不同)。其中將近4％表現超乎預期(降幅\>15%)、40％表現優異(降幅\>8%)，40%表現良好(降幅4\~8%)。ㄞㄞ
 
 減脂部分：
 
@@ -183,7 +181,7 @@ knitr::kable(
 table_01
 ```
 
-### 初始狀態(Baseline) {#baseline_ob}
+### 初始狀態(Baseline) {#baseline_ob .unnumbered}
 
 [在目前的初日診所減重客群中]{.underline}，我們的控糖減重策略成效跟「介入前狀態」 (包括年齡、性別、BMI、體脂率、糖化血色素、空腹血糖、胰島素值等) 無顯著相關。
 
@@ -200,7 +198,7 @@ plot_grid(plotlist = myplots[1:10], ncol = 2, labels = paste0(LETTERS[1], seq(1,
 plot_grid(plotlist = myplots[11:20], ncol = 2, labels = paste0(LETTERS[2], seq(1,10)))
 ```
 
-### 介入後狀態(Endpoint) {#endpoint_ob}
+### 介入後狀態(Endpoint) {#endpoint_ob .unnumbered}
 
 #### **Inbody**
 
@@ -214,7 +212,7 @@ plot_grid(plotlist = myplots[21:30], ncol = 2, labels = paste0(LETTERS[3], seq(1
 plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1,10)))
 ```
 
-### 飲食(Diet) {#diet_ob}
+### 飲食(Diet) {#diet_ob .unnumbered}
 
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
@@ -222,7 +220,7 @@ plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1
 plot_grid(plotlist = myplots[41:62], ncol = 2, labels = paste0(LETTERS[5], seq(1,26)))
 ```
 
-### 成效(Effectiveness) {#effectiveness_ob}
+### 成效(Effectiveness) {#effectiveness_ob .unnumbered}
 
 #### **成效(∆)-Inbody**
 
@@ -248,7 +246,7 @@ plot_grid(plotlist = myplots[83:92], ncol = 2, labels = paste0(LETTERS[8], seq(1
 plot_grid(plotlist = myplots[93:102], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
 ```
 
-### Summary {#Summary_ob}
+### Summary {#Summary_ob .unnumbered}
 
 在我們的客群中：
 

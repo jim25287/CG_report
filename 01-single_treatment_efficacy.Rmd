@@ -3,8 +3,8 @@ output: html_document
 editor_options: 
   chunk_output_type: inline
 ---
-# 減重成效 - (單次療程)
 
+# 減重成效 - (單次療程)
 
 本節主要分析與探討「首次減重方案：在初始狀態(baseline)和飲食紀律(diet discipline)下的成效」。
 
@@ -258,4 +258,112 @@ plot_grid(plotlist = myplots[93:102], ncol = 2, labels = paste0(LETTERS[9], seq(
 
 ```{r, results='asis', fig.align='left', paged.print=TRUE}
 table_02
+```
+
+## 分層分析-2: 男性:睪固酮(Testosterone) {#strat_1_test}
+
+**依據睪固酮(Testosterone)初始狀態進行分層分析，分成二個組別：**
+
+-   **睪固酮低下: (**小於 \<350 ng/dl)
+-   **睪固酮正常: (**大於 \>350 ng/dl)
+
+**男性睪固酮分組&年齡分佈**
+
+```{r fig.align='left'}
+googleVis::gvisMerge(pie_testosterone_01, pie_testosterone_02) %>% plot()
+```
+
+### 相關分析(Correlation Analysis) {#cor_test_test .unnumbered}
+
+**睪固酮(Testosterone) x 初始狀態(Baseline)**
+
+男性荷爾蒙「睪固酮」血中濃度與「體重」、「體脂」，以及「空腹血糖」、「空腹胰島素」和「胰島素抗性」(IR)具有顯著正相關。
+
+```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
+  corrplot(M_testosterone,
+           p.mat = M_testosterone_test$p,
+           type = "lower",
+           insig = "label_sig",
+           sig.level = c(.001, .01, .05), pch.cex = .8, pch.col = "black",
+           tl.col = "black", tl.srt = 35, tl.cex = 1.0,
+           cl.ratio = 0.1,
+           col = M_col(200),
+           title = "[Correlation] Efficacy x Baseline",
+           #c(bottom, left, top, right)
+           mar = c(0,0,1,0))
+
+```
+
+```{r, results='asis', warning=FALSE}
+knitr::kable(
+  cor_table_testosterone %>% plot(), caption = 'Correlation: Testosterone and Effectiveness',
+  booktabs = TRUE
+) 
+```
+
+### 初始狀態(Baseline) {#baseline_test .unnumbered}
+
+#### **Inbody**
+
+```{r, results='asis', fig.width= 5, fig.height=20}
+plot_grid(plotlist = myplots_plot_testosterone[1:10], ncol = 2, labels = paste0(LETTERS[1], seq(1,50)))
+
+```
+
+#### **Blood**
+
+```{r, results='asis', fig.width= 5, fig.height=20}
+plot_grid(plotlist = myplots_plot_testosterone[11:21], ncol = 2, labels = paste0(LETTERS[2], seq(1,50)))
+```
+
+### 介入後狀態(Endpoint) {#endpoint_test .unnumbered}
+
+#### **Inbody**
+
+```{r, results='asis', fig.width= 5, fig.height=20}
+plot_grid(plotlist = myplots_plot_testosterone[22:31], ncol = 2, labels = paste0(LETTERS[3], seq(1,50)))
+```
+
+#### **Blood**
+
+```{r, results='asis', fig.width= 5, fig.height=20}
+plot_grid(plotlist = myplots_plot_testosterone[32:41], ncol = 2, labels = paste0(LETTERS[4], seq(1,50)))
+```
+
+### 飲食(Diet) {#diet_test .unnumbered}
+
+在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
+
+```{r, results='asis', fig.width= 5, fig.height=44}
+plot_grid(plotlist = myplots_plot_testosterone[42:63], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
+```
+
+### 成效(Effectiveness) {#effectiveness_test .unnumbered}
+
+#### **成效(∆)-Inbody**
+
+```{r, results='asis', fig.width= 5, fig.height=20}
+plot_grid(plotlist = myplots_plot_testosterone[64:73], ncol = 2, labels = paste0(LETTERS[6], seq(1,50)))
+```
+
+#### **成效**(∆)-Blood
+
+```{r, results='asis', fig.width= 5, fig.height=20}
+plot_grid(plotlist = myplots_plot_testosterone[74:83], ncol = 2, labels = paste0(LETTERS[7], seq(1,50)))
+```
+
+#### **成效(%)-Inbody**
+
+```{r, results='asis', fig.width= 5, fig.height=20}
+plot_grid(plotlist = myplots_plot_testosterone[84:93], ncol = 2, labels = paste0(LETTERS[8], seq(1,50)))
+```
+
+#### **成效(%)-Blood**
+
+```{r, results='asis', fig.width= 5, fig.height=20}
+plot_grid(plotlist = myplots_plot_testosterone[94:103], ncol = 2, labels = paste0(LETTERS[9], seq(1,50)))
+```
+
+```{r, results='asis', fig.align='left', paged.print=TRUE}
+table_02_testosterone
 ```

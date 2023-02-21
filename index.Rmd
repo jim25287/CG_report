@@ -17,7 +17,7 @@ output:
     toc_depth: 3
     config:
       toc:
-        collapse: section
+        #collapse: chapter
       download: null
       edit: null
       sharing: null
@@ -48,6 +48,7 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-data_preprocessing.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.1-venns.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.2-global_treatment.R")
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.3-testosterone_effectiveness.R")
 
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-read_clinic_list.R")
 ```
@@ -60,7 +61,9 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 client_monthly_stat_report %>% plot()
 ```
 
-**2.初日減重門診**(分析人數: `r success_df_freq[["Total"]] %>% max()`)：
+**#＃總計「累積服務客戶數」:** `r client_monthly_stat_report_total_client` + 153(missing value:課程時間) + 462(北秀) = [**`r client_monthly_stat_report_total_client + 153 + 462`**]{.underline}**(人)**
+
+**2.初日減重門診 - 單次療程**(分析人數: `r success_df_freq[["Total"]] %>% max()`)：
 
 -   [**成功減重人數(%)**]{.underline}，總計`r success_df_freq[success_df_freq$gender == "Total", "success"]`人(成功率:[**`r success_df_pct[success_df_freq$gender == "Total", "success"]`**]{.underline})。
 -   [**女性:**]{.underline}`r success_df_freq[success_df_freq$gender == "female", "success"]`人(成功率:[**`r success_df_pct[success_df_freq$gender == "female", "success"]`**]{.underline})。
@@ -69,11 +72,10 @@ client_monthly_stat_report %>% plot()
 ```{r, results='asis', fig.width = 4, fig.height= 4}
 plot_stack_col_female %>% plot()
 ```
+
 ```{r, results='asis', fig.width = 4, fig.height= 4}
 plot_stack_col_male %>% plot()
 ```
-
-
 
 <!-- Introduction context...(editing) -->
 

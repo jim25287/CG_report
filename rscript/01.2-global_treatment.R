@@ -469,7 +469,6 @@ cor_table_01 <- M1_df %>% gvisTable(options=list(height=300))
 
 
 #[Correlation r] Efficacy x Baseline
-#[Correlation r] Efficacy x Diet
 M2 <- cor(cbind(-profile_efficacy, profile_baseline), use = "pairwise.complete.obs")
 #[2Do]change row,col names into chinese
 M_test2 <- cor.mtest(cbind(-profile_efficacy, profile_baseline) , conf.level = .95)
@@ -692,7 +691,7 @@ table_01 <-
 summary_table <- 
   QQ1_stat_table_1st %>% 
   group_by(gender, gp) %>% 
-  summarize_at(vars_ch[!(vars_ch %in% c("id","client_type","gender","date_baseline","date_endpoint", "gp"))],
+  summarize_at(vars_ch[var_vector],
                function(x) paste(mean(x, na.rm = TRUE) %>% round(2), (sd(x, na.rm = TRUE)/sqrt(n())) %>% round(2), sep = " ± ")
   )
 

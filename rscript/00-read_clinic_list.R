@@ -112,7 +112,7 @@ accum_client_df[accum_client_df$category == "DM", "value"] <- client_stat_df[cli
 accum_client_df[accum_client_df$category == "DM(ongoing)", "value"] <- client_stat_df[client_stat_df$client_type == 1, "class_ongoing_sub"]
 
 rm(list = c("clinical_stat_category", "client_stat_df"))
-
+client_monthly_stat_report_total_client <- accum_client_df %>% filter(category == "Total") %>% select(value) %>% max(na.rm = TRUE)
 client_monthly_stat_report <- googleVis::gvisAnnotationChart(accum_client_df,
                                                              datevar = "date",
                                                              numvar = "value",

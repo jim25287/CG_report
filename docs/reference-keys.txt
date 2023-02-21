@@ -1,6 +1,7 @@
 tab:unnamed-chunk-12
 tab:unnamed-chunk-14
-tab:unnamed-chunk-26
+tab:unnamed-chunk-28
+tab:unnamed-chunk-39
 減重成效---單次療程
 vens_grap_ob
 porfile_ob
@@ -15,6 +16,15 @@ blood-1
 成效-blood
 成效-inbody-1
 成效-blood-1
+strat_1_test
+inbody-2
+blood-2
+inbody-3
+blood-3
+成效-inbody-2
+成效-blood-2
+成效-inbody-3
+成效-blood-3
 glucose-insulin-response-curvegirc
 ogtt胰島素反應分型
 pattern-i

@@ -75,24 +75,20 @@ pie_testosterone_02 <-
 #[Create profile]  Efficacy, Baseline, Diet table
 profile_efficacy <- stat_table_1st_ob %>% filter(gender == "male") %>% 
   select(c("∆weight%","∆bf%","∆bm%","∆vfa","∆wc","∆bmr","∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase"))
-names(profile_efficacy) <- c("∆體重(%)", "∆體脂(%)","∆肌肉(%)","∆內臟脂肪","∆腰圍", "∆BMR", #6
-                             "∆糖化血色素","∆空服血糖","∆空腹胰島素","∆Homa_IR","∆Homa_ß","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL", "∆解脂酶") #10
+names(profile_efficacy) <- names(profile_efficacy) %>% lin_ch_en_format(format = "ch", origin = "en")
+
 ##add testosterone_baseline
 profile_baseline <- stat_table_1st_ob %>% filter(gender == "male") %>%  
   select(c("age", "bmi_baseline","pbf_baseline","vfa_baseline","bsmi_baseline","bm_baseline","wc_baseline","bmr_baseline",
            "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
            "testosterone_baseline"))
+names(profile_baseline) <- names(profile_baseline) %>% lin_ch_en_format(format = "ch", origin = "en")
 
-names(profile_baseline) <- c("年齡", "BMI(T0)", "體脂率(T0)", "內臟脂肪(T0)", "BSMI(T0)", "肌肉重(T0)", "腰圍(T0)", "BMR(T0)",
-                             "糖化血色素(T0)", "空服血糖(T0)", "空腹胰島素(T0)", "HOMA_IR(T0)", "HOMA_ß(T0)", "三酸甘油脂(T0)", "總膽固醇(T0)", #17
-                             "HDL(T0)", "LDL(T0)", "解脂酶(T0)", "睪固酮(T0)")
+
 
 profile_diet <- stat_table_1st_ob %>% filter(gender == "male") %>%  
-  select(c("upload_day_%", "pic_count","calorie","carb_E%","protein_E%","fat_E%","fruits","vegetables","grains","meat_bean","milk", "oil","light_G_%","light_Y_%","light_R_%"))
-names(profile_diet) <- c("上傳天數%","上傳照片數", "總攝取卡路里","總碳水比_E%","總蛋白比_E%","總脂肪比_E%",
-                         "水果(日)","蔬菜(日)","全穀雜糧(日)","蛋豆魚肉(日)","乳品(日)","油脂(日)",
-                         "綠燈比_%","黃燈比_%","紅燈比_%")
-
+  select(c("upload_day_%", "pic_count","calorie_day","carb_E%","protein_E%","fat_E%","fruits","vegetables","grains","meat_bean","milk", "oil","light_G_%","light_Y_%","light_R_%"))
+names(profile_diet) <- names(profile_diet) %>% lin_ch_en_format(format = "ch", origin = "en")
 
 
 a <-  cbind(-profile_efficacy, testosterone_baseline = stat_table_1st_ob[stat_table_1st_ob$gender == "male", "testosterone_baseline"] %>% as.vector())
@@ -123,7 +119,7 @@ aa1 <-
 
 
 aa2 <- 
-  a %>% dplyr::rename("fat_p" = "∆體脂(%)") %>%
+  a %>% dplyr::rename("fat_p" = "∆體脂重(%)") %>%
   ggscatter(x = "testosterone_baseline", y = "fat_p",
             color = "black",
             fill = "red",
@@ -182,10 +178,12 @@ for (i in c(1:length(colnames(M_testosterone)))) {
     rm(list = c("M2_value", "M2_sign"))
     M_testosterone_test_df <- M_testosterone_test_df %>% as.data.frame()
     M_testosterone_test_df <- M_testosterone_test_df %>% add_column(vars = rownames(M_testosterone_test_df), .before = names(M_testosterone_test_df)[1])
+    M_testosterone_test_df <- M_testosterone_test_df %>% add_column("#" = seq(1, nrow(M_testosterone_test_df)), .before = names(M_testosterone_test_df)[1])
   }
   
 } 
-cor_table_testosterone <- M_testosterone_test_df %>% gvisTable(options=list(showRowNumber = TRUE, height=300))
+cor_table_testosterone <- M_testosterone_test_df %>% gvisTable(options=list(frozenColumns = 2,
+                                                                            height=300))
 
 
 #>>>> Low T, High Weigt/Fat/Blood/Insulin/IR, IR improvement越差
@@ -195,11 +193,11 @@ cor_table_testosterone <- M_testosterone_test_df %>% gvisTable(options=list(show
 #divide gp_testosterone
 a <- stat_table_1st_ob %>% filter(gender == "male")
 
-a$gp_testosterone <- a$testosterone_baseline %>% cut(c(-Inf, cutoff_testosterone, Inf), c("Low_testosterone", "Normal"))
+a$gp <- a$testosterone_baseline %>% cut(c(-Inf, cutoff_testosterone, Inf), c("Low_testosterone", "Normal"))
 
-table(a$gp_testosterone) %>% addmargins()
+table(a$gp) %>% addmargins()
 
-a <- a[complete.cases(a$gp_testosterone),]
+a <- a[complete.cases(a$gp),]
 
 
 
@@ -228,59 +226,47 @@ a <- Reduce(cbind,list(tmp_1, tmp_2, tmp_3, tmp_4), accumulate =FALSE)
 rm(list = c("tmp_1","tmp_2","tmp_3","tmp_4"))
 
 #Sort var order: baseline, endpoint, diet, ∆, ∆%
+
 vars_en <- c("id","client_type","age","gender","date_baseline","date_endpoint",
-             "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","bm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
+             "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","pbm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
              "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline", "testosterone_baseline",
-             "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","bm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
+             "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","pbm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
              "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint","lipase_endpoint",
-             "day_count","upload_day_%","note_count","light_G","light_Y","light_R","pic_count","carb_E%","protein_E%","fat_E%","calorie","pic_per_note","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
-             "gp_testosterone",
+             "day_count","upload_day_%","note_count","pic_count","carb_E%","protein_E%","fat_E%","calorie_day","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
+             "gp",
              "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
              "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase",
              "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",
              "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆lipase%"
 )
 
+
 a %<>% select(vars_en)
 
-vars_ch <- c("id","client_type","年齡","gender","date_baseline","date_endpoint",
-             "體重_baseline","BMI_baseline","體脂重_baseline","體脂率_baseline","骨骼肌指數_baseline","肌肉重_baseline","內臟脂肪_baseline","腰圍_baseline","除脂體重_baseline","基礎代謝率_baseline",
-             "糖化血色素_baseline","空腹血糖_baseline","空腹胰島素_baseline","HOMA_IR_baseline","HOMA_Beta_baseline","三酸甘油脂_baseline","總膽固醇_baseline","HDL_baseline","LDL_baseline","解脂酶_baseline", "睪固酮_baseline",
-             "體重_endpoint","BMI_endpoint","體脂重_endpoint","體脂率_endpoint","骨骼肌指數_endpoint","肌肉重_endpoint","內臟脂肪_endpoint","腰圍_endpoint","除脂體重_endpoint","基礎代謝率_endpoint",
-             "糖化血色素_endpoint","空腹血糖_endpoint","空腹胰島素_endpoint","HOMA_IR_endpoint","HOMA_Beta_endpoint","三酸甘油脂_endpoint","總膽固醇_endpoint","HDL_endpoint","LDL_endpoint","解脂酶_endpoint",
-             "飲食紀錄日數","飲食紀錄完成率_%","飲食紀錄篇數","綠燈數","黃燈數","紅燈數","上傳照片數","碳水化合物_E%","蛋白質_E%","脂肪_E%","攝取熱量","每篇上傳照片數","綠燈率","黃燈率","紅燈率","水果攝取量_日","蔬菜攝取量_日","全穀雜糧攝取量_日","蛋豆魚肉攝取量_日","乳品攝取量_日","油脂攝取量_日",
-             "gp",
-             "∆體重","∆BMI","∆體脂重","∆體脂率","∆骨骼肌指數","∆肌肉重","∆內臟脂肪","∆腰圍","∆除脂體重","∆基礎代謝率",
-             "∆糖化血色素","∆空腹血糖","∆空腹胰島素","∆HOMA_IR","∆HOMA_Beta","∆三酸甘油脂","∆總膽固醇","∆HDL","∆LDL","∆解脂酶",
-             "∆體重%","∆BMI%","∆體脂重%","∆體脂率%","∆骨骼肌指數%","∆肌肉重%","∆內臟脂肪%","∆腰圍%","∆除脂體重%","∆基礎代謝率%",
-             "∆糖化血色素%","∆空腹血糖%","∆空腹胰島素%","∆HOMA_IR%","∆HOMA_Beta%","∆三酸甘油脂%","∆總膽固醇%","∆HDL%","∆LDL%","∆解脂酶%"
-)
-
-names(a) <- vars_ch
-
 b <- a
+
 #change colname to run plot
 QQ1_stat_table_1st_for_plot <- a
 names(QQ1_stat_table_1st_for_plot) <- gsub("∆", "delta_", names(QQ1_stat_table_1st_for_plot))
 names(QQ1_stat_table_1st_for_plot) <- gsub("%", "_percent", names(QQ1_stat_table_1st_for_plot))
 
 
-#var_vector <- which(!(vars %in% c("id","client_type","gender","date_baseline","date_endpoint", "gp"))) #old method
-# #new
-# var_vector <- c(setdiff(vars %>% grep("baseline$", .), vars %>% grep("date", .)),
-#                 setdiff(vars %>% grep("endpoint$", .), vars %>% grep("date", .)),
-#                 vars %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE),
-#                 setdiff(vars %>% grep("[∆]", .), vars %>% grep("[%]", .)),
-#                 vars %>% grep("[%]", .)
-# )
 #new
-var_vector <- c(setdiff(vars_ch %>% grep("baseline$", .), vars_ch %>% grep("date", .)),
-                setdiff(vars_ch %>% grep("endpoint$", .), vars_ch %>% grep("date", .)),
-                vars_ch %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE),
-                setdiff(vars_ch %>% grep("[∆]", .), vars_ch %>% grep("[%]", .)),
-                intersect(vars_ch %>% grep("[∆]", .), vars_ch %>% grep("[%]", .))
+var_vector <- c(setdiff(vars_en %>% grep("baseline$", .), vars_en %>% grep("date", .)),
+                setdiff(vars_en %>% grep("endpoint$", .), vars_en %>% grep("date", .)),
+                vars_en %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE),
+                setdiff(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .)),
+                intersect(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .))
 )
 
+#Establish vars_table for visualization
+myplot_table <- data.frame(num = seq(1, length(vars_en)),
+                           vars_ch = lin_ch_en_format(x = vars_en, format = "ch", origin = "en"))
+myplot_table <- lin_mapping(myplot_table, vars_en, vars_ch, vars_table, en, ch)
+myplot_table <- lin_mapping(myplot_table, field, vars_ch, vars_table, field, ch)
+
+myplot_table <- myplot_table[var_vector,]
+myplot_table$num <- seq(1, length(myplot_table$num))
 
 
 
@@ -293,7 +279,8 @@ for (i in c(var_vector)) {
   }
   
   a <- QQ1_stat_table_1st_for_plot %>% colnames() %>% head(i) %>% tail(1)
-  a_title <- a %>% gsub("delta_", "∆", .) %>% gsub("percent", "(%)", .)
+  a_title <- myplot_table[myplot_table$num == j, "vars_ch"]
+  
   
   #p.sign?
   stat.test <- 
@@ -340,7 +327,7 @@ for (i in c(var_vector)) {
 summary_table_testosterone <- 
   b %>% select(var_vector, "gp") %>% 
   group_by(gp) %>% 
-  summarize_at(vars_ch[var_vector],
+  summarize_at(vars_en[var_vector],
                function(x) paste(mean(x, na.rm = TRUE) %>% round(2), (sd(x, na.rm = TRUE)/sqrt(n())) %>% round(2), sep = " ± ")
   )
 
@@ -350,6 +337,7 @@ summary_table_testosterone <-
 summary_table_testosterone <- cbind(summary_table_testosterone %>% as.data.frame() %>% select(-c("gp")) %>% t(), as.data.frame(vector_pvalue)) 
 
 names(summary_table_testosterone) <- c(rep(c("Low", "Normal")), "顯著差異")
+rownames(summary_table_testosterone) <- myplot_table$vars_ch
 
 summary_table_testosterone <- 
 rbind("人數" = table(b$gp) %>% as.numeric() %>% append(""), summary_table_testosterone)

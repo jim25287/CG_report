@@ -119,7 +119,7 @@ line_plot
 
         -   「水果」、「五穀雜糧」與減重成效成負相關。
 
-```{r, results='asis', fig.width = 7, fig.height= 7.5, warning=FALSE}
+```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
 corrplot(M1, 
          p.mat = M_test1$p,
          type = "lower",
@@ -136,7 +136,7 @@ corrplot(M1,
 
 ```{r, results='asis', warning=FALSE}
 knitr::kable(
-  cor_table_01 %>% plot(), caption = 'Correlation: Diet and  Effectiveness',
+  cor_table_01 %>% plot(), caption = 'Correlation: Diet and Effectiveness',
   booktabs = TRUE
 )
 
@@ -148,7 +148,7 @@ knitr::kable(
 
 此外，根據1.2.2 整體成效分析，體脂肪降幅相較體重降幅明顯，顯示不論初始狀態如何，每一個人在單次療程中減少去的體脂重「可能」差不多(待進一步分析)。
 
-```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
+```{r, results='asis', fig.width = 9, fig.height= 9.5, warning=FALSE}
 corrplot(M2, 
          p.mat = M_test2$p,
          type = "lower",
@@ -164,7 +164,7 @@ corrplot(M2,
 
 ```{r, results='asis', warning=FALSE}
 knitr::kable(
-  cor_table_02 %>% plot(), caption = 'Correlation: Diet and  Effectiveness',
+  cor_table_02 %>% plot(), caption = 'Correlation: Diet and Baseline',
   booktabs = TRUE
 )
 ```
@@ -217,7 +217,7 @@ plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
 ```{r, results='asis', fig.width= 10, fig.height=44}
-plot_grid(plotlist = myplots[41:62], ncol = 2, labels = paste0(LETTERS[5], seq(1,26)))
+plot_grid(plotlist = myplots[41:52], ncol = 2, labels = paste0(LETTERS[5], seq(1,26)))
 ```
 
 ### 成效(Effectiveness) {#effectiveness_ob .unnumbered}
@@ -225,25 +225,25 @@ plot_grid(plotlist = myplots[41:62], ncol = 2, labels = paste0(LETTERS[5], seq(1
 #### **成效(∆)-Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[63:72], ncol = 2, labels = paste0(LETTERS[6], seq(1,10)))
+plot_grid(plotlist = myplots[53:68], ncol = 2, labels = paste0(LETTERS[6], seq(1,10)))
 ```
 
 #### **成效**(∆)-Blood
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[73:82], ncol = 2, labels = paste0(LETTERS[7], seq(1,10)))
+plot_grid(plotlist = myplots[69:78], ncol = 2, labels = paste0(LETTERS[7], seq(1,10)))
 ```
 
 #### **成效(%)-Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[83:92], ncol = 2, labels = paste0(LETTERS[8], seq(1,10)))
+plot_grid(plotlist = myplots[79:88], ncol = 2, labels = paste0(LETTERS[8], seq(1,10)))
 ```
 
 #### **成效(%)-Blood**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[93:102], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
+plot_grid(plotlist = myplots[89:98], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
 ```
 
 ### Summary {#Summary_ob .unnumbered}
@@ -277,7 +277,7 @@ googleVis::gvisMerge(pie_testosterone_01, pie_testosterone_02) %>% plot()
 
 **睪固酮(Testosterone) x 初始狀態(Baseline)**
 
-男性荷爾蒙「睪固酮」血中濃度與「體重」、「體脂」，以及「空腹血糖」、「空腹胰島素」和「胰島素抗性」(IR)具有顯著正相關。
+男性荷爾蒙「睪固酮」血中濃度與「體重」、「體脂」，以及「空腹血糖」、「空腹胰島素」和「胰島素抗性」(IR)具有顯著負相關。換句話說，相較於「睪固酮」濃度正常的人，[「睪固酮」低下]{.underline}者傾向有[較高的「體重」、「體脂」]{.underline}，[「空腹血糖」、「空腹胰島素」和「胰島素抗性」(IR)也較高]{.underline}。\
 
 ```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
   corrplot(M_testosterone,
@@ -335,7 +335,7 @@ plot_grid(plotlist = myplots_plot_testosterone[32:41], ncol = 2, labels = paste0
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
 ```{r, results='asis', fig.width= 5, fig.height=44}
-plot_grid(plotlist = myplots_plot_testosterone[42:63], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[42:59], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
 ```
 
 ### 成效(Effectiveness) {#effectiveness_test .unnumbered}
@@ -343,25 +343,25 @@ plot_grid(plotlist = myplots_plot_testosterone[42:63], ncol = 2, labels = paste0
 #### **成效(∆)-Inbody**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[64:73], ncol = 2, labels = paste0(LETTERS[6], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[60:69], ncol = 2, labels = paste0(LETTERS[6], seq(1,50)))
 ```
 
 #### **成效**(∆)-Blood
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[74:83], ncol = 2, labels = paste0(LETTERS[7], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[70:79], ncol = 2, labels = paste0(LETTERS[7], seq(1,50)))
 ```
 
 #### **成效(%)-Inbody**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[84:93], ncol = 2, labels = paste0(LETTERS[8], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[80:89], ncol = 2, labels = paste0(LETTERS[8], seq(1,50)))
 ```
 
 #### **成效(%)-Blood**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[94:103], ncol = 2, labels = paste0(LETTERS[9], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[90:99], ncol = 2, labels = paste0(LETTERS[9], seq(1,50)))
 ```
 
 ```{r, results='asis', fig.align='left', paged.print=TRUE}

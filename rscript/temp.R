@@ -224,6 +224,30 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
 
   
   
+
+# verify the "ns" reason of testosterone gps 20230302 ---------------------
+
+  # set.seed(333)
+  # #sample size set to 100
+  # a <- a %>% rbind(rbind(a[sample(which(a$gp_testosterone == "Low_testosterone"), (30 - sum(a$gp_testosterone == "Low_testosterone")), replace = TRUE),], 
+  #                        a[sample(which(a$gp_testosterone != "Low_testosterone"), (30 - sum(a$gp_testosterone != "Low_testosterone")), replace = TRUE),]) )
+  # table(a$gp_testosterone) %>% addmargins()
+  #DONE
+  
+  
+  
+  "weight","bmi","bf", "pbf","bsmi",  "bm", "pbm", "vfa","wc", "ffm","bmr","hba1c", "glucose_ac", "insulin","homa_ir", "homa_beta", "tg", "tc", "hdl", "ldl","lipase"
+  
+  db = 'postgres'
+  host = '35.201.248.55'
+  pw = 'zCxHjp0Byy11Jm2D'
+  user = 'postgres'
+  
+  
+  
+  
+  
+  
   
   
   

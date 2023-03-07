@@ -937,3 +937,82 @@ lin_insulin_rsp_pattern <- function(df, variables, pattern = 1, plot = NULL, tab
   
   
 }
+
+
+
+
+# [Function 11:] change vars language format ---------------------------------------------------------------------
+
+lin_ch_en_format <- function(x, format, origin){
+  #1. input vars_table
+  if (exists("vars_table") %>% not()) {
+    library(googlesheets4)
+    vars_table <- googlesheets4::read_sheet(ss = 'https://docs.google.com/spreadsheets/d/1T2swdx1cbfmUSUNQCQpbxa4aIJDTLD0oVKj3AuvNAuM/edit?usp=sharing', 
+                                            sheet = "vars_table",
+                                            col_types = "icccc")
+    names(vars_table) <- c("num", "item_id", "ch", "en", "raw_en")
+  }
+  
+  #2. return vars not establish in the vars_table
+  if (length(x[which(!(x %in% vars_table[[origin]]))]) != 0) {
+    cat("\n[Not matching list:]\n")
+    return(x[which(!(x %in% vars_table[[origin]]))])
+  }else{
+    #3. change format
+    for (i in c(1:length(x))) {
+      if (i == 1) {
+        #重複選第一筆
+        results <- vars_table[vars_table[[origin]] %in% (x[i]), format] %>% head(1)
+      }else{
+        #重複選第一筆
+        results <- append(results, vars_table[vars_table[[origin]] %in% (x[i]), format] %>% head(1))
+      }
+    } 
+    results <- results %>% as.character()
+    return(results)
+  }
+}
+
+
+
+# [Function 12:] Connect to db -----------------------------------------------------------
+lin_connect_db <- function(options = NULL){
+  
+  # #Info
+  # host = '35.201.248.55'
+  # pw = 'zCxHjp0Byy11Jm2D'
+  # db = 'warehouse_production'
+  # user = 'postgres'
+  # path =  "/Users/lincoln/Lincoln/02.Work/04.\ R&D/02.\ HIIS_OPP/02.Analysis/01.\ Code/00.\ ProgreSQL/"
+  
+  
+  if (is.null(options)) {
+    cat("\n", "[Options]:\n",
+        "1. test: Connect test.\n",
+        "2. connect: Connect to db.\n",
+        "3. exit: Disconnect.\n",
+        "[Query]:\n",
+        "- df <- DBI::dbGetQuery(db, 'SELECT * FROM products')\n",
+        "- dplyr::glimpse(df)\n\n")
+    options_chr <- ""
+  }else{
+    options_chr <- as.character(options)
+  }
+  
+  if ((options_chr == "test") | (options_chr == "connect")) {
+    source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/02.Analysis/01.\ Code/connect_db_test.R")
+    
+    if ((connect_test == TRUE)) {
+      print("[Successful connection!!]")
+      if ((options_chr == "connect")) {
+        source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/02.Analysis/01.\ Code/connect_db.R")
+      }
+    }else{
+      print("[Connection Failure QQ!]")
+    }
+  }
+  if (options_chr == "exit") {
+    source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/02.Analysis/01.\ Code/disconnect_db.R")
+  }
+  
+}

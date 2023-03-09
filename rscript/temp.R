@@ -255,7 +255,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   
   # [執行時間:03_FLC_self_report]
   # 使用者   系統   流逝 
-  # 0.072  0.039 49.548 
+  # 1.063   0.634 667.688 
   ptm <- proc.time()
   tmp_03 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "03_FLC_self_report.sql")))
   cat("[執行時間:03_FLC_self_report]\n")
@@ -422,8 +422,9 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   # 02.3 - [Data Preprocessing] 03_FLC_self_report --------------------------------------------------
   
   
+  tmp_03 %>% glimpse()
   
-  
+  names(tmp_03) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
   
   
   

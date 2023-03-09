@@ -91,7 +91,7 @@ SELECT
 --  (CURRENT_DATE - group_classes_of_flc_program_join_users_and_clients.birthday) / 365 AS age,
   group_classes_of_flc_program_join_users_and_clients.gender,
   group_classes_of_flc_program_join_users_and_clients.current->>'height' AS height,
-  COALESCE(notes_count_of_flc_courses.notes_count, 0) AS dat_count,
+  COALESCE(notes_count_of_flc_courses.notes_count, 0) AS day_count,
   COALESCE(note_assets_count_of_flc_courses.note_assets_count, 0) AS pic_count,
   COALESCE(note_assets_count_of_flc_courses.note_assets_g_light_count) AS light_G_count,
   consulting_client_summaries_before.weight AS weight_before,

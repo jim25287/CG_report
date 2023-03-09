@@ -1,4 +1,4 @@
---- EXPLAIN ANALYZE
+-- EXPLAIN ANALYZE
 WITH
   group_classes_of_flc_program_join_users AS (
     SELECT

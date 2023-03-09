@@ -1016,3 +1016,25 @@ lin_connect_db <- function(options = NULL){
   }
   
 }
+
+
+
+# [Function 13:] timestamp_encrypt ---------------------------------------------------------------
+
+lin_timestamp <- function(time = Sys.time()){
+  library(magrittr)
+  library(stringr)
+  key = 303
+  if (is.character(time)) {
+    timestamp_a <- time %>% stringr::str_sub(start = 1L, end = 3L) %>% strtoi(base = 16L) %>% magrittr::add(-key)
+    timestamp_b <- time %>% stringr::str_sub(start = 4L, end = 6L) %>% strtoi(base = 16L) %>% magrittr::add(-key)
+    timestamp_c <- time %>% stringr::str_sub(start = 7L, end = 9L) %>% strtoi(base = 16L) %>% magrittr::add(-key)
+    timestamp_de <- c(timestamp_a, timestamp_b, timestamp_c)
+    timestamp_de <- paste(timestamp_de, collapse = ":")
+    return(timestamp_de)
+  }else{
+    timestamp_en <- format(time, "%H:%M:%S") %>% stringr::str_split(pattern = ":") %>% unlist() %>% as.numeric() %>% magrittr::add(key) %>% format.hexmode(width = 2, upper.case = TRUE) %>% paste0(collapse = "")
+  }
+  timestamp_en <- format(time, "%H:%M:%S") %>% stringr::str_split(pattern = ":") %>% unlist() %>% as.numeric() %>% magrittr::add(key) %>% format.hexmode(width = 2, upper.case = TRUE) %>% paste0(collapse = "")
+  return(timestamp_en)
+}

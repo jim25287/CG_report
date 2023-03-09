@@ -43,14 +43,40 @@ knitr::opts_chunk$set(echo = FALSE, comment = NA, results = 'asis', warning = FA
 options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 ```
 
-```{r input rscript, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r input df from PostgreSQL, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
+  
+#Does source() rscript need to move to the same project dir??
+  lin_connect_db("connect")
+  path_sql <- "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/sql/"
+  
+  df01_client_profile <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "01_profile.sql")))
+  df02_inbody <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "02_inbody.sql")))
+  tmp_03 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "03_FLC_self_report.sql")))
+  
+  tmp_04 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "04_non_FLC_self_report.sql")))
+  tmp_05 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "05_biochem.sql")))
+  tmp_06 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "06_Diet_day.sql")))
+  tmp_07 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "07_Diet_meal.sql")))
+  tmp_08 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "08_3D_scanner.sql")))
+  tmp_09 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "09_hormone.sql")))
+  
+  lin_connect_db("exit")
+  rm(path_sql)
+```
+
+
+
+```{r input rscript, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+# source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
+ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-read_clinic_list.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-data_preprocessing.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.1-venns.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.2-global_treatment.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.3-testosterone_effectiveness.R")
 
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-read_clinic_list.R")
+ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-main_page_stat.R")
+
 ```
 
 # Highlight {#index .unnumbered}
@@ -82,3 +108,5 @@ plot_stack_col_male %>% plot()
 <!-- #### Disclaimer {.unnumbered} -->
 
 <!-- The information in this report is provided ...(editing). -->
+
+[`r lin_timestamp()`]{.smallcaps} 

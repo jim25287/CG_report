@@ -1,4 +1,4 @@
-EXPLAIN ANALYZE
+--EXPLAIN ANALYZE
 WITH
   group_classes_of_flc_program_join_users AS (
     SELECT
@@ -13,7 +13,7 @@ WITH
     INNER JOIN users ON group_classes.user_id = users.id
     WHERE programs.name ILIKE '%FLC%' AND programs.org_id = 3
 --    Temp
-      AND group_classes.created_at BETWEEN '2022-12-01' AND '2023-02-01'
+      --AND group_classes.created_at BETWEEN '2022-12-01' AND '2023-02-01'
   ),
   group_classes_of_flc_program_join_users_and_clients AS (
     SELECT 

@@ -236,12 +236,201 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   
   
   
-  "weight","bmi","bf", "pbf","bsmi",  "bm", "pbm", "vfa","wc", "ffm","bmr","hba1c", "glucose_ac", "insulin","homa_ir", "homa_beta", "tg", "tc", "hdl", "ldl","lipase"
+
+# tmp ---------------------------------------------------------------------
+  # 使用者   系統   流逝 
+  # 0.070  0.025  0.866 
+  ptm <- proc.time()
+  tmp_01 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "01_profile.sql")))
+  cat("[執行時間:01_profile]\n")
+  print(proc.time() - ptm)
   
-  db = 'postgres'
-  host = '35.201.248.55'
-  pw = 'zCxHjp0Byy11Jm2D'
-  user = 'postgres'
+  # [執行時間:02_inbody]
+  # 使用者   系統   流逝 
+  # 0.880  0.284 12.149 
+  ptm <- proc.time()
+  tmp_02 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "02_inbody.sql")))
+  cat("[執行時間:02_inbody]\n")
+  print(proc.time() - ptm)
+  
+  # [執行時間:03_FLC_self_report]
+  # 使用者   系統   流逝 
+  # 0.072  0.039 49.548 
+  ptm <- proc.time()
+  tmp_03 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "03_FLC_self_report.sql")))
+  cat("[執行時間:03_FLC_self_report]\n")
+  print(proc.time() - ptm)
+  
+  # [執行時間:04_non_FLC_self_report]
+  # 使用者   系統   流逝 
+  # 0.058  0.028  6.554 
+  ptm <- proc.time()
+  tmp_04 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "04_non_FLC_self_report.sql")))
+  cat("[執行時間:04_non_FLC_self_report]\n")
+  print(proc.time() - ptm)
+  
+  
+  # [執行時間:05_biochem]
+  # 使用者   系統   流逝 
+  # 0.188  0.064  5.155 
+  ptm <- proc.time()
+  tmp_05 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "05_biochem.sql")))
+  cat("[執行時間:05_biochem]\n")
+  print(proc.time() - ptm)
+  
+  # [執行時間:06_Diet_day]
+  # 使用者   系統   流逝 
+  # 0.042  0.015  4.213 
+  ptm <- proc.time()
+  tmp_06 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "06_Diet_day.sql")))
+  cat("[執行時間:06_Diet_day]\n")
+  print(proc.time() - ptm)
+  
+  
+  # [執行時間:07_Diet_meal]
+  # 使用者    系統    流逝 
+  # 18.530   5.139 226.633 
+  ptm <- proc.time()
+  tmp_07 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "07_Diet_meal.sql")))
+  cat("[執行時間:07_Diet_meal]\n")
+  print(proc.time() - ptm)
+  
+  # [執行時間:08_3D_scanner]
+  # 使用者   系統   流逝 
+  # 1.119  0.181  8.010 
+  ptm <- proc.time()
+  tmp_08 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "08_3D_scanner.sql")))
+  cat("[執行時間:08_3D_scanner]\n")
+  print(proc.time() - ptm)
+  
+  # [執行時間:09_hormone]
+  # 使用者   系統   流逝 
+  # 0.039  0.013 10.025 
+  ptm <- proc.time()
+  tmp_09 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "09_hormone.sql")))
+  cat("[執行時間:09_hormone]\n")
+  print(proc.time() - ptm)
+  
+  
+  
+  
+
+# [Data Preprocessing] 01. profile ---------------------------------------------------
+  #[Note:] 20230309_finish_genesis_ONLY
+  
+  #input clinic_list
+  source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-read_clinic_list.R")
+  
+  
+  #Q1-1. 初日開幕前的cofit初日班 => topshow
+  tmp_01[dplyr::intersect(grep("初日班", tmp_01[["program_name"]]), which(tmp_01[["date_t0"]] < "2021-08-30")), "org_name"] <- "topshow"
+  tmp_01[dplyr::intersect(grep("秀0|秀1", tmp_01[["name"]]), which(tmp_01[["date_t0"]] < "2021-08-30")), "org_name"] <- "topshow"
+  #Q1-2. "program_name"初日開幕後的cofit初日班 => genesisclinic
+  tmp_01[Reduce(dplyr::intersect, list(grep("初日", tmp_01[["program_name"]]),
+                                       which(tmp_01[["date_t0"]] >= "2021-08-30"),
+                                       grep("cofit", tmp_01[["org_name"]])))
+         , "org_name"] <- "genesisclinic"
+  #Q1-3. "name"名字有初日、初日開幕後的cofit => genesisclinic
+  tmp_01[Reduce(dplyr::intersect, list(grep("初日|初日001|G001", tmp_01[["name"]]),
+                                       which(tmp_01[["date_t0"]] >= "2021-08-30"),
+                                       grep("cofit", tmp_01[["org_name"]])))
+         , "org_name"] <- "genesisclinic"
+    
+  #Q1-4. FLC班 => cofit
+  tmp_01[grep("FLC", tmp_01[["program_name"]]), "org_name"] <- "cofit"
+  
+  #C1-1. class_freq by org_name
+  tmp_01 <- tmp_01 %>% full_join(tmp_01 %>% group_by(id, org_name) %>% summarise(class_freq = n()), by = c("id", "org_name"))
+  tmp_01 <- tmp_01[with(tmp_01, order(c(date_t0, id))),] %>% janitor::remove_empty("rows")
+  #C1-2. class_order
+  for (i in unique(tmp_01$id)) {
+    if (i == head(unique(tmp_01$id), 1)) {
+      j = 1
+      tmp_01$class_order <- NA
+    }
+    tmp_01[which(tmp_01[["id"]] == i), "class_order"] <- which(tmp_01[["id"]] == i) %>% order()
+    progress(j, unique(tmp_01$id) %>% length())
+    j = j + 1
+    if (i == tail(unique(tmp_01$id), 1)){
+      print("[Completed!]")
+    }
+  }
+  
+  
+  #C2. age: btd - date_t0 年齡(療程起始當天計算)
+  tmp_01$age <- (lubridate::ymd(tmp_01$date_t0) - lubridate::ymd(tmp_01$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
+  
+  #C3-1.非進階
+  a <- tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),]
+  tmp_01$client_type <- NA #client_type 
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),] <- lin_mapping(a, client_type, id, clinical_list, client_type, id)
+  
+  a <- tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),]
+  tmp_01$program_set <- NA #program_set
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),] <- lin_mapping(a, program_set, id, clinical_list, program, id)
+  
+  a <- tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),]
+  tmp_01$doctor <- NA #doctor
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),] <- lin_mapping(a, doctor, id, clinical_list, doctor, id)
+  
+  a <- tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),]
+  tmp_01$nutritionist_major <- NA #nutritionist_major
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),] <- lin_mapping(a, nutritionist_major, id, clinical_list, nutritionist_major, id)
+  
+  a <- tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),]
+  tmp_01$nutritionist_online <- NA #nutritionist_online
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),] <- lin_mapping(a, nutritionist_online, id, clinical_list, nutritionist_online, id)
+  
+  a <- tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),]
+  tmp_01$medication <- NA #medication
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name, invert = TRUE)),] <- lin_mapping(a, medication, id, clinical_list, medication_note, id)
+  
+  #C3-2.進階
+  a <- tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name)),]
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name)),] <- lin_mapping(a, client_type, id, clinical_adv_list, client_type, id)
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name)),] <- lin_mapping(a, program_set, id, clinical_adv_list, program, id)
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name)),] <- lin_mapping(a, doctor, id, clinical_adv_list, doctor, id)
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name)),] <- lin_mapping(a, nutritionist_major, id, clinical_adv_list, nutritionist_major, id)
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name)),] <- lin_mapping(a, nutritionist_online, id, clinical_adv_list, nutritionist_online, id)
+  tmp_01[intersect(which(tmp_01$org_name == "genesisclinic"), grep("進階", tmp_01$program_name)),] <- lin_mapping(a, medication, id, clinical_adv_list, medication_note, id)
+  
+  
+  
+  #clean by select
+  tmp_01 <- tmp_01 %>% select(c("id", "name", "gender", "age", "client_type", "program_name","date_t0","date_t1", "org_name", "class_freq", "class_order","program_set","doctor","nutritionist_major","nutritionist_online","medication", "btd"))
+  
+
+  
+  
+  
+  # [Data Preprocessing] 02. profile ---------------------------------------------------
+  
+  #C1. format
+  tmp_02[c("height","weight","bmi","body_fat_mass","body_fat_mass_percentage","weight_without_fat","muscle_mass","real_muscle_mass","vfa","vfa_level","waist_circumference","acl","cacl","total_body_water","protein_weight","mineral_weight","body_cell_mass","body_mineral","bfmi","bsmi","ffmi","systolic_blood_pressure","diastolic_blood_pressure","pulse","bmr","wepa50","algle_50_left_arm","algle_50_left_leg","algle_50_right_arm","algle_50_right_leg","algle_50_trunk","extracellular_water_ratio","extracellular_water_ratio_left_arm","extracellular_water_ratio_left_leg","extracellular_water_ratio_right_arm","extracellular_water_ratio_right_leg","extracellular_water_ratio_trunk","intracellular_weight","intracellular_weight_left_arm","intracellular_weight_left_leg","intracellular_weight_right_arm","intracellular_weight_right_leg","intracellular_weight_trunk","extracellular_weight","extracellular_weight_left_arm","extracellular_weight_left_leg","extracellular_weight_right_arm","extracellular_weight_right_leg","extracellular_weight_trunk","left_arm_fat","left_arm_fat_percentage","left_arm_muscle","left_arm_muscle_percentage","left_leg_fat","left_leg_fat_percentage","left_leg_muscle","left_leg_muscle_percentage","right_arm_fat","right_arm_fat_percentage","right_arm_muscle","right_arm_muscle_percentage","right_leg_fat","right_leg_fat_percentage","right_leg_muscle_percentage","right_leg_muscle","trunk_fat","trunk_fat_percentage","trunk_muscle","trunk_muscle_percentage","water_weight_left_arm","water_weight_left_leg","water_weight_right_arm","water_weight_right_leg","water_weight_trunk","waist_hip_ratio","tbwffm","obesity_degree","inbody_total_score")] %<>% 
+    lapply(as.numeric)
+  tmp_02 <- tmp_02 %>% as.tibble() 
+  #C2. Sarcopenia Obesity(SO): "left_arm_muscle", "left_leg_muscle", "right_arm_muscle", "right_leg_muscle" #Female: < 23.4; Male: < 29.6. 
+  tmp_02 <- tmp_02 %>% mutate(so_score = round((left_arm_muscle+left_leg_muscle+right_arm_muscle+right_leg_muscle)*100/weight,2))
+  #C3. pbm
+  tmp_02 <- tmp_02 %>% mutate(pbm = round((muscle_mass)*100/weight,2))
+  #C4. name_format
+  names(tmp_02) <- names(tmp_02) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+  #C5. rm outlier
+  tmp_02 <- tmp_02[-which(tmp_02$bmi >100),]
+  
+  
+  # 02.3 - [Data Preprocessing] 03_FLC_self_report --------------------------------------------------
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   

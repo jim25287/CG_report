@@ -19,7 +19,7 @@ WITH client_diet_by_date AS (
   FROM notes
   LEFT JOIN note_assets ON note_assets.note_id = notes.id
 --  TEMP
-  WHERE notes.date > '2023-02-20'
+  -- WHERE notes.date > '2023-02-20'
   GROUP BY notes.client_id, notes.date
 )
 SELECT DISTINCT ON (client_diet_by_date.client_id, client_diet_by_date.date)

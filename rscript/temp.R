@@ -421,12 +421,38 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   
   # 02.3 - [Data Preprocessing] 03_FLC_self_report --------------------------------------------------
   
+  #C1. col_names
+  names(tmp_03) <- names(tmp_03) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+  tmp_03 <- tmp_03[with(tmp_03, order(date_flc_T0)),]
   
-  tmp_03 %>% glimpse()
+  #C2. age: btd - date_t0 年齡(療程起始當天計算)
+  tmp_03$age <- (lubridate::ymd(tmp_03$date_flc_T0) - lubridate::ymd(tmp_03$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
+  #C3. (1.) (%) *100  (2.) numeric %>% round(2)
+  tmp_03[,grep("%", names(tmp_03))] %<>% multiply_by(100)
+  tmp_03[c("weight(T0)","weight(T1)","∆weight","∆weight(%)","BMI(T0)","BMI(T1)","∆BMI","∆BMI(%)","Fat(T0)","Fat(T1)","∆Fat","∆Fat(%)","wc(T0)","wc(T1)","∆wc","∆wc(%)")] %<>% round(2)
   
-  names(tmp_03) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+  
+  #C4-1. class_freq by org_name
+  tmp_03 <- tmp_03 %>% full_join(tmp_03 %>% group_by(id) %>% summarise(class_freq = n()), by = c("id"))
+  #C4-2. class_order
+  for (i in unique(tmp_03$id)) {
+    if (i == head(unique(tmp_03$id), 1)) {
+      j = 1
+      tmp_03$class_order <- NA
+    }
+    tmp_03[which(tmp_03[["id"]] == i), "class_order"] <- which(tmp_03[["id"]] == i) %>% order()
+    progress(j, unique(tmp_03$id) %>% length())
+    j = j + 1
+    if (i == tail(unique(tmp_03$id), 1)){
+      print("[Completed!]")
+    }
+  }
   
   
+  # 02.4 - [Data Preprocessing] 04_non_FLC_self_report --------------------------------------------------
+  
+  tmp_99 <- tmp_04
+  tmp_99 %>% glimpse()
   
   
   

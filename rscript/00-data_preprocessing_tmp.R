@@ -25,7 +25,7 @@ names(vars_table) <- c("num", "item_id", "ch", "en", "raw_en", "field")
 
 
 # 02.1 - [Data Preprocessing] 01_profile --------------------------------------------------
-#[Note:] 20230309_finish_genesis_ONLY
+#***[Note:] 20230309_finish_genesis_ONLY
 
 #input clinic_list
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-read_clinic_list.R")
@@ -127,6 +127,136 @@ df02_inbody <- df02_inbody[-which(df02_inbody$bmi >100),]
 
 
 # 02.3 - [Data Preprocessing] 03_FLC_self_report --------------------------------------------------
+#***[Note:] 20230310_not_full_obs.
+
+#C1. col_names
+names(df03_FLC_self_report) <- names(df03_FLC_self_report) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+df03_FLC_self_report <- df03_FLC_self_report[with(df03_FLC_self_report, order(date_flc_T0)),]
+
+#C2. age: btd - date_t0 年齡(療程起始當天計算)
+df03_FLC_self_report$age <- (lubridate::ymd(df03_FLC_self_report$date_flc_T0) - lubridate::ymd(df03_FLC_self_report$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
+#C3. (1.) (%) *100  (2.) numeric %>% round(2)
+df03_FLC_self_report[,grep("%", names(df03_FLC_self_report))] %<>% multiply_by(100)
+df03_FLC_self_report[c("weight(T0)","weight(T1)","∆weight","∆weight(%)","BMI(T0)","BMI(T1)","∆BMI","∆BMI(%)","Fat(T0)","Fat(T1)","∆Fat","∆Fat(%)","wc(T0)","wc(T1)","∆wc","∆wc(%)")] %<>% round(2)
+
+
+#C4-1. class_freq by org_name
+df03_FLC_self_report <- df03_FLC_self_report %>% full_join(df03_FLC_self_report %>% group_by(id) %>% summarise(class_freq = n()), by = c("id"))
+#C4-2. class_order
+for (i in unique(df03_FLC_self_report$id)) {
+  if (i == head(unique(df03_FLC_self_report$id), 1)) {
+    j = 1
+    df03_FLC_self_report$class_order <- NA
+  }
+  df03_FLC_self_report[which(df03_FLC_self_report[["id"]] == i), "class_order"] <- which(df03_FLC_self_report[["id"]] == i) %>% order()
+  progress(j, unique(df03_FLC_self_report$id) %>% length())
+  j = j + 1
+  if (i == tail(unique(df03_FLC_self_report$id), 1)){
+    print("[Completed!]")
+  }
+}
+
+
+# 02.4 - [Data Preprocessing] 04_non_FLC_self_report --------------------------------------------------
+
+# intersect(tmp_03$id, df04_non_FLC_self_report$client_id)  #ensure no FLC client within
+#C1. col_name
+names(df04_non_FLC_self_report) <- names(df04_non_FLC_self_report) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+#C2-1. filter dup_id
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% janitor::get_dupes(id)
+#C2-2. exclude NA: id, date
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% lin_exclude_NA_col(c("id", "date_time"))
+#C3. order
+df04_non_FLC_self_report <- df04_non_FLC_self_report[with(df04_non_FLC_self_report, order(id, date_free_version)),]
+#C4. filter ∆day = 2 months(60 days + 14)
+
+# Group the data by id and find the earliest date for each id
+earliest_dates <- df04_non_FLC_self_report %>%
+  group_by(id) %>%
+  summarize(earliest_date = min(date_free_version))
+
+# Join the original data frame with the earliest date to find the row with the earliest date for each id
+earliest_rows <- df04_non_FLC_self_report %>%
+  inner_join(earliest_dates, by = c("id", "date_free_version" = "earliest_date"))
+
+earliest_rows$weight <- ifelse(earliest_rows$weight <= 30, NA, earliest_rows$weight)
+earliest_rows$weight <- ifelse(earliest_rows$weight > 200, NA, earliest_rows$weight)
+earliest_rows$bmi <- ifelse(earliest_rows$bmi <= 10, NA, earliest_rows$bmi)
+earliest_rows$bmi <- ifelse(earliest_rows$bmi > 100, NA, earliest_rows$bmi)
+earliest_rows$fat <- ifelse(earliest_rows$fat <= 5, NA, earliest_rows$fat)
+earliest_rows$fat <- ifelse(earliest_rows$fat > 100, NA, earliest_rows$fat)
+earliest_rows$wc <- ifelse(earliest_rows$wc <= 50, NA, earliest_rows$wc)
+
+
+# Add 60 days to the earliest date for each id
+second_dates <- earliest_dates %>%
+  mutate(second_date = earliest_date + 60)
+
+# Find the row with the second date for each id
+second_rows <- df04_non_FLC_self_report %>%
+  inner_join(second_dates, by = "id") %>%
+  filter((date_free_version >= second_date) & (date_free_version <= second_date + 14)) %>% 
+  distinct(id, .keep_all = TRUE)
+
+second_rows$weight <- ifelse(second_rows$weight <= 30, NA, second_rows$weight)
+second_rows$weight <- ifelse(second_rows$weight > 200, NA, second_rows$weight)
+second_rows$bmi <- ifelse(second_rows$bmi <= 10, NA, second_rows$bmi)
+second_rows$bmi <- ifelse(second_rows$bmi > 100, NA, second_rows$bmi)
+second_rows$fat <- ifelse(second_rows$fat <= 5, NA, second_rows$fat)
+second_rows$fat <- ifelse(second_rows$fat > 100, NA, second_rows$fat)
+second_rows$wc <- ifelse(second_rows$wc <= 50, NA, second_rows$wc)
+
+
+# Combine the earliest and second rows for each id
+df04_non_FLC_self_report <- earliest_rows %>%
+  bind_rows(second_rows)
+rm(list = c("earliest_dates", "earliest_rows", "second_dates", "second_rows"))
+
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% filter(id %in% df04_non_FLC_self_report[!is.na(df04_non_FLC_self_report$earliest_date), "id"])
+df04_non_FLC_self_report <- df04_non_FLC_self_report[with(df04_non_FLC_self_report, order(id)),]
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% distinct(id, date_free_version, .keep_all = TRUE)
+
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% select(-c("dupe_count", "date_time", "earliest_date", "second_date"))
+
+#clean pre/post table
+
+df04_non_FLC_self_report_tmp <- df04_non_FLC_self_report
+
+a <- df04_non_FLC_self_report_tmp[seq(1,nrow(df04_non_FLC_self_report_tmp), 2),] 
+names(a)[-1] <- paste0(a %>% select(-c("id")) %>% names(), "_baseline")
+
+b <- df04_non_FLC_self_report_tmp[seq(2,nrow(df04_non_FLC_self_report_tmp), 2),] 
+names(b)[-1] <- paste0(b %>% select(-c("id")) %>% names(), "_endpoint")
+
+aa <- b %>% select(-c("id", "date_free_version_endpoint")) - a %>% select(-c("id", "date_free_version_baseline"))
+aa <- cbind(a %>% select("id"), aa)
+names(aa)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version")) %>% names())
+
+bb <- ((b %>% select(-c("id", "date_free_version_endpoint")) - a %>% select(-c("id", "date_free_version_baseline")))*100 /   a %>% select(-c("id", "date_free_version_baseline"))) %>% round(2) 
+bb <- cbind(a %>% select("id"), bb)
+names(bb)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version")) %>% names(), "%")
+
+c1 <- full_join(a, b, by = c("id"))
+names(c1)[grep("date", names(c1))] <- c("date_baseline","date_endpoint")
+c1 %<>% relocate(c("date_baseline","date_endpoint"), .after = "id")
+
+c1 <- full_join(c1, aa, by = c("id"))
+c1 <- full_join(c1, bb, by = c("id"))
+df04_non_FLC_self_report <- c1
+rm(list = c("a","aa","b","bb","c1","df04_non_FLC_self_report_tmp"))
+
+#rm outliers
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% lin_exclude_NA_col(grep("weight",names(.), value = TRUE))
+
+for (i in c(df04_non_FLC_self_report %>% names() %>% grep("∆", ., value = TRUE))) {
+  df04_non_FLC_self_report[[i]] <- 
+    ifelse(df04_non_FLC_self_report[[i]] < quantile(df04_non_FLC_self_report[[i]], 0.05, na.rm = TRUE) | df04_non_FLC_self_report[[i]] > quantile(df04_non_FLC_self_report[[i]], 0.95, na.rm = TRUE), NA, df04_non_FLC_self_report[[i]])
+}
+
+#sample size report
+df04_non_FLC_self_report$id %>% unique() %>% length()
+
+#df04_non_FLC_self_report %>% summary()
 
 
 
@@ -134,12 +264,7 @@ df02_inbody <- df02_inbody[-which(df02_inbody$bmi >100),]
 
 
 
-
-
-
-
-
-
+tmp_99 <- tmp_04
 
 
 

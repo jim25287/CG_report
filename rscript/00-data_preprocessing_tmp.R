@@ -260,11 +260,90 @@ df04_non_FLC_self_report$id %>% unique() %>% length()
 
 
 
+# 02.5 - [Data Preprocessing] 05_biochem --------------------------------------------------
+
+
+#C1. format
+df05_biochem[c("glucose_ac","glucose_pc_1hr","glucose_pc_2hr","insulin","insulin_pc_1hr","insulin_pc_2hr","hba1c","homa_ir","homa_beta",
+         "triglyceride","total_cholesterol","high_density_lipoprotein","low_density_lipoprotein_cholesterol","sd_ldl",
+         "c_peptide","egfr","blood_creatinine","uric_acid","tsh","prolactin","fsh","lh","e2","testosterone","progesterone","dhea_s","shbg","amh","t3","t3_reverse","t4_free","psa",
+         "urine_spe_gravity", "urine_ph",
+         "wbc","rbc","hb","esr","mcv","mch","mchc","platelet","rdw_sd","rdw_cv","neutrophils","lymphocytes","monocytes","eosinophils","basophils","monocytes_percent","eosinophils_percent","basophils_percent","alt_gpt","ast_got","amylase","lipase","apoli_a1","apoli_b","apolib_ai_ratio")] %<>% 
+  lapply(as.numeric)
+
+#C2. colname
+names(df05_biochem) <- df05_biochem %>% names() %>% lin_ch_en_format(format = "en", origin = "raw_en")
+#C3. order by date_blood
+df05_biochem <- df05_biochem[with(df05_biochem, order(date_blood)),]
+#(1) tAUCg, tAUCi (2) Pattern_major, Pattern_minor (3) OGIRIndex: iAUC-i(-30) - iAUC-g(+50)
+
+df05_biochem$tAUCg <- lin_AUC_calc(df05_biochem, df05_biochem %>% names() %>% grep("^glucose", ., value = TRUE))
+df05_biochem$tAUCi <- lin_AUC_calc(df05_biochem, df05_biochem %>% names() %>% grep("^insulin", ., value = TRUE))
+
+df05_biochem <- df05_biochem %>% lin_insulin_rsp_pattern(df05_biochem %>% names() %>% grep("^insulin", ., value = TRUE), pattern = 2)
+df05_biochem <- df05_biochem %>% rename(Pattern_major = I)
+df05_biochem <- df05_biochem %>% lin_insulin_rsp_pattern(df05_biochem %>% names() %>% grep("^insulin", ., value = TRUE), pattern = 1)
+df05_biochem <- df05_biochem %>% rename(Pattern_minor = I)
+
+df05_biochem <- df05_biochem %>% mutate(OGIRIndex = lin_AUC_calc(df05_biochem, df05_biochem %>% names() %>% grep("^insulin", ., value = TRUE), increment_value = -30) - 
+                              lin_AUC_calc(df05_biochem, df05_biochem %>% names() %>% grep("^glucose", ., value = TRUE), increment_value = 50))
 
 
 
 
-tmp_99 <- tmp_04
+# 02.6 - [Data Preprocessing] 06_Diet_day --------------------------------------------------
+#[20230313] 待更新sql
+#calorie_deficit
+
+
+
+
+# 02.7 - [Data Preprocessing] 07_Diet_meal --------------------------------------------------
+
+df07_Diet_meal <- tmp_07
+
+df07_Diet_meal %<>% mutate(meat_bean = rowSums(select(., meat_beans_low_fat, meat_beans_medium_fat, meat_beans_high_fat), na.rm = TRUE) )
+df07_Diet_meal %<>% mutate(milk = rowSums(select(., milk_whole_fat, milk_low_fat, milk_skim), na.rm = TRUE) )
+
+df07_Diet_meal <- df07_Diet_meal %>% select(c("client_id","date_diet","meal_order","carbohydrate","protein","fat","calorie","fruits","vegetables","grains","meat_bean","milk","oil",))
+
+df07_Diet_meal <- df07_Diet_meal[with(df07_Diet_meal, order(client_id, date_diet)),]
+
+#condense df by id, date
+df07_Diet_meal <- 
+  df07_Diet_meal %>% 
+  group_by(client_id, date_diet) %>% 
+  summarise(fruits = sum(fruits, na.rm = TRUE),
+            vegetables = sum(vegetables, na.rm = TRUE),
+            grains = sum(grains, na.rm = TRUE),
+            meat_bean = sum(meat_bean, na.rm = TRUE),
+            milk = sum(milk, na.rm = TRUE),
+            oil = sum(oil, na.rm = TRUE),
+  )
+
+
+
+# 02.8 - [Data Preprocessing] 08_3D_scanner --------------------------------------------------
+
+tmp_99 <- tmp_08
+tmp_99 %>% glimpse()
+
+tmp_99 <- tmp_99[names(tmp_99)] %>% lapply(as.numeric)
+tmp_99$client_id <- tmp_99$client_id %>% as.integer()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

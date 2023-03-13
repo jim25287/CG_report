@@ -979,7 +979,7 @@ lin_ch_en_format <- function(x, format, origin){
 lin_connect_db <- function(options = NULL){
   
   # #Info
-  # host = '35.201.248.55'
+  # host = '35.201.248.55'x
   # pw = 'zCxHjp0Byy11Jm2D'
   # db = 'warehouse_production'
   # user = 'postgres'

@@ -280,7 +280,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   
   # [執行時間:06_Diet_day]
   # 使用者   系統   流逝 
-  # 0.042  0.015  4.213 
+  # 16.119   2.702 238.284 
   ptm <- proc.time()
   tmp_06 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "06_Diet_day.sql")))
   cat("[執行時間:06_Diet_day]\n")

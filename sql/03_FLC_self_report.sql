@@ -51,7 +51,7 @@ WITH
       COUNT(notes.id) AS notes_count,
       MAX(notes.date) AS max_notes_date
     FROM notes_of_flc_courses AS notes
-    GROUP BY notes.client_id
+    GROUP BY notes.client_id, notes.date
   ),
   note_assets_count_of_flc_courses AS (
     SELECT

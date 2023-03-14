@@ -10,18 +10,9 @@ WITH client_diet_by_date AS (
     COUNT(note_assets.id) FILTER(WHERE note_assets.data->>'light' = 'green') AS light_green_count,
     COUNT(note_assets.id) FILTER(WHERE note_assets.data->>'light' = 'yellow') AS light_yellow_count,
     COUNT(note_assets.id) FILTER(WHERE note_assets.data->>'light' = 'red') AS light_red_count,
-    SUM((note_assets.data->>'carbohydrate')::DECIMAL) * 4 /
-    NULLIF((SUM((note_assets.data->>'carbohydrate')::DECIMAL) * 4 +
-     SUM((note_assets.data->>'protein')::DECIMAL) * 4 +
-     SUM((note_assets.data->>'fat')::DECIMAL) * 9), 0) AS carb_Ep,
-    SUM((note_assets.data->>'protein')::DECIMAL) * 4 /
-    NULLIF((SUM((note_assets.data->>'carbohydrate')::DECIMAL) * 4 +
-     SUM((note_assets.data->>'protein')::DECIMAL) * 4 +
-     SUM((note_assets.data->>'fat')::DECIMAL) * 9), 0) AS protein_Ep,
-    SUM((note_assets.data->>'fat')::DECIMAL) * 9 /
-    NULLIF((SUM((note_assets.data->>'carbohydrate')::DECIMAL) * 4 +
-     SUM((note_assets.data->>'protein')::DECIMAL) * 4 +
-     SUM((note_assets.data->>'fat')::DECIMAL) * 9), 0) AS fat_Ep,
+    SUM((note_assets.data->>'carbohydrate')::DECIMAL) AS carbohydrate,
+    SUM((note_assets.data->>'protein')::DECIMAL) AS protein,
+    SUM((note_assets.data->>'fat')::DECIMAL) AS fat,
     (SUM((note_assets.data->>'carbohydrate')::DECIMAL) * 4 +
      SUM((note_assets.data->>'protein')::DECIMAL) * 4 +
      SUM((note_assets.data->>'fat')::DECIMAL) * 9) AS calorie

@@ -333,14 +333,22 @@ df07_Diet_meal <-
             oil = sum(oil, na.rm = TRUE),
   )
 
+df07_Diet_meal <- df07_Diet_meal[with(df07_Diet_meal, order(client_id, date_diet)),]
+
+
 # 02.7 - [Data Preprocessing] 06_Diet_day --------------------------------------------------
-#[20230313] 待更新sql
-#calorie_deficit
+
 
 df06_Diet_day <- tmp_06
 
-df06_Diet_day[c("note_counts","pic_counts","essay_count","light_green_count","light_yellow_count","light_red_count","carb_ep","protein_ep","fat_ep","calorie","calorie_target")] %<>% lapply(as.numeric)
+df06_Diet_day[c("note_counts","pic_counts","essay_count","light_green_count","light_yellow_count","light_red_count","carbohydrate","protein","fat","calorie","calorie_target")] %<>% lapply(as.numeric)
+#calorie_deficit
+df06_Diet_day <- df06_Diet_day %>% mutate(calorie_deficit = calorie - calorie_target)
 
+df06_Diet_day <- merge(df06_Diet_day, df07_Diet_meal, by.x = c("client_id", "date_diet"), all.x = TRUE)
+
+#Sorting by Multiple Columns
+df06_Diet_day <- df06_Diet_day[with(df06_Diet_day, order(client_id, date_diet)),]
 
 
 

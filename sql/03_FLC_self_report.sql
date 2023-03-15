@@ -14,7 +14,7 @@ WITH
     WHERE programs.org_id = 3
       AND group_classes.name NOT LIKE '%初日%' OR group_classes.name NOT LIKE '%宋醫師進階%' OR group_classes.name NOT LIKE '%診所進階%'
 --    Temp
-      AND group_classes.created_at BETWEEN '2022-12-01' AND '2023-02-01'
+      -- AND group_classes.created_at BETWEEN '2022-12-01' AND '2023-02-01'
   ),
   group_classes_of_flc_program_join_users_and_clients AS (
     SELECT 
@@ -34,7 +34,7 @@ WITH
     INNER JOIN group_classes_of_flc_program_join_users_and_clients ON notes.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
            AND notes.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
     --    Temp
-      WHERE notes.created_at BETWEEN '2022-12-01' AND '2023-02-01'
+      -- WHERE notes.created_at BETWEEN '2022-12-01' AND '2023-02-01'
   ),
   note_assets_of_flc_courses AS (
     SELECT

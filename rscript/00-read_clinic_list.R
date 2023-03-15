@@ -41,11 +41,11 @@ clinical_list %<>% relocate(medication_note, .before = medication)
 
 #clean client_type
 #OB
-clinical_list[which(stringr::str_detect(clinical_list$program, "八週")), "client_type"] <- 2
+clinical_list[intersect(which(is.na(clinical_list$client_type)), which(stringr::str_detect(clinical_list$program, "八週"))), "client_type"] <- 2
 #DM
-clinical_list[which(stringr::str_detect(clinical_list$program, "糖")), "client_type"] <- 1
+clinical_list[intersect(which(is.na(clinical_list$client_type)), which(stringr::str_detect(clinical_list$program, "糖"))), "client_type"] <- 1
 #quit
-clinical_list[which(stringr::str_detect(clinical_list$note, "退")), "client_type"] <- 0
+clinical_list[intersect(which(is.na(clinical_list$client_type)), which(stringr::str_detect(clinical_list$note, "退"))), "client_type"] <- 0
 
 #Genesis
 clinical_stat <- clinical_list$client_type %>% table() %>% addmargins()

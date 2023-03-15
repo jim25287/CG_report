@@ -460,6 +460,19 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   
   
   
+  #cofit: 
+    ##重複資料太多，不能用
+  #clinic_df
+    ##Done
+  #diet calorie < 500/NA, summary, merge
+  
+  #progress, DM function
+  #client type
+  
+  
+  
+  
+  
   
   
   

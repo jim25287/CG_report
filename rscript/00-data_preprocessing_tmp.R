@@ -26,7 +26,6 @@ names(vars_table) <- c("num", "item_id", "ch", "en", "raw_en", "field")
 
 # 02.1 - [Data Preprocessing] 01_profile --------------------------------------------------
 #***[Note:] 20230309_finish_genesis_ONLY
-
 #input clinic_list
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-read_clinic_list.R")
 
@@ -342,13 +341,45 @@ df07_Diet_meal <- df07_Diet_meal[with(df07_Diet_meal, order(client_id, date_diet
 df06_Diet_day <- tmp_06
 
 df06_Diet_day[c("note_counts","pic_counts","essay_count","light_green_count","light_yellow_count","light_red_count","carbohydrate","protein","fat","calorie","calorie_target")] %<>% lapply(as.numeric)
+
+
+#Q. id NA
+df06_Diet_day <- df06_Diet_day %>% filter(!is.na(client_id))
+
+#merge day/meal
+df06_Diet_day <- merge(df06_Diet_day, df07_Diet_meal, by.x = c("client_id", "date_diet"), all.x = TRUE)
+
+
+id_diet <- df06_Diet_day[(df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]])), "client_id"] %>% unique()
+for (i in c(id_diet)) {
+  if (i == c(id_diet) %>% head(1)) {
+    ptm <- proc.time()
+    j = 1
+  }
+  df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]]))), "calorie"] <- 
+    df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] >= 500)), "calorie"] %>% mean(na.rm = TRUE) 
+  
+  progress(j, length(id_diet))
+  j = j + 1
+  
+  if (i == c(id_diet) %>% tail(1)) {
+    cat("\n[Completed!]\n")
+    cat("\n[執行時間]\n")
+    print(proc.time() - ptm)
+    rm(id_diet)
+  }
+}
+
+
 #calorie_deficit
 df06_Diet_day <- df06_Diet_day %>% mutate(calorie_deficit = calorie - calorie_target)
 
-df06_Diet_day <- merge(df06_Diet_day, df07_Diet_meal, by.x = c("client_id", "date_diet"), all.x = TRUE)
 
 #Sorting by Multiple Columns
 df06_Diet_day <- df06_Diet_day[with(df06_Diet_day, order(client_id, date_diet)),]
+
+
+
 
 
 
@@ -564,6 +595,60 @@ for (i in c(unique(stat_tm[["id"]]))) {
   j = j + 1
   
 }
+
+
+
+## temp --------------------------------------------------------------------
+
+df06_Diet_day_tmp <- df06_Diet_day[which(df06_Diet_day[["client_id"]] %in% unique(stat_table[["id"]])),]
+df06_Diet_day_tmp$date_t0 <- NA
+df06_Diet_day_tmp$date_t0 <- df06_Diet_day_tmp$date_t0 %>% as.Date()
+df06_Diet_day_tmp <- lin_mapping(df06_Diet_day_tmp, date_t0, client_id, stat_table, date_t0, id)
+df06_Diet_day_tmp$date_t1 <- NA
+df06_Diet_day_tmp$date_t1 <- df06_Diet_day_tmp$date_t1 %>% as.Date()
+df06_Diet_day_tmp <- lin_mapping(df06_Diet_day_tmp, date_t1, client_id, stat_table, date_t1, id)
+
+df06_Diet_day_tmp <- df06_Diet_day_tmp %>% filter((date_diet >= date_t0) & (date_diet <= date_t1))
+
+
+df06_Diet_day_tmp <- 
+df06_Diet_day_tmp %>% 
+  group_by(client_id) %>% 
+  summarise(
+    upload_day_p = (n() *100 / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2), 
+    note_counts = sum(note_counts, na.rm = TRUE),
+    pic_counts = sum(pic_counts, na.rm = TRUE),
+    
+    light_green_p = (sum(light_green_count, na.rm = TRUE) *100 / (sum(sum(light_green_count, na.rm = TRUE),
+                                                                      sum(light_yellow_count, na.rm = TRUE),
+                                                                      sum(light_red_count, na.rm = TRUE)))) %>% round(2),
+    light_yellow_p = (sum(light_yellow_count, na.rm = TRUE) *100 / (sum(sum(light_green_count, na.rm = TRUE),
+                                                                        sum(light_yellow_count, na.rm = TRUE),
+                                                                        sum(light_red_count, na.rm = TRUE)))) %>% round(2),
+    light_red_p = (sum(light_red_count, na.rm = TRUE) *100 / (sum(sum(light_green_count, na.rm = TRUE),
+                                                                  sum(light_yellow_count, na.rm = TRUE),
+                                                                  sum(light_red_count, na.rm = TRUE)))) %>% round(2),
+    
+    carb_ep = (sum(carbohydrate, na.rm = TRUE)*4*100 / sum(calorie, na.rm = TRUE)) %>% round(2),
+    protein_ep = (sum(protein, na.rm = TRUE)*4*100 / sum(calorie, na.rm = TRUE)) %>% round(2),
+    fat_ep = (sum(fat, na.rm = TRUE)*9*100 / sum(calorie, na.rm = TRUE)) %>% round(2),
+    calorie = (sum(calorie, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2), 
+    calorie_deficit_day = (sum(calorie_deficit, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2), 
+    calorie_deficit_sum = sum(calorie_deficit, na.rm = TRUE) %>% round(2),
+    
+    fruits = (sum(fruits, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2),  
+    vegetables = (sum(vegetables, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2),  
+    grains = (sum(grains, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2),  
+    meat_bean = (sum(meat_bean, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2),  
+    milk = (sum(milk, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2),  
+    oil = (sum(oil, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2)
+  )
+
+names(df06_Diet_day_tmp) <- names(df06_Diet_day_tmp) %>% lin_ch_en_format(format = "en", origin = "raw_en")
+
+stat_table <- merge(stat_table,
+                    df06_Diet_day_tmp, 
+                    by.x = "id", all.x = TRUE)
 
 
 

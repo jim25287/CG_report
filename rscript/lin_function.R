@@ -634,7 +634,7 @@ progress <- function (x, max = 100) {
   percent <- x / max * 100
   cat(sprintf('\r[%-50s] %d%%',
               paste(rep('=', percent / 2), collapse = ''),
-              floor(percent)))
+              floor(percent)), paste0("(", x, "/", max, ")"))
   if (x == max)
     cat('\n')
 }
@@ -955,7 +955,7 @@ lin_ch_en_format <- function(x, format, origin){
   
   #2. return vars not establish in the vars_table
   if (length(x[which(!(x %in% vars_table[[origin]]))]) != 0) {
-    cat("\n[Not matching list:]\n")
+    cat("\n[Not matched list:]\n")
     return(x[which(!(x %in% vars_table[[origin]]))])
   }else{
     #3. change format
@@ -969,6 +969,7 @@ lin_ch_en_format <- function(x, format, origin){
       }
     } 
     results <- results %>% as.character()
+    cat("\n[Successfully Match:]\n")
     return(results)
   }
 }

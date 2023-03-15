@@ -11,9 +11,10 @@ WITH
     FROM group_classes
     INNER JOIN programs ON group_classes.program_id = programs.id
     INNER JOIN users ON group_classes.user_id = users.id
-    WHERE programs.name ILIKE '%FLC%' AND programs.org_id = 3
+    WHERE programs.org_id = 3
+      AND group_classes.name NOT LIKE '%初日%' OR group_classes.name NOT LIKE '%宋醫師進階%' OR group_classes.name NOT LIKE '%診所進階%'
 --    Temp
-      --AND group_classes.created_at BETWEEN '2022-12-01' AND '2023-02-01'
+      AND group_classes.created_at BETWEEN '2022-12-01' AND '2023-02-01'
   ),
   group_classes_of_flc_program_join_users_and_clients AS (
     SELECT 
@@ -32,14 +33,13 @@ WITH
     FROM notes
     INNER JOIN group_classes_of_flc_program_join_users_and_clients ON notes.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
            AND notes.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
+    --    Temp
+      WHERE notes.created_at BETWEEN '2022-12-01' AND '2023-02-01'
   ),
   note_assets_of_flc_courses AS (
     SELECT
       note_assets.id, note_assets.data, notes_of_flc_courses.client_id,
-      CASE note_assets.data->>'light'
-        WHEN 'green' THEN true
-        ELSE false
-      END AS is_g_light
+      note_assets.data->>'light' AS light
     FROM note_assets
     INNER JOIN notes_of_flc_courses
     ON note_assets.note_id = notes_of_flc_courses.id
@@ -48,7 +48,7 @@ WITH
   notes_count_of_flc_courses AS (
     SELECT
       notes.client_id,
-      COUNT(notes.id) AS notes_count,
+      COUNT(notes.date) AS notes_count,
       MAX(notes.date) AS max_notes_date
     FROM notes_of_flc_courses AS notes
     GROUP BY notes.client_id, notes.date
@@ -57,7 +57,8 @@ WITH
     SELECT
       client_id,
       COUNT(id) AS note_assets_count,
-      COUNT(id) FILTER (WHERE is_g_light IS TRUE) AS note_assets_g_light_count
+      COUNT(id) FILTER (WHERE light = 'green') AS note_assets_g_light_count,
+      COUNT(id) FILTER (WHERE light = 'green') / NULLIF(COUNT(id) FILTER (WHERE light IN ('yellow', 'red')), 0) AS note_assets_g_light_ratio
     FROM note_assets_of_flc_courses
     GROUP BY client_id
   ),
@@ -93,7 +94,8 @@ SELECT
   group_classes_of_flc_program_join_users_and_clients.current->>'height' AS height,
   COALESCE(notes_count_of_flc_courses.notes_count, 0) AS day_count,
   COALESCE(note_assets_count_of_flc_courses.note_assets_count, 0) AS pic_count,
-  COALESCE(note_assets_count_of_flc_courses.note_assets_g_light_count) AS light_G_count,
+  COALESCE(note_assets_count_of_flc_courses.note_assets_g_light_count, 0) AS light_G_count,
+  COALESCE(note_assets_count_of_flc_courses.note_assets_g_light_ratio, 0) AS light_G_p,
   consulting_client_summaries_before.weight AS weight_before,
   consulting_client_summaries_after.weight AS weight_after,
   consulting_client_summaries_after.weight - consulting_client_summaries_before.weight AS weight_delta,

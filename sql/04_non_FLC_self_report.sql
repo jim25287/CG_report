@@ -2,6 +2,7 @@
 -- 沒有參加團班的 clients
 SELECT
   consulting_client_summaries.client_id,
+  clients.gender,
   (TIMEZONE('UTC', consulting_client_summaries.created_at) AT TIME ZONE 'Asia/Taipei')::DATE AS date_free_version,
   TIMEZONE('UTC', consulting_client_summaries.created_at) AT TIME ZONE 'Asia/Taipei' AS date_time,
   consulting_client_summaries.weight,
@@ -9,6 +10,7 @@ SELECT
   consulting_client_summaries.body_fat_mass AS fat,
   consulting_client_summaries.waist_circumference AS wc
 FROM consulting_client_summaries
+INNER JOIN clients ON clients.id = consulting_client_summaries.client_id
 LEFT JOIN group_class_orders ON consulting_client_summaries.client_id = group_class_orders.client_id
 WHERE group_class_orders.id IS NULL
   AND consulting_client_summaries.client_id IS NOT NULL

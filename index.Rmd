@@ -63,6 +63,7 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
   
   lin_connect_db("exit")
   rm(path_sql)
+  
 ```
 
 

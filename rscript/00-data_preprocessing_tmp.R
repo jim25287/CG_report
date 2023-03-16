@@ -148,6 +148,11 @@ df03_FLC_self_report <- tmp_03
 
 #C1. col_names
 names(df03_FLC_self_report) <- names(df03_FLC_self_report) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+#C1-2. filter by 01.profile org_name == cofit
+# df03_FLC_self_report[which(unique(df01_profile[df01_profile[["org_name"]] == "cofit", "id"]) %in% df03_FLC_self_report[["id"]]),]
+df03_FLC_self_report <- df03_FLC_self_report[which((df03_FLC_self_report[["id"]]) %in% unique(df01_profile[df01_profile[["org_name"]] == "cofit", "id"])),] 
+
+
 df03_FLC_self_report <- df03_FLC_self_report[with(df03_FLC_self_report, order(date_flc_T0)),]
 
 #C2. age: btd - date_t0 年齡(療程起始當天計算)
@@ -360,6 +365,9 @@ df06_Diet_day <- merge(df06_Diet_day, df07_Diet_meal, by.x = c("client_id", "dat
 #outliers adjust:
   #all record should be replaced by avg performance, instead of caloire only.
 id_diet <- df06_Diet_day[(df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]])), "client_id"] %>% unique()
+# [執行時間]
+# 使用者      系統      流逝 
+# 14342.534  5612.097 28568.632 
 for (i in c(id_diet)) {
   if (i == c(id_diet) %>% head(1)) {
     ptm <- proc.time()

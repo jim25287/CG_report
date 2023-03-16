@@ -254,8 +254,8 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   print(proc.time() - ptm)
   
   # [執行時間:03_FLC_self_report]
-  # 使用者   系統   流逝 
-  # 1.063   0.634 667.688 
+  # 使用者    系統    流逝 
+  # 0.474   0.331 724.842 
   ptm <- proc.time()
   tmp_03 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "03_FLC_self_report.sql")))
   cat("[執行時間:03_FLC_self_report]\n")
@@ -471,9 +471,11 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   #client type
   
   
+  i = 2941
+  a <- df06_Diet_day %>% filter(client_id == 2941)
   
-  
-  
+  a[(a[["client_id"]] == i) & ((a[["calorie"]] < 500) | (is.na(a[["calorie"]]))), a %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] <- 
+    a[(a[["client_id"]] == i) & ((a[["calorie"]] >= 500)), a %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] %>% lapply(., function(x) mean(x, na.rm =TRUE) %>% round(2) )
   
   
   

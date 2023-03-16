@@ -247,13 +247,13 @@ names(a)[-1] <- paste0(a %>% select(-c("id")) %>% names(), "_baseline")
 b <- df04_non_FLC_self_report_tmp[seq(2,nrow(df04_non_FLC_self_report_tmp), 2),] 
 names(b)[-1] <- paste0(b %>% select(-c("id")) %>% names(), "_endpoint")
 
-aa <- b %>% select(-c("id", "date_free_version_endpoint")) - a %>% select(-c("id", "date_free_version_baseline"))
+aa <- b %>% select(-c("id", "date_free_version_endpoint", "gender_endpoint")) - a %>% select(-c("id", "date_free_version_baseline", "gender_baseline"))
 aa <- cbind(a %>% select("id"), aa)
-names(aa)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version")) %>% names())
+names(aa)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version", "gender")) %>% names())
 
-bb <- ((b %>% select(-c("id", "date_free_version_endpoint")) - a %>% select(-c("id", "date_free_version_baseline")))*100 /   a %>% select(-c("id", "date_free_version_baseline"))) %>% round(2) 
+bb <- (((b %>% select(-c("id", "date_free_version_endpoint", "gender_endpoint"))) - a %>% select(-c("id", "date_free_version_baseline","gender_baseline")))*100 /   a %>% select(-c("id", "date_free_version_baseline","gender_baseline"))) %>% round(2) 
 bb <- cbind(a %>% select("id"), bb)
-names(bb)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version")) %>% names(), "%")
+names(bb)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version", "gender")) %>% names(), "%")
 
 c1 <- full_join(a, b, by = c("id"))
 names(c1)[grep("date", names(c1))] <- c("date_baseline","date_endpoint")
@@ -275,9 +275,17 @@ for (i in c(df04_non_FLC_self_report %>% names() %>% grep("∆", ., value = TRUE
 #sample size report
 df04_non_FLC_self_report$id %>% unique() %>% length()
 
+
 #df04_non_FLC_self_report %>% summary()
 
-
+# df04_non_FLC_self_report %>% 
+#   group_by(gender_baseline) %>% 
+#   summarize(
+#     `∆weight%` = mean(`∆weight%`, na.rm = TRUE),
+#     `∆fat%` = mean(`∆fat%`, na.rm = TRUE),
+#     `∆wc%` = mean(`∆wc%`, na.rm = TRUE),
+#     n = n()
+#   )
 
 # 02.5 - [Data Preprocessing] 05_biochem --------------------------------------------------
 

@@ -51,14 +51,15 @@ WITH
       COUNT(notes.date) AS notes_count,
       MAX(notes.date) AS max_notes_date
     FROM notes_of_flc_courses AS notes
-    GROUP BY notes.client_id, notes.date
+    GROUP BY notes.client_id
   ),
   note_assets_count_of_flc_courses AS (
     SELECT
       client_id,
       COUNT(id) AS note_assets_count,
       COUNT(id) FILTER (WHERE light = 'green') AS note_assets_g_light_count,
-      COUNT(id) FILTER (WHERE light = 'green') / NULLIF(COUNT(id) FILTER (WHERE light IN ('yellow', 'red')), 0) AS note_assets_g_light_ratio
+      COUNT(id) FILTER (WHERE light IS NOT NULL) AS note_assets_not_g_light_count,
+      COUNT(id) FILTER (WHERE light = 'green')::DOUBLE PRECISION / NULLIF(COUNT(id) FILTER (WHERE light IS NOT NULL), 0) AS note_assets_g_light_ratio
     FROM note_assets_of_flc_courses
     GROUP BY client_id
   ),
@@ -95,7 +96,8 @@ SELECT
   COALESCE(notes_count_of_flc_courses.notes_count, 0) AS day_count,
   COALESCE(note_assets_count_of_flc_courses.note_assets_count, 0) AS pic_count,
   COALESCE(note_assets_count_of_flc_courses.note_assets_g_light_count, 0) AS light_G_count,
-  COALESCE(note_assets_count_of_flc_courses.note_assets_g_light_ratio, 0) AS light_G_p,
+  COALESCE(note_assets_count_of_flc_courses.note_assets_not_g_light_count, 0)::FLOAT AS light_not_G_count,
+  note_assets_count_of_flc_courses.note_assets_g_light_ratio AS light_G_p,
   consulting_client_summaries_before.weight AS weight_before,
   consulting_client_summaries_after.weight AS weight_after,
   consulting_client_summaries_after.weight - consulting_client_summaries_before.weight AS weight_delta,

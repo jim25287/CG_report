@@ -146,6 +146,9 @@ df02_inbody <- df02_inbody[-which(df02_inbody$bmi >100),]
 
 df03_FLC_self_report <- tmp_03
 
+#tmp
+df03_FLC_self_report <- df03_FLC_self_report %>% select(-light_not_g_count)
+
 #C1. col_names
 names(df03_FLC_self_report) <- names(df03_FLC_self_report) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
 #C1-2. filter by 01.profile org_name == cofit
@@ -680,16 +683,17 @@ x <- list(
   `Diet` = stat_table[!is.na(stat_table[["note_count"]]), "id"]
 )
 
+
 ggvenn(
   x, columns = names(x)[c(2,4,5,6)],
   fill_color = c("#0073C2", "#CD534C", "#00FA9A", "#EFC000", "#868686"),
-  stroke_size = 0.5, set_name_size = 3.5, show_outside = "always",
-) +
+  stroke_size = 0.5, set_name_size = 3.5, 
+  ) +
   labs(title = "Data Screening")+
   theme(
     plot.title = element_text(size = 20, face = "bold", hjust = 0.5, vjust = 2.0),
     plot.margin = unit(c(0.5,0,0,0), "cm")
-  ) 
+    ) 
 
 
 

@@ -1,3 +1,6 @@
+save.image("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/WSpace_preproc.RData")
+
+
 #身體維度資料 e.g., wc 改用 3D data ##**缺date 欄位
 
 

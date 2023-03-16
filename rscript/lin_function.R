@@ -1045,8 +1045,7 @@ lin_timestamp <- function(time = Sys.time()){
 
 
 # [Function 10:] Insulin Response Pattern Categorization -------------------------------
-#****[20221219 version, confirmed]
-lin_DM_diagnosis <- function(df = NULL, variablesL){
+lin_DM_diagnosis <- function(df = NULL, variables){
   
   
   if (is.null(df)) {
@@ -1055,7 +1054,8 @@ lin_DM_diagnosis <- function(df = NULL, variablesL){
         "1. hba1c\n",
         "2. glucose_ac\n",
         "3. glucose_pc_1hr\n",
-        "4. glucose_pc_2hr\n\n"
+        "4. glucose_pc_2hr\n",
+        "try: df %>% names() %>% grep(\"hba1c|glucose\", ., value = TRUE)\n\n"
         )
   }
   
@@ -1069,22 +1069,22 @@ lin_DM_diagnosis <- function(df = NULL, variablesL){
   df[["DM"]] <- "Unclassified"
   
   setDT(df)[
-    (eval(parse(text = variables[1])) >= 6.5) |
-      (eval(parse(text = variables[2])) >= 126) |
-      (eval(parse(text = variables[4])) >= 200),
-    DM := "DM"]
-  
-  setDT(df)[
     ((eval(parse(text = variables[1])) >= 5.7) & (eval(parse(text = variables[1])) < 6.5)) |
       ((eval(parse(text = variables[2])) >= 100) & (eval(parse(text = variables[2])) < 126)) |
       ((eval(parse(text = variables[4])) >= 140) & (eval(parse(text = variables[4])) < 200)),
     DM := "Pre-DM"]
   
   setDT(df)[
+    (eval(parse(text = variables[1])) >= 6.5) |
+      (eval(parse(text = variables[2])) >= 126) |
+      (eval(parse(text = variables[4])) >= 200),
+    DM := "DM"]
+  
+  setDT(df)[
     (eval(parse(text = variables[1])) < 5.7) &
       (eval(parse(text = variables[2])) < 100) &
       (eval(parse(text = variables[4])) < 140),
-    DM := "DM"]
+    DM := "Normal"]
   
   
   cat("\n[Completed!]\n")

@@ -325,6 +325,9 @@ df05_biochem <- df05_biochem %>% mutate(OGIRIndex = lin_AUC_calc(df05_biochem, d
                               lin_AUC_calc(df05_biochem, df05_biochem %>% names() %>% grep("^glucose", ., value = TRUE), increment_value = 50))
 
 
+df05_biochem %>% lin_DM_diagnosis(c("hba1c", "glucose_ac", "glucose_pc_1hr","glucose_pc_2hr")) %>% select(c("hba1c", "glucose_ac", "glucose_pc_1hr","glucose_pc_2hr","DM")) %>% View()
+
+
 # 02.6 - [Data Preprocessing] 07_Diet_meal --------------------------------------------------
 
 df07_Diet_meal <- tmp_07

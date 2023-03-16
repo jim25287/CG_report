@@ -474,13 +474,33 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   #client type
   
   
-  i = 2941
-  a <- df06_Diet_day %>% filter(client_id == 2941)
+  #df01_profile, client_type_is.na, look-up from clinic note
+    #1.not clinic
+    a1 <- df01_profile %>% filter(!((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow"))) 
+    #2.clinic, !is.na:client_type #map_ref
+    a2 <- df01_profile %>% filter((!is.na(client_type)) & ((org_name == "genesisclinic") | (org_name == "topshow")))
+    #3.clinic
+    a3 <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+    #4. map 2 & 3 / adv.clinic_list
+    a3 <- lin_mapping(a3, client_type, id, a2, client_type, id)
+    a3 <- lin_mapping(a3, client_type, id, clinical_adv_list, client_type, id)
+    #5. rbind, order
+    a4 <- a1 %>% rbind(a3) 
+    a4 <- a4[with(a4, order(date_t0, id)),]
+    # a4 %>% nrow()
+    df01_profile <- a4
+    rm(list = c("a1","a2","a3","a4"))
   
-  a[(a[["client_id"]] == i) & ((a[["calorie"]] < 500) | (is.na(a[["calorie"]]))), a %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] <- 
-    a[(a[["client_id"]] == i) & ((a[["calorie"]] >= 500)), a %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] %>% lapply(., function(x) mean(x, na.rm =TRUE) %>% round(2) )
+  #df01_profile, client_type_is.na, look-up from blood_first_record
+    df01_profile_tmp <- df01_profile[is.na(df01_profile[["client_type"]]) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), ]
+    df01_profile_tmp[["id"]] %in%
   
   
+  
+  df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow")) %>% View()
+  df01_profile[!is.na(df01_profile[["client_type"]]) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), ] %>% View()
+  df01_profile[is.na(df01_profile[["client_type"]]) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "id"] %>% unique() %>% length()
+  df01_profile[!is.na(df01_profile[["client_type"]]) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "id"] %>% unique() %>% length()
   
   
   

@@ -465,8 +465,9 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   #clinic_df
     ##Done
   #diet calorie < 500/NA, summary, merge
-  
+    ##Done
   #progress, DM function
+    ##Done
   #client type
   
   

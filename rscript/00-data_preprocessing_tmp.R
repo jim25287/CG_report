@@ -349,15 +349,17 @@ df06_Diet_day <- df06_Diet_day %>% filter(!is.na(client_id))
 #merge day/meal
 df06_Diet_day <- merge(df06_Diet_day, df07_Diet_meal, by.x = c("client_id", "date_diet"), all.x = TRUE)
 
-
+#outliers adjust:
+  #all record should be replaced by avg performance, instead of caloire only.
 id_diet <- df06_Diet_day[(df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]])), "client_id"] %>% unique()
 for (i in c(id_diet)) {
   if (i == c(id_diet) %>% head(1)) {
     ptm <- proc.time()
     j = 1
   }
-  df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]]))), "calorie"] <- 
-    df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] >= 500)), "calorie"] %>% mean(na.rm = TRUE) 
+  df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]]))), df06_Diet_day %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] <- 
+    df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] >= 500)), df06_Diet_day %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] %>% lapply(., function(x) mean(x, na.rm =TRUE) %>% round(2))
+  
   
   progress(j, length(id_diet))
   j = j + 1
@@ -649,6 +651,32 @@ names(df06_Diet_day_tmp) <- names(df06_Diet_day_tmp) %>% lin_ch_en_format(format
 stat_table <- merge(stat_table,
                     df06_Diet_day_tmp, 
                     by.x = "id", all.x = TRUE)
+
+
+
+
+x <- list(
+  `All_clients` = stat_tm[["id"]] %>% unique(),
+  `Obesity` =  stat_table[stat_table[["client_type"]] == 2, "id"],
+  `Diabetes` =  stat_table[stat_table[["client_type"]] == 1, "id"],
+  `Inbody` = stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
+  `Blood` = stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
+  `Diet` = stat_table[!is.na(stat_table[["note_count"]]), "id"]
+)
+
+ggvenn(
+  x, columns = names(x)[c(2,4,5,6)],
+  fill_color = c("#0073C2", "#CD534C", "#00FA9A", "#EFC000", "#868686"),
+  stroke_size = 0.5, set_name_size = 3.5, show_outside = "always",
+) +
+  labs(title = "Data Screening")+
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5, vjust = 2.0),
+    plot.margin = unit(c(0.5,0,0,0), "cm")
+  ) 
+
+
+
 
 
 

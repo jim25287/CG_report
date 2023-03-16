@@ -1039,3 +1039,63 @@ lin_timestamp <- function(time = Sys.time()){
   timestamp_en <- format(time, "%H:%M:%S") %>% stringr::str_split(pattern = ":") %>% unlist() %>% as.numeric() %>% magrittr::add(key) %>% format.hexmode(width = 2, upper.case = TRUE) %>% paste0(collapse = "")
   return(timestamp_en)
 }
+
+
+
+
+
+# [Function 10:] Insulin Response Pattern Categorization -------------------------------
+#****[20221219 version, confirmed]
+lin_DM_diagnosis <- function(df = NULL, variablesL){
+  
+  
+  if (is.null(df)) {
+    cat("lin_DM_diagnosis(df, variables)","\n",
+        "variables = \n",
+        "1. hba1c\n",
+        "2. glucose_ac\n",
+        "3. glucose_pc_1hr\n",
+        "4. glucose_pc_2hr\n\n"
+        )
+  }
+  
+  
+  # Start the clock!
+  ptm <- proc.time()
+  
+  library(data.table)
+  library(magrittr)
+  
+  df[["DM"]] <- "Unclassified"
+  
+  setDT(df)[
+    (eval(parse(text = variables[1])) >= 6.5) |
+      (eval(parse(text = variables[2])) >= 126) |
+      (eval(parse(text = variables[4])) >= 200),
+    DM := "DM"]
+  
+  setDT(df)[
+    ((eval(parse(text = variables[1])) >= 5.7) & (eval(parse(text = variables[1])) < 6.5)) |
+      ((eval(parse(text = variables[2])) >= 100) & (eval(parse(text = variables[2])) < 126)) |
+      ((eval(parse(text = variables[4])) >= 140) & (eval(parse(text = variables[4])) < 200)),
+    DM := "Pre-DM"]
+  
+  setDT(df)[
+    (eval(parse(text = variables[1])) < 5.7) &
+      (eval(parse(text = variables[2])) < 100) &
+      (eval(parse(text = variables[4])) < 140),
+    DM := "DM"]
+  
+  
+  cat("\n[Completed!]\n")
+  cat("\n[執行時間]\n")
+  print(proc.time() - ptm)
+  
+  cat("\n[Result]\n")
+  
+  result <- table(df[["DM"]]) %>% addmargins() %>% as.data.frame()
+  
+  print(result)
+  return(df)
+  
+}

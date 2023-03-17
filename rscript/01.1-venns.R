@@ -3,113 +3,98 @@ pacman::p_load(magrittr, knitr, kableExtra, dplyr, readr, readxl, tibble, showte
 
 
 
-#Venn unscreened
+#Venn Graph
 x <- list(
-  Inbody = clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-  Blood_Test = clinic_blood_data_ori %>% select(id) %>% pull() %>% unique(),
-  Clinic_clients = clinical_list %>% select(id) %>% pull() %>% unique()
+  #1
+  `Clinic_clients` = stat_table[["id"]] %>% unique(),
+  #2
+  `Obesity` =  stat_table[stat_table[["client_type"]] == 2, "id"],
+  #3
+  `Diabetes` =  stat_table[stat_table[["client_type"]] == 1, "id"],
+  #4
+  `Inbody` = stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
+  #5
+  `Blood` = stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
+  #6
+  `Diet` = stat_table[!is.na(stat_table[["note_count"]]), "id"],
+  #7.OB.
+  `Fit_criteria_OB` = Reduce(intersect, list(stat_table[stat_table[["client_type"]] == 2, "id"],
+                                             stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
+                                             stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
+                                             stat_table[!is.na(stat_table[["note_count"]]), "id"]
+  )), 
+  #8.DM.
+  `Fit_criteria_DM` = Reduce(intersect, list(stat_table[stat_table[["client_type"]] == 1, "id"],
+                                             stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
+                                             stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
+                                             stat_table[!is.na(stat_table[["note_count"]]), "id"]
+  )),
+  #9
+  `Quit` =  stat_table[(stat_table[["client_type"]] != 1) & (stat_table[["client_type"]] != 2), "id"]
 )
 
-plot_1 <- 
-ggvenn(
-  x, 
-  fill_color = c("#0073C2", "#CD534C", "#00FA9A", "#EFC000", "#868686"),
-  stroke_size = 0.5, set_name_size = 4
-) +
-  labs(title = "Whole Datasets")+
-  theme(
-    plot.title = element_text(size = 20, face = "bold", hjust = 0.5, vjust = 2.0),
-    plot.margin = unit(c(0.5,0,0,0), "cm")
-  )
 
-rm(x)
-
-#output Whole client id (unscreened)
-# cat("Whole client List_Cofit_Genesis",
-#     union(clinic_inbody_data_ori %>% select(id) %>% pull(),
-#           clinic_blood_data_ori %>% select(id) %>% pull()) %>% unique(),
-#     sep = "\n", file = "all_client_list.csv")
-
-#output inbody_blood_not_in_Genesis_list
-# cat("List not in Genesis",
-#     setdiff(intersect(clinic_blood_data_ori %>% select(id) %>% pull() %>% unique(), clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique()), clinical_list %>% select(id) %>% pull() %>% unique()),
-#     sep = "\n", file = "list_not_in_Genesis.csv")
-
-
-#output Excluded List
-# cat("Inbody Excluded List",
-#     setdiff(clinic_inbody_data_ori$id %>% unique(),
-#             clinic_inbody_data_ori %>% filter(id %in% unique(clinical_list$id)) %>% select(id) %>% pull() %>% unique()),
-#     sep = "\n", file = "excluded_1.csv")
-# cat("Blood Excluded List",
-#     setdiff(clinic_blood_data_ori$id %>% unique(),
-#             clinic_blood_data_ori %>% filter(id %in% unique(clinical_list$id)) %>% select(id) %>% pull() %>% unique()),
-#     sep = "\n", file = "excluded_1.csv", append = TRUE)
-# cat("Inbody_Blood_not_in_Genesis List",
-#     setdiff(intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(), clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()), 
-#             clinical_list %>% select(id) %>% pull() %>% unique()),
-#     sep = "\n", file = "excluded_1.csv", append = TRUE)
-
-
-
-#Clinical Client exclusion
-# df <- createWorkbook()
-# addWorksheet(df, sheetName = "Clients_no_inbody_blood_data", gridLines = FALSE)
-# writeDataTable(df, sheet = 1, 
-#                clinical_list[which(clinical_list$id %in% setdiff(clinical_list %>% select(id) %>% pull() %>% unique(),  union(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(), clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()))), ]) 
-# addWorksheet(df, sheetName = "Clients_no_blood_data", gridLines = FALSE)
-# writeDataTable(df, sheet = 2, 
-#                clinical_list[which(clinical_list$id %in% setdiff(intersect(clinical_list %>% select(id) %>% pull() %>% unique(), clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique()), clinic_blood_data_ori %>% select(id) %>% pull() %>% unique())), ]) 
-# addWorksheet(df, sheetName = "Clients_no_inbody_data", gridLines = FALSE)
-# writeDataTable(df, sheet = 3, 
-#                clinical_list[which(clinical_list$id %in% setdiff(intersect(clinical_list %>% select(id) %>% pull() %>% unique(), clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()), clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique())), ])
-# saveWorkbook(df, "excluded_2.xlsx", overwrite = TRUE)
-# rm(df)
-
-
-# #inclusion
-# clinic_inbody_data_ori %<>% filter(id %in% unique(clinical_list$id))
-# clinic_blood_data_ori %<>% filter(id %in% unique(clinical_list$id))
-
-#Venn
-x <- list(
-  Inbody = clinic_inbody_data_ori %>% filter(id %in% unique(clinical_list$id)) %>% select(id) %>% pull() %>% unique(),
-  Blood_Test = clinic_blood_data_ori %>% filter(id %in% unique(clinical_list$id)) %>% select(id) %>% pull() %>% unique()
-)
-
-plot_2 <- 
-ggvenn(
-  x, 
-  fill_color = c("#0073C2", "#CD534C", "#00FA9A", "#EFC000", "#868686"),
-  stroke_size = 0.5, set_name_size = 4
-)+
-  labs(title = "Clinic Datasets")+
-  theme(
-    plot.title = element_text(size = 20, face = "bold", hjust = 0.5, vjust = 2.0),
-    plot.margin = unit(c(0.5,0,0,0), "cm")
-  )
-
-rm(x)
-
-
-
-
-x <- list(
-  All_clients = before_screening_data %>% select(id) %>% pull() %>% unique(),
-  Fit_criteria = stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique()
-)
-
-plot_3 <- 
+plot_venn_0 <- 
   ggvenn(
-    x, 
+    x, columns = names(x)[c(2,3,9)],
     fill_color = c("#0073C2", "#CD534C", "#00FA9A", "#EFC000", "#868686"),
-    stroke_size = 0.5, set_name_size = 4
+    stroke_size = 0.5, set_name_size = 3.5, 
   ) +
   labs(title = "Data Screening")+
   theme(
     plot.title = element_text(size = 20, face = "bold", hjust = 0.5, vjust = 2.0),
     plot.margin = unit(c(0.5,0,0,0), "cm")
-  )
+  ) 
+
+plot_venn_1 <- 
+  ggvenn(
+    x, columns = names(x)[c(2,7,1)],
+    fill_color = c("#0073C2", "#CD534C", "#00FA9A", "#EFC000", "#868686"),
+    stroke_size = 0.5, set_name_size = 3.5, 
+  ) +
+  labs(title = "Data Screening")+
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5, vjust = 2.0),
+    plot.margin = unit(c(0.5,0,0,0), "cm")
+  ) 
+
+plot_venn_2 <- 
+  ggvenn(
+    x, columns = names(x)[c(2,4,5,6)],
+    fill_color = c("#0073C2", "#CD534C", "#00FA9A", "#EFC000", "#868686"),
+    stroke_size = 0.5, set_name_size = 3.5, 
+  ) +
+  labs(title = "Data Screening")+
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5, vjust = 2.0),
+    plot.margin = unit(c(0.5,0,0,0), "cm")
+  ) 
+
+plot_venn_3 <- 
+  ggvenn(
+    x, columns = names(x)[c(3,8,1)],
+    fill_color = c("#0073C2", "#CD534C", "#00FA9A", "#EFC000", "#868686"),
+    stroke_size = 0.5, set_name_size = 3.5, 
+  ) +
+  labs(title = "Data Screening")+
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5, vjust = 2.0),
+    plot.margin = unit(c(0.5,0,0,0), "cm")
+  ) 
+
+plot_venn_4 <- 
+  ggvenn(
+    x, columns = names(x)[c(3,4,5,6)],
+    fill_color = c("#0073C2", "#CD534C", "#00FA9A", "#EFC000", "#868686"),
+    stroke_size = 0.5, set_name_size = 3.5, 
+  ) +
+  labs(title = "Data Screening")+
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5, vjust = 2.0),
+    plot.margin = unit(c(0.5,0,0,0), "cm")
+  ) 
+
+
+
 rm(x)
-rm(list = c("before_screening_data"))
 

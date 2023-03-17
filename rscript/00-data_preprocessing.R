@@ -1,599 +1,754 @@
 
-# 01-setting --------------------------------------------------------------
-  
-  #load packages
-  library(pacman)
-  pacman::p_load(magrittr, knitr, kableExtra, dplyr, readr, readxl, tibble, showtext, extraInserts,
-                 ggvenn, ggplot2,knitr, kableExtra, openxlsx, lubridate, cowplot, ggpubr, webshot,
-                 stringr)
-  #font
-  font_add(family = "berlin_default", regular = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/font/STHeiti Light.ttc")
-  showtext_auto(enable = TRUE)
-  
+# 01 - setting --------------------------------------------------------------
 
-  
-  
-  
-# 02.0-input_name_table --------------------------------------------------------
-  library(googlesheets4)
-  vars_table <- googlesheets4::read_sheet(ss = 'https://docs.google.com/spreadsheets/d/1T2swdx1cbfmUSUNQCQpbxa4aIJDTLD0oVKj3AuvNAuM/edit?usp=sharing', 
-                                          sheet = "vars_table",
-                                          col_types = "iccccc")
-  names(vars_table) <- c("num", "item_id", "ch", "en", "raw_en", "field")
-  
-  
-  
-  
-  
-  
-  
-# 02.1-input_blood --------------------------------------------------------
-  #blood datasets
-  clinic_blood_data <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/blood_data.csv")
-  
-  #blood data clean
-  clinic_blood_data <-  clinic_blood_data %>% dplyr::select(c("member_id","date","hba1c","glucose_ac","glucose_pc_1hr","glucose_pc_2hr","insulin","insulin_pc_1hr",
-                                                              "insulin_pc_2hr","homa_ir","homa_beta","triglyceride","total_cholesterol","high_density_lipoprotein",
-                                                              "low_density_lipoprotein_cholesterol","e2","testosterone", "lipase"))
-  colnames(clinic_blood_data)[c(1,2,12,13,14,15)] <- c("id","date_blood","tg","tc","hdl","ldl")
-  
-  clinic_blood_data <- clinic_blood_data[Reduce(dplyr::union,list(which(!is.na(clinic_blood_data$tg)),
-                                                                  which(!is.na(clinic_blood_data$tc)),
-                                                                  which(!is.na(clinic_blood_data$hdl)),
-                                                                  which(!is.na(clinic_blood_data$ldl)))),]
-  #variable format
-  clinic_blood_data$date_blood <- as.Date(clinic_blood_data$date_blood)
-  clinic_blood_data[c("id")] %<>% lapply(as.integer)
-  clinic_blood_data[c("homa_ir", "homa_beta")] %<>% lapply(gsub, pattern = "[^0-9.-]", replacement = "NA")
-  clinic_blood_data[c("glucose_pc_1hr","glucose_pc_2hr","insulin","insulin_pc_1hr","insulin_pc_2hr","homa_ir", "homa_beta","tg","tc","hdl","ldl","e2","testosterone", "lipase")] %<>% lapply(as.numeric)
-  
-  #wrong data
-  clinic_blood_data <- clinic_blood_data[-which((clinic_blood_data$id == 470051) & (clinic_blood_data$date_blood == "2021-10-23")),]
-  clinic_blood_data <- clinic_blood_data[-which(clinic_blood_data$id == 302),]
+#load packages
+library(pacman)
+pacman::p_load(magrittr, knitr, kableExtra, dplyr, readr, readxl, tibble, showtext, extraInserts,
+               ggvenn, ggplot2,knitr, kableExtra, openxlsx, lubridate, cowplot, ggpubr, webshot,
+               stringr)
+#font
+font_add(family = "berlin_default", regular = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/font/STHeiti Light.ttc")
+showtext_auto(enable = TRUE)
 
 
-# 02.2-input_inbody -------------------------------------------------------
-  #inbody datasets
-  clinic_inbody_data <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/inbody_data.csv")
-  
-  #Sarcopenia Obesity(SO): "left_arm_muscle", "left_leg_muscle", "right_arm_muscle", "right_leg_muscle" #Female: < 23.4; Male: < 29.6. 
-  clinic_inbody_data <- clinic_inbody_data %>% mutate(so_score = round((left_arm_muscle+left_leg_muscle+right_arm_muscle+right_leg_muscle)*100/weight,2))
-  #pbm
-  clinic_inbody_data <- clinic_inbody_data %>% mutate(pbm = round((muscle_mass)*100/weight,2))
-  
-  
-  #inbody data clean
-  clinic_inbody_data <- clinic_inbody_data %>% dplyr::select(c("member_id","date","weight","bmi","body_fat_mass","body_fat_mass_percentage", "bsmi", "muscle_mass", "pbm", "vfa_level","waist_circumference","weight_without_fat","extracellular_water_ratio", "wepa50","bmr", "so_score", "tbwffm"))
-  colnames(clinic_inbody_data)[c(1,2,5,6,8,10,11,12)] <- c("id","date_inbody","bf","pbf","bm","vfa","wc","ffm")
-  #variable format
-  clinic_inbody_data$date_inbody <- as.Date(clinic_inbody_data$date_inbody)
-  clinic_inbody_data[c("id","vfa")] %<>% lapply(as.integer)
-  clinic_inbody_data[c("weight","bmi","bf","pbf", "bsmi","bm","wc","ffm","extracellular_water_ratio","wepa50","bmr")] %<>% lapply(as.numeric)
-  #rm outlier
-  clinic_inbody_data <- clinic_inbody_data[-which(clinic_inbody_data$bmi >100),]
-  clinic_inbody_data <- clinic_inbody_data[-which(clinic_inbody_data$id == 302),]
-  
-  
 
-  
 
-# 02.3-input 3d -----------------------------------------------------------
-  
-  #3d datasets
-  # clinic_3d_data <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/clinic_3d_data.csv")
-  # clinic_3d_data <- clinic_3d_data %>% dplyr::select(c("member_id","date","weight","bmi","body_fat_mass","body_fat_mass_percentage", "bsmi", "muscle_mass","vfa_level","waist_circumference","weight_without_fat","extracellular_water_ratio", "wepa50","bmr"))
-  # colnames(clinic_3d_data)[c(1,2,5,6,8,9,10,11)] <- c("id","date_inbody","bf","pbf","bm","vfa","wc","ffm")
-  
-  
-  
-# 02.4-input_client_info --------------------------------------------------
-  #clients datasets
-  clinic_client_data <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/client_info.csv")
-  clinic_client_data[c("btd","date_1st","date_T0","date_T1","date_T2","date_T3","date_T4")] %<>% lapply(as.Date)
-  #variable format
-  clinic_client_data[c("serial_id","client_type","id","age")] %<>% lapply(as.integer)
-  
-  
 
-# 02.5-input_(non)genesis_list -------------------------------------------------
+# 02.0 - input_name_table --------------------------------------------------------
+library(googlesheets4)
+vars_table <- googlesheets4::read_sheet(ss = 'https://docs.google.com/spreadsheets/d/1T2swdx1cbfmUSUNQCQpbxa4aIJDTLD0oVKj3AuvNAuM/edit?usp=sharing', 
+                                        sheet = "vars_table",
+                                        col_types = "iccccc")
+names(vars_table) <- c("num", "item_id", "ch", "en", "raw_en", "field")
 
-  #clinic_cliet_list datasets
-  clinical_list <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/genesis_list.csv")
-  clinical_list <- clinical_list[-1:-5,]
-  clinical_list <- clinical_list[which(!is.na(clinical_list$serial_id)),]
-  clinical_list %<>% dplyr::select(c("serial_id","id","client_type","name","date","class_date_1","class_date_2","medication","doctor","nutritionist_major","nutritionist_online","program","history"))
-  
-  clinical_list$medication_note <- NA
-  #Trulicity
-  clinical_list[grep("(licity){1}",clinical_list$medication),"medication_note"] <- "Trulicity"
-  #Ozempic
-  clinical_list[grep("(mpic){1}",clinical_list$medication),"medication_note"] <- "Ozempic"
-  #Rybelsus, rebylsus(wrong name) search list
-  clinical_list[grep("(sus){1}",clinical_list$medication),"medication_note"] <- "Rybelsus"
-  
-  clinical_list %<>% dplyr::relocate(medication_note, .before = medication)
-  
-  #map age, gender, hormone
-  clinical_list <- lin_mapping(clinical_list, age, id, clinic_client_data, age, id)
-  clinical_list <- lin_mapping(clinical_list, gender, id, clinic_client_data, gender, id)
-  clinical_list <- lin_mapping(clinical_list, hormone, id, clinic_client_data, hormone_type, id)
-  
-  #variable format
-  clinical_list[c("serial_id","id","client_type", "age")] %<>% lapply(as.integer)
-  clinical_list[c("date","class_date_1","class_date_2")] %<>% lapply(as.Date)
-  colnames(clinical_list)[5] <-  "date_1st"
-  
-  clinical_list <- clinical_list[which(clinical_list$client_type != "0"),]  
-  
-  
 
-# 03.  part 2 -------------------------------------------------------------
 
-  
-  out_of_genesis_list_age_gender <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/non_genesis_list.csv")
-  out_of_genesis_list_age_gender$birthday %<>% as.Date()
-  out_of_genesis_list_age_gender$age <- (lubridate::ymd("2023-01-01") -  lubridate::ymd(out_of_genesis_list_age_gender$birthday)) %>% as.numeric() %>% divide_by(365) %>% floor()
-  out_of_genesis_list_age_gender[c("id", "age")] %<>% lapply(as.integer)
-  
-  
-  
-# 04.  part 3 -------------------------------------------------------------
 
-  #save origin version
-  clinic_inbody_data_ori <- clinic_inbody_data
-  clinic_blood_data_ori <- clinic_blood_data
-  #1. med_id_pool
-  med_id_pool <- dplyr::intersect(clinic_inbody_data %>% select(id) %>% unique() %>% pull(),
-                                  clinic_blood_data %>% select(id) %>% unique() %>% pull() )
+# 02.1 - [Data Preprocessing] 01_profile --------------------------------------------------
+#***[Note:] 20230309_finish_genesis_ONLY
+#input clinic_list
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-read_clinic_list.R")
+
+df01_profile <- tmp_01
+
+
+#Q1-1. 初日開幕前的cofit初日班 => topshow
+df01_profile[dplyr::intersect(grep("初日班", df01_profile[["program_name"]]), which(df01_profile[["date_t0"]] < "2021-08-30")), "org_name"] <- "topshow"
+df01_profile[dplyr::intersect(grep("秀0|秀1", df01_profile[["name"]]), which(df01_profile[["date_t0"]] < "2021-08-30")), "org_name"] <- "topshow"
+#Q1-2. "program_name"初日開幕後的cofit初日班 => genesisclinic
+df01_profile[Reduce(dplyr::intersect, list(grep("初日", df01_profile[["program_name"]]),
+                                     which(df01_profile[["date_t0"]] >= "2021-08-30"),
+                                     grep("cofit", df01_profile[["org_name"]])))
+       , "org_name"] <- "genesisclinic"
+#Q1-3. "name"名字有初日、初日開幕後的cofit => genesisclinic
+df01_profile[Reduce(dplyr::intersect, list(grep("初日|初日001|G001", df01_profile[["name"]]),
+                                     which(df01_profile[["date_t0"]] >= "2021-08-30"),
+                                     grep("cofit", df01_profile[["org_name"]])))
+       , "org_name"] <- "genesisclinic"
+#Q1-4. 1. 進階計畫 2. 診所進階計畫 3. 宋醫師進階計畫: 2, 3 => genesisclinic
+#"診所進階(genesis)宋醫師進階(topshow)" AND "org_name == cofit" AND "初日開幕後" "秀傳門診結束"
+df01_profile[(grepl("宋醫師進階", df01_profile[["program_name"]])) & (grepl("cofit", df01_profile[["org_name"]])) & (df01_profile[["date_t0"]] <= "2022-09-01"), "org_name"] <- "topshow"
+
+df01_profile[(grepl("診所進階", df01_profile[["program_name"]])) & (grepl("cofit", df01_profile[["org_name"]])) & (df01_profile[["date_t0"]] >= "2021-08-30"), "org_name"] <- "genesisclinic"
+df01_profile[(grepl("宋醫師進階", df01_profile[["program_name"]])) & (grepl("cofit", df01_profile[["org_name"]])) & (df01_profile[["date_t0"]] > "2022-09-01"), "org_name"] <- "genesisclinic"
+
+
+#Q1-5. FLC班 => cofit
+df01_profile[grep("FLC", df01_profile[["program_name"]]), "org_name"] <- "cofit"
+
+#C1-1. class_freq by org_name
+df01_profile <- df01_profile %>% full_join(df01_profile %>% group_by(id, org_name) %>% summarise(class_freq = n()), by = c("id", "org_name"))
+df01_profile <- df01_profile[with(df01_profile, order(c(date_t0, id))),] %>% janitor::remove_empty("rows")
+#C1-2. class_order
+for (i in unique(df01_profile$id)) {
+  if (i == head(unique(df01_profile$id), 1)) {
+    j = 1
+    df01_profile$class_order <- NA
+  }
   
-  clinic_inbody_data %<>% filter(id %in% med_id_pool)
-  clinic_blood_data %<>% filter(id %in% med_id_pool)
-  
-  #-------record data before screening according to blood data:
-  ##(1.) 1st treatment  (2.) 2 obs. (3.) at least 1mo interval
-  before_screening_data <- clinic_blood_data
-  
-  
-  clinic_blood_data %<>% janitor::get_dupes(id)
-  clinic_inbody_data %<>% filter(id %in% clinic_blood_data$id) 
-  
-  
-  for (i in c(unique(clinic_blood_data$id))){
-    if (i == unique(clinic_blood_data$id) %>% head(1)){
-      #pre_setting
-      clinic_inbody_data_1st_temp <- clinic_inbody_data[0,]
-      clinic_blood_data_1st_temp <- clinic_blood_data[0,]
-      
-      clinic_inbody_data <- clinic_inbody_data[with(clinic_inbody_data, order(id, date_inbody)), ] 
-      clinic_blood_data <- clinic_blood_data[with(clinic_blood_data, order(id, date_blood)), ] 
-      
-      # Start the clock
-      ptm <- proc.time()
-      j = 1
+  for (k in c(1:(df01_profile[which(df01_profile[["id"]] == i), "org_name"] %>% unique() %>% length()))) {
+    df01_profile[(df01_profile[["id"]] == i) & (df01_profile[["org_name"]] == unique(df01_profile[which(df01_profile[["id"]] == i), "org_name"])[k]), "class_order"] <- 
+      seq(1, df01_profile[(df01_profile[["id"]] == i) & (df01_profile[["org_name"]] == unique(df01_profile[which(df01_profile[["id"]] == i), "org_name"])[k]), "class_freq"] %>% unique())
     }
+  
+  progress(j, unique(df01_profile$id) %>% length())
+  j = j + 1
+  if (i == tail(unique(df01_profile$id), 1)){
+    print("[Completed!]")
+  }
+}
+
+
+#C2. age: btd - date_t0 年齡(療程起始當天計算)
+df01_profile$age <- (lubridate::ymd(df01_profile$date_t0) - lubridate::ymd(df01_profile$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
+
+#C3-1.非進階
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile$client_type <- NA #client_type 
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, client_type, id, clinical_list, client_type, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile$program_set <- NA #program_set
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, program_set, id, clinical_list, program, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile$doctor <- NA #doctor
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, doctor, id, clinical_list, doctor, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile$nutritionist_major <- NA #nutritionist_major
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, nutritionist_major, id, clinical_list, nutritionist_major, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile$nutritionist_online <- NA #nutritionist_online
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, nutritionist_online, id, clinical_list, nutritionist_online, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile$medication <- NA #medication
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, medication, id, clinical_list, medication_note, id)
+
+#C3-2.進階
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),]
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, client_type, id, clinical_adv_list, client_type, id)
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, program_set, id, clinical_adv_list, program, id)
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, doctor, id, clinical_adv_list, doctor, id)
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, nutritionist_major, id, clinical_adv_list, nutritionist_major, id)
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, nutritionist_online, id, clinical_adv_list, nutritionist_online, id)
+df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, medication, id, clinical_adv_list, medication_note, id)
+
+
+
+#clean by select
+df01_profile <- df01_profile %>% select(c("id", "name", "gender", "age", "client_type", "program_name","date_t0","date_t1", "org_name", "class_freq", "class_order","program_set","doctor","nutritionist_major","nutritionist_online","medication", "btd"))
+
+
+
+# 02.2 - [Data Preprocessing] 02_inbody --------------------------------------------------
+
+df02_inbody <- tmp_02
+
+#C1. format
+df02_inbody[c("height","weight","bmi","body_fat_mass","body_fat_mass_percentage","weight_without_fat","muscle_mass","real_muscle_mass","vfa","vfa_level","waist_circumference","acl","cacl","total_body_water","protein_weight","mineral_weight","body_cell_mass","body_mineral","bfmi","bsmi","ffmi","systolic_blood_pressure","diastolic_blood_pressure","pulse","bmr","wepa50","algle_50_left_arm","algle_50_left_leg","algle_50_right_arm","algle_50_right_leg","algle_50_trunk","extracellular_water_ratio","extracellular_water_ratio_left_arm","extracellular_water_ratio_left_leg","extracellular_water_ratio_right_arm","extracellular_water_ratio_right_leg","extracellular_water_ratio_trunk","intracellular_weight","intracellular_weight_left_arm","intracellular_weight_left_leg","intracellular_weight_right_arm","intracellular_weight_right_leg","intracellular_weight_trunk","extracellular_weight","extracellular_weight_left_arm","extracellular_weight_left_leg","extracellular_weight_right_arm","extracellular_weight_right_leg","extracellular_weight_trunk","left_arm_fat","left_arm_fat_percentage","left_arm_muscle","left_arm_muscle_percentage","left_leg_fat","left_leg_fat_percentage","left_leg_muscle","left_leg_muscle_percentage","right_arm_fat","right_arm_fat_percentage","right_arm_muscle","right_arm_muscle_percentage","right_leg_fat","right_leg_fat_percentage","right_leg_muscle_percentage","right_leg_muscle","trunk_fat","trunk_fat_percentage","trunk_muscle","trunk_muscle_percentage","water_weight_left_arm","water_weight_left_leg","water_weight_right_arm","water_weight_right_leg","water_weight_trunk","waist_hip_ratio","tbwffm","obesity_degree","inbody_total_score")] %<>% 
+  lapply(as.numeric)
+df02_inbody <- df02_inbody %>% as.tibble() 
+#C2. Sarcopenia Obesity(SO): "left_arm_muscle", "left_leg_muscle", "right_arm_muscle", "right_leg_muscle" #Female: < 23.4; Male: < 29.6. 
+df02_inbody <- df02_inbody %>% mutate(so_score = round((left_arm_muscle+left_leg_muscle+right_arm_muscle+right_leg_muscle)*100/weight,2))
+#C3. pbm
+df02_inbody <- df02_inbody %>% mutate(muscle_mass_percentage = round((muscle_mass)*100/weight,2))
+#C4. name_format
+names(df02_inbody) <- names(df02_inbody) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+#C5. rm outlier
+df02_inbody <- df02_inbody[-which(df02_inbody$bmi >100),]
+
+
+# 02.3 - [Data Preprocessing] 03_FLC_self_report --------------------------------------------------
+#***[Note:] 20230310_not_full_obs.
+
+df03_FLC_self_report <- tmp_03
+
+#tmp
+df03_FLC_self_report <- df03_FLC_self_report %>% select(-light_not_g_count)
+
+#C1. col_names
+names(df03_FLC_self_report) <- names(df03_FLC_self_report) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+#C1-2. filter by 01.profile org_name == cofit
+# df03_FLC_self_report[which(unique(df01_profile[df01_profile[["org_name"]] == "cofit", "id"]) %in% df03_FLC_self_report[["id"]]),]
+df03_FLC_self_report <- df03_FLC_self_report[which((df03_FLC_self_report[["id"]]) %in% unique(df01_profile[df01_profile[["org_name"]] == "cofit", "id"])),] 
+
+
+df03_FLC_self_report <- df03_FLC_self_report[with(df03_FLC_self_report, order(date_flc_T0)),]
+
+#C2. age: btd - date_t0 年齡(療程起始當天計算)
+df03_FLC_self_report$age <- (lubridate::ymd(df03_FLC_self_report$date_flc_T0) - lubridate::ymd(df03_FLC_self_report$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
+#C3. (1.) (%) *100  (2.) numeric %>% round(2)
+df03_FLC_self_report[,grep("%", names(df03_FLC_self_report))] %<>% multiply_by(100)
+df03_FLC_self_report[c("weight(T0)","weight(T1)","∆weight","∆weight(%)","BMI(T0)","BMI(T1)","∆BMI","∆BMI(%)","Fat(T0)","Fat(T1)","∆Fat","∆Fat(%)","wc(T0)","wc(T1)","∆wc","∆wc(%)")] %<>% round(2)
+
+
+#C4-1. class_freq by org_name
+df03_FLC_self_report <- df03_FLC_self_report %>% full_join(df03_FLC_self_report %>% group_by(id) %>% summarise(class_freq = n()), by = c("id"))
+#C4-2. class_order
+for (i in unique(df03_FLC_self_report$id)) {
+  if (i == head(unique(df03_FLC_self_report$id), 1)) {
+    j = 1
+    df03_FLC_self_report$class_order <- NA
+  }
+  df03_FLC_self_report[which(df03_FLC_self_report[["id"]] == i), "class_order"] <- which(df03_FLC_self_report[["id"]] == i) %>% order()
+  progress(j, unique(df03_FLC_self_report$id) %>% length())
+  j = j + 1
+  if (i == tail(unique(df03_FLC_self_report$id), 1)){
+    print("[Completed!]")
+  }
+}
+
+
+# 02.4 - [Data Preprocessing] 04_non_FLC_self_report --------------------------------------------------
+
+df04_non_FLC_self_report <- tmp_04
+
+# intersect(tmp_03$id, df04_non_FLC_self_report$client_id)  #ensure no FLC client within
+#C1. col_name
+names(df04_non_FLC_self_report) <- names(df04_non_FLC_self_report) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+#C2-1. filter dup_id
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% janitor::get_dupes(id)
+#C2-2. exclude NA: id, date
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% lin_exclude_NA_col(c("id", "date_time"))
+#C3. order
+df04_non_FLC_self_report <- df04_non_FLC_self_report[with(df04_non_FLC_self_report, order(id, date_free_version)),]
+#C4. filter ∆day = 2 months(60 days + 14)
+
+# Group the data by id and find the earliest date for each id
+earliest_dates <- df04_non_FLC_self_report %>%
+  group_by(id) %>%
+  summarize(earliest_date = min(date_free_version))
+
+# Join the original data frame with the earliest date to find the row with the earliest date for each id
+earliest_rows <- df04_non_FLC_self_report %>%
+  inner_join(earliest_dates, by = c("id", "date_free_version" = "earliest_date"))
+
+earliest_rows$weight <- ifelse(earliest_rows$weight <= 30, NA, earliest_rows$weight)
+earliest_rows$weight <- ifelse(earliest_rows$weight > 200, NA, earliest_rows$weight)
+earliest_rows$bmi <- ifelse(earliest_rows$bmi <= 10, NA, earliest_rows$bmi)
+earliest_rows$bmi <- ifelse(earliest_rows$bmi > 100, NA, earliest_rows$bmi)
+earliest_rows$fat <- ifelse(earliest_rows$fat <= 5, NA, earliest_rows$fat)
+earliest_rows$fat <- ifelse(earliest_rows$fat > 100, NA, earliest_rows$fat)
+earliest_rows$wc <- ifelse(earliest_rows$wc <= 50, NA, earliest_rows$wc)
+
+
+# Add 60 days to the earliest date for each id
+second_dates <- earliest_dates %>%
+  mutate(second_date = earliest_date + 60)
+
+# Find the row with the second date for each id
+second_rows <- df04_non_FLC_self_report %>%
+  inner_join(second_dates, by = "id") %>%
+  filter((date_free_version >= second_date) & (date_free_version <= second_date + 14)) %>% 
+  distinct(id, .keep_all = TRUE)
+
+second_rows$weight <- ifelse(second_rows$weight <= 30, NA, second_rows$weight)
+second_rows$weight <- ifelse(second_rows$weight > 200, NA, second_rows$weight)
+second_rows$bmi <- ifelse(second_rows$bmi <= 10, NA, second_rows$bmi)
+second_rows$bmi <- ifelse(second_rows$bmi > 100, NA, second_rows$bmi)
+second_rows$fat <- ifelse(second_rows$fat <= 5, NA, second_rows$fat)
+second_rows$fat <- ifelse(second_rows$fat > 100, NA, second_rows$fat)
+second_rows$wc <- ifelse(second_rows$wc <= 50, NA, second_rows$wc)
+
+
+# Combine the earliest and second rows for each id
+df04_non_FLC_self_report <- earliest_rows %>%
+  bind_rows(second_rows)
+rm(list = c("earliest_dates", "earliest_rows", "second_dates", "second_rows"))
+
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% filter(id %in% df04_non_FLC_self_report[!is.na(df04_non_FLC_self_report$earliest_date), "id"])
+df04_non_FLC_self_report <- df04_non_FLC_self_report[with(df04_non_FLC_self_report, order(id)),]
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% distinct(id, date_free_version, .keep_all = TRUE)
+
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% select(-c("dupe_count", "date_time", "earliest_date", "second_date"))
+
+#clean pre/post table
+
+df04_non_FLC_self_report_tmp <- df04_non_FLC_self_report
+
+a <- df04_non_FLC_self_report_tmp[seq(1,nrow(df04_non_FLC_self_report_tmp), 2),] 
+names(a)[-1] <- paste0(a %>% select(-c("id")) %>% names(), "_baseline")
+
+b <- df04_non_FLC_self_report_tmp[seq(2,nrow(df04_non_FLC_self_report_tmp), 2),] 
+names(b)[-1] <- paste0(b %>% select(-c("id")) %>% names(), "_endpoint")
+
+aa <- b %>% select(-c("id", "date_free_version_endpoint", "gender_endpoint")) - a %>% select(-c("id", "date_free_version_baseline", "gender_baseline"))
+aa <- cbind(a %>% select("id"), aa)
+names(aa)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version", "gender")) %>% names())
+
+bb <- (((b %>% select(-c("id", "date_free_version_endpoint", "gender_endpoint"))) - a %>% select(-c("id", "date_free_version_baseline","gender_baseline")))*100 /   a %>% select(-c("id", "date_free_version_baseline","gender_baseline"))) %>% round(2) 
+bb <- cbind(a %>% select("id"), bb)
+names(bb)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version", "gender")) %>% names(), "%")
+
+c1 <- full_join(a, b, by = c("id"))
+names(c1)[grep("date", names(c1))] <- c("date_baseline","date_endpoint")
+c1 %<>% relocate(c("date_baseline","date_endpoint"), .after = "id")
+
+c1 <- full_join(c1, aa, by = c("id"))
+c1 <- full_join(c1, bb, by = c("id"))
+df04_non_FLC_self_report <- c1
+rm(list = c("a","aa","b","bb","c1","df04_non_FLC_self_report_tmp"))
+
+#rm outliers
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% lin_exclude_NA_col(grep("weight",names(.), value = TRUE))
+
+for (i in c(df04_non_FLC_self_report %>% names() %>% grep("∆", ., value = TRUE))) {
+  df04_non_FLC_self_report[[i]] <- 
+    ifelse(df04_non_FLC_self_report[[i]] < quantile(df04_non_FLC_self_report[[i]], 0.05, na.rm = TRUE) | df04_non_FLC_self_report[[i]] > quantile(df04_non_FLC_self_report[[i]], 0.95, na.rm = TRUE), NA, df04_non_FLC_self_report[[i]])
+}
+
+#sample size report
+df04_non_FLC_self_report$id %>% unique() %>% length()
+
+
+#df04_non_FLC_self_report %>% summary()
+
+# df04_non_FLC_self_report %>% 
+#   group_by(gender_baseline) %>% 
+#   summarize(
+#     `∆weight%` = mean(`∆weight%`, na.rm = TRUE),
+#     `∆fat%` = mean(`∆fat%`, na.rm = TRUE),
+#     `∆wc%` = mean(`∆wc%`, na.rm = TRUE),
+#     n = n()
+#   )
+
+# 02.5 - [Data Preprocessing] 05_biochem --------------------------------------------------
+
+df05_biochem <- tmp_05
+
+#C1. format
+df05_biochem[c("glucose_ac","glucose_pc_1hr","glucose_pc_2hr","insulin","insulin_pc_1hr","insulin_pc_2hr","hba1c","homa_ir","homa_beta",
+         "triglyceride","total_cholesterol","high_density_lipoprotein","low_density_lipoprotein_cholesterol","sd_ldl",
+         "c_peptide","egfr","blood_creatinine","uric_acid","tsh","prolactin","fsh","lh","e2","testosterone","progesterone","dhea_s","shbg","amh","t3","t3_reverse","t4_free","psa",
+         "urine_spe_gravity", "urine_ph",
+         "wbc","rbc","hb","esr","mcv","mch","mchc","platelet","rdw_sd","rdw_cv","neutrophils","lymphocytes","monocytes","eosinophils","basophils","monocytes_percent","eosinophils_percent","basophils_percent","alt_gpt","ast_got","amylase","lipase","apoli_a1","apoli_b","apolib_ai_ratio")] %<>% 
+  lapply(as.numeric)
+
+
+#C2. colname
+names(df05_biochem) <- df05_biochem %>% names() %>% lin_ch_en_format(format = "en", origin = "raw_en")
+#C3. order by date_blood
+df05_biochem <- df05_biochem[with(df05_biochem, order(date_blood)),]
+#(1) tAUCg, tAUCi (2) Pattern_major, Pattern_minor (3) OGIRIndex: iAUC-i(-30) - iAUC-g(+50)
+
+df05_biochem$tAUCg <- lin_AUC_calc(df05_biochem, df05_biochem %>% names() %>% grep("^glucose", ., value = TRUE))
+df05_biochem$tAUCi <- lin_AUC_calc(df05_biochem, df05_biochem %>% names() %>% grep("^insulin", ., value = TRUE))
+
+df05_biochem <- df05_biochem %>% lin_insulin_rsp_pattern(df05_biochem %>% names() %>% grep("^insulin", ., value = TRUE), pattern = 2)
+df05_biochem <- df05_biochem %>% rename(Pattern_major = I)
+df05_biochem <- df05_biochem %>% lin_insulin_rsp_pattern(df05_biochem %>% names() %>% grep("^insulin", ., value = TRUE), pattern = 1)
+df05_biochem <- df05_biochem %>% rename(Pattern_minor = I)
+
+df05_biochem <- df05_biochem %>% mutate(OGIRIndex = lin_AUC_calc(df05_biochem, df05_biochem %>% names() %>% grep("^insulin", ., value = TRUE), increment_value = -30) - 
+                              lin_AUC_calc(df05_biochem, df05_biochem %>% names() %>% grep("^glucose", ., value = TRUE), increment_value = 50))
+
+
+df05_biochem <- df05_biochem %>% lin_DM_diagnosis(c("hba1c", "glucose_ac", "glucose_pc_1hr","glucose_pc_2hr"))
+
+
+# 02.6 - [Data Preprocessing] 07_Diet_meal --------------------------------------------------
+
+df07_Diet_meal <- tmp_07
+
+df07_Diet_meal %<>% mutate(meat_bean = rowSums(select(., meat_beans_low_fat, meat_beans_medium_fat, meat_beans_high_fat), na.rm = TRUE) )
+df07_Diet_meal %<>% mutate(milk = rowSums(select(., milk_whole_fat, milk_low_fat, milk_skim), na.rm = TRUE) )
+
+df07_Diet_meal <- df07_Diet_meal %>% select(c("client_id","date_diet","meal_order","carbohydrate","protein","fat","calorie","fruits","vegetables","grains","meat_bean","milk","oil",))
+
+df07_Diet_meal <- df07_Diet_meal[with(df07_Diet_meal, order(client_id, date_diet)),]
+
+#condense df by id, date
+df07_Diet_meal <- 
+  df07_Diet_meal %>% 
+  group_by(client_id, date_diet) %>% 
+  summarise(fruits = sum(fruits, na.rm = TRUE),
+            vegetables = sum(vegetables, na.rm = TRUE),
+            grains = sum(grains, na.rm = TRUE),
+            meat_bean = sum(meat_bean, na.rm = TRUE),
+            milk = sum(milk, na.rm = TRUE),
+            oil = sum(oil, na.rm = TRUE),
+  )
+
+df07_Diet_meal <- df07_Diet_meal[with(df07_Diet_meal, order(client_id, date_diet)),]
+
+
+# 02.7 - [Data Preprocessing] 06_Diet_day --------------------------------------------------
+
+
+df06_Diet_day <- tmp_06
+
+df06_Diet_day[c("note_counts","pic_counts","essay_count","light_green_count","light_yellow_count","light_red_count","carbohydrate","protein","fat","calorie","calorie_target")] %<>% lapply(as.numeric)
+
+
+#Q. id NA
+df06_Diet_day <- df06_Diet_day %>% filter(!is.na(client_id))
+
+#merge day/meal
+df06_Diet_day <- merge(df06_Diet_day, df07_Diet_meal, by.x = c("client_id", "date_diet"), all.x = TRUE)
+
+#outliers adjust:
+  #all record should be replaced by avg performance, instead of caloire only.
+id_diet <- df06_Diet_day[(df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]])), "client_id"] %>% unique()
+# [執行時間]
+# 使用者      系統      流逝 
+# 14342.534  5612.097 28568.632 
+for (i in c(id_diet)) {
+  if (i == c(id_diet) %>% head(1)) {
+    ptm <- proc.time()
+    j = 1
+  }
+  df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]]))), df06_Diet_day %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] <- 
+    df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] >= 500)), df06_Diet_day %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] %>% lapply(., function(x) mean(x, na.rm =TRUE) %>% round(2))
+  
+  
+  progress(j, length(id_diet))
+  j = j + 1
+  
+  if (i == c(id_diet) %>% tail(1)) {
+    cat("\n[Completed!]\n")
+    cat("\n[執行時間]\n")
+    print(proc.time() - ptm)
+    rm(id_diet)
+  }
+}
+
+
+#calorie_deficit
+df06_Diet_day <- df06_Diet_day %>% mutate(calorie_deficit = calorie - calorie_target)
+
+
+#Sorting by Multiple Columns
+df06_Diet_day <- df06_Diet_day[with(df06_Diet_day, order(client_id, date_diet)),]
+
+
+
+
+
+
+
+# 02.8 - [Data Preprocessing] 08_3D_scanner --------------------------------------------------
+
+df08_3D_scanner <- tmp_08
+df08_3D_scanner %>% glimpse()
+
+df08_3D_scanner <- df08_3D_scanner[names(df08_3D_scanner)] %>% lapply(as.numeric)
+df08_3D_scanner$client_id <- df08_3D_scanner$client_id %>% as.integer()
+
+
+
+# 02.9 - [Data Preprocessing] 09_hormone --------------------------------------------------
+
+df09_hormone <- tmp_09
+df09_hormone[c("hormone_L","hormone_P","hormone_t","hormone_c","hormone_l","hormone_e","hormone_a")] %<>% lapply(as.character)
+
+
+
+
+
+
+
+# 03.1 - Create clinic datasets:topshow, genesisclinic --------------------------------------------------------------
+
+#C1. Select clinic clients: topshow, genesisclinic
+table((df01_profile %>% filter((org_name == "topshow") | org_name == "genesisclinic"))$org_name)
+
+clinic_id_vector <- df01_profile %>% filter((org_name == "topshow") | org_name == "genesisclinic") %>% select(id) %>% pull() %>% unique()
+
+#C2.1.save origin version
+clinic_inbody_data <- df02_inbody %>% filter(id %in% clinic_id_vector) 
+clinic_blood_data <- df05_biochem %>% filter(id %in% clinic_id_vector) 
+
+clinic_inbody_data_ori <- df02_inbody %>% filter(id %in% clinic_id_vector) 
+clinic_blood_data_ori <- df05_biochem %>% filter(id %in% clinic_id_vector) 
+
+#C2.2. med_id_pool
+med_id_pool <- dplyr::intersect(clinic_inbody_data %>% select(id) %>% unique() %>% pull(),
+                                clinic_blood_data %>% select(id) %>% unique() %>% pull() )
+
+clinic_inbody_data %<>% filter(id %in% med_id_pool)
+clinic_blood_data %<>% filter(id %in% med_id_pool)
+
+#C2.3. order by id, date
+clinic_inbody_data <- clinic_inbody_data[with(clinic_inbody_data, order(id, date_inbody)),] 
+# clinic_inbody_data <- clinic_inbody_data[with(clinic_inbody_data, order(c(date_inbody, id))),] %>% janitor::remove_empty("rows")
+clinic_blood_data <- clinic_blood_data[with(clinic_blood_data, order(id, date_blood)),] 
+
+
+#C3. Map inbody & blood data to profile as as stat_table
+
+stat_tm <- df01_profile %>% filter((org_name == "topshow") | org_name == "genesisclinic") %>% filter(id %in% med_id_pool) %>% filter(class_order == 1)
+
+#recored in both "topshow" and genesis: rm past record in "topshow"(w/most missing value), so that I can use unique id
+stat_tm <- stat_tm %>% filter( ((id %in% stat_tm[which(duplicated(stat_tm$id)),"id"])&( org_name != "topshow")) | (id %in% stat_tm[which(duplicated(stat_tm$id)),"id"]) %>% not() )
+
+
+
+
+for (i in c(unique(stat_tm[["id"]]))) {
+  # Start the clock!
+  ptm <- proc.time()
+  start_time <- Sys.time()
+  
+  #1. create dataframe
+  if (i == (c(unique(stat_tm[["id"]])) %>% head(1))) {
+    j = 1
     
-    inbody_obs_count <- clinic_inbody_data %>% filter(id == i) %>% select("date_inbody") %>% pull() %>% length()
-    blood_obs_count <- clinic_blood_data %>% filter(id == i) %>% select("date_blood") %>% pull() %>% length()
+    #use id = 454425, to establish table format
+    #Profile
+    a0 <- stat_tm[(stat_tm$id == 454425),]
+    #Inbody
+    #baseline (抓最近30天data)
+    v_b <- (clinic_inbody_data[(clinic_inbody_data$id == 454425) , ] %>% select(date_inbody) %>% pull - stat_tm[(stat_tm$id == 454425) , "date_t0"]) %>% abs()
+    v_b <- ifelse(v_b > 30, NA, v_b) %>% order(na.last = NA) %>% head(1)
+    #endpoint (抓最近30天data)
+    v_e <- (clinic_inbody_data[(clinic_inbody_data$id == 454425) , ] %>% select(date_inbody) %>% pull - stat_tm[(stat_tm$id == 454425) , "date_t1"]) %>% abs()
+    v_e <- ifelse(v_e > 30, NA, v_e) %>% order(na.last = NA) %>% head(1)
     
-    if ((inbody_obs_count>1) & (blood_obs_count>1)) {
-      #condition: i belongs to Genesis list w/ program T0, T1
-      if (i %in% clinical_list$id) {
-        if ((clinical_list %>% filter(id == i) %>% select(c("class_date_1", "class_date_2")[1])) %>% pull() %>% is.finite()) {
-          #*[T0  read Genesis_list_date ; T1 read Genesis_list_date]
-          #T0
-          date_lower_cutoff <- (clinical_list %>% filter(id == i) %>% select(c("class_date_1", "class_date_2")[1]) - 31) %>% pull()
-          #T1
-          date_upper_cutoff_inbody <- (clinical_list %>% filter(id == i) %>% select(c("class_date_1", "class_date_2")[2]) + 10) %>% pull()
-          date_upper_cutoff_blood <- (clinical_list %>% filter(id == i) %>% select(c("class_date_1", "class_date_2")[2]) + 21) %>% pull()
-          
-          #inbody T0: > T0-31, T1: T1+7 nearest date
-          clinic_inbody_data_1st_temp <- rbind(clinic_inbody_data_1st_temp, clinic_inbody_data %>% filter(id == i) %>% filter(date_inbody >= date_lower_cutoff) %>% head(1) )
-          index <- abs(clinic_inbody_data %>% filter(id == i) %>% select("date_inbody") %>% pull() - date_upper_cutoff_inbody) %>% which.min()
-          clinic_inbody_data_1st_temp <- rbind(clinic_inbody_data_1st_temp, (clinic_inbody_data %>% filter(id == i))[index,] )
-          
-          clinic_blood_data_1st_temp <- rbind(clinic_blood_data_1st_temp, clinic_blood_data %>% filter(id == i) %>% filter(date_blood <= date_upper_cutoff_blood) %>% tail(2) %>% head(1) )
-          index <- (clinic_inbody_data %>% filter(id == i))[index,"date_inbody"] %>% pull() + 14
-          clinic_blood_data_1st_temp <- rbind(clinic_blood_data_1st_temp, clinic_blood_data %>% filter(id == i) %>% filter(date_blood <= index) %>% tail(1) )
-        }else{
-          #*[取時間區間 1.血檢&inbody最早時間點取較高值 2. 血檢&inbody最晚時間點取較低值 3. 前後加寬1mo]
-          date_lower_cutoff <- c(clinic_inbody_data[which(clinic_inbody_data$id == i) %>% head(1), "date_inbody"] %>% pull(), clinic_blood_data[which(clinic_blood_data$id == i) %>% head(1), "date_blood"] %>% pull()) %>% max() -30
-          date_upper_cutoff <- c(clinic_inbody_data[which(clinic_inbody_data$id == i) %>% tail(1), "date_inbody"] %>% pull(), clinic_blood_data[which(clinic_blood_data$id == i) %>% tail(1), "date_blood"] %>% pull()) %>% min() +30
-          
-          #*[T0  I0 >= (B0 - 14 days) 第一筆 ; T0 + 2mo 取最接近日期date_inbody]
-          #B0
-          B0_date <- clinic_blood_data %>% filter(id == i) %>% filter(date_blood >=  date_lower_cutoff) %>% select("date_blood") %>% pull() %>% head(1)
-          #I0 = T0
-          I0_date <- clinic_inbody_data %>% filter(id == i ) %>% filter(date_inbody >= (B0_date - 14)) %>% select("date_inbody") %>% pull() %>% head(1)
-          #T1
-          T1_index <- ((clinic_inbody_data %>% filter(id == i ) %>% select("date_inbody") %>% pull()) - (lubridate::ymd(I0_date) %m+% months(2)) + 7) %>% abs() %>% which.min()
-          T1_index <- (clinic_inbody_data %>% filter(id == i) %>% select("date_inbody") %>% pull())[T1_index]
-          T1_index <- ((clinic_blood_data %>% filter(id == i) %>% select("date_blood") %>% pull()) - T1_index) %>% abs() %>% which.min()
-          date_upper_cutoff <- (clinic_blood_data %>% filter(id == i) %>% select("date_blood") %>% pull())[T1_index]
-          
-          
-          if ((length(B0_date) != 0) & (length(I0_date) != 0) & (length(date_upper_cutoff) != 0)) {
-            clinic_inbody_data_1st_temp <- rbind(clinic_inbody_data_1st_temp, clinic_inbody_data %>% filter(id == i) %>% filter(date_inbody >= I0_date) %>% head(1) )
-            clinic_inbody_data_1st_temp <- rbind(clinic_inbody_data_1st_temp, clinic_inbody_data %>% filter(id == i) %>% filter(date_inbody <= date_upper_cutoff) %>% tail(1) )
-            
-            clinic_blood_data_1st_temp <- rbind(clinic_blood_data_1st_temp, clinic_blood_data %>% filter(id == i) %>% filter(date_blood >= B0_date) %>% head(1) )
-            clinic_blood_data_1st_temp <- rbind(clinic_blood_data_1st_temp, clinic_blood_data %>% filter(id == i) %>% filter(date_blood <= date_upper_cutoff) %>% tail(1) )
-          }
-        }
-      }else{
-        #*[取時間區間 1.血檢&inbody最早時間點取較高值 2. 血檢&inbody最晚時間點取較低值 3. 前後加寬1mo]
-        date_lower_cutoff <- c(clinic_inbody_data[which(clinic_inbody_data$id == i) %>% head(1), "date_inbody"] %>% pull(), clinic_blood_data[which(clinic_blood_data$id == i) %>% head(1), "date_blood"] %>% pull()) %>% max() -30
-        date_upper_cutoff <- c(clinic_inbody_data[which(clinic_inbody_data$id == i) %>% tail(1), "date_inbody"] %>% pull(), clinic_blood_data[which(clinic_blood_data$id == i) %>% tail(1), "date_blood"] %>% pull()) %>% min() +30
-        
-        #*[T0  I0 >= (B0 - 14 days) 第一筆 ; T0 + 2mo 取最接近日期date_inbody]
-        #B0
-        B0_date <- clinic_blood_data %>% filter(id == i) %>% filter(date_blood >=  date_lower_cutoff) %>% select("date_blood") %>% pull() %>% head(1)
-        #I0 = T0
-        I0_date <- clinic_inbody_data %>% filter(id == i ) %>% filter(date_inbody >= (B0_date - 14)) %>% select("date_inbody") %>% pull() %>% head(1)
-        #T1
-        T1_index <- ((clinic_inbody_data %>% filter(id == i ) %>% select("date_inbody") %>% pull()) - (lubridate::ymd(I0_date) %m+% months(2)) + 7) %>% abs() %>% which.min()
-        T1_index <- (clinic_inbody_data %>% filter(id == i) %>% select("date_inbody") %>% pull())[T1_index]
-        T1_index <- ((clinic_blood_data %>% filter(id == i) %>% select("date_blood") %>% pull()) - T1_index) %>% abs() %>% which.min()
-        date_upper_cutoff <- (clinic_blood_data %>% filter(id == i) %>% select("date_blood") %>% pull())[T1_index]
-        
-        
-        if ((length(B0_date) != 0) & (length(I0_date) != 0) & (length(date_upper_cutoff) != 0)) {
-          clinic_inbody_data_1st_temp <- rbind(clinic_inbody_data_1st_temp, clinic_inbody_data %>% filter(id == i) %>% filter(date_inbody >= I0_date) %>% head(1) )
-          clinic_inbody_data_1st_temp <- rbind(clinic_inbody_data_1st_temp, clinic_inbody_data %>% filter(id == i) %>% filter(date_inbody <= date_upper_cutoff) %>% tail(1) )
-          
-          clinic_blood_data_1st_temp <- rbind(clinic_blood_data_1st_temp, clinic_blood_data %>% filter(id == i) %>% filter(date_blood >= B0_date) %>% head(1) )
-          clinic_blood_data_1st_temp <- rbind(clinic_blood_data_1st_temp, clinic_blood_data %>% filter(id == i) %>% filter(date_blood <= date_upper_cutoff) %>% tail(1) )
-        }
-        
-      }
-    }
+    a1_b <- clinic_inbody_data[(clinic_inbody_data$id == 454425),][v_b,]
+    a1_e <- clinic_inbody_data[(clinic_inbody_data$id == 454425),][v_e,]
+    a1 <- merge(a1_b,
+                a1_e,
+                by = "id", suffixes = c("_baseline","_endpoint"))
     
-    progress(j, clinic_blood_data$id %>% unique() %>% length())
-    j = j + 1
+    #Blood
+    #baseline (抓最近30天data)
+    v_b <- (clinic_blood_data[(clinic_blood_data$id == 454425) , ] %>% select(date_blood) %>% pull - stat_tm[(stat_tm$id == 454425) , "date_t0"]) %>% abs()
+    v_b <- ifelse(v_b > 30, NA, v_b) %>% order(na.last = NA) %>% head(1)
+    #endpoint (抓最近30天data)
+    v_e <- (clinic_blood_data[(clinic_blood_data$id == 454425) , ] %>% select(date_blood) %>% pull - stat_tm[(stat_tm$id == 454425) , "date_t1"]) %>% abs()
+    v_e <- ifelse(v_e > 30, NA, v_e) %>% order(na.last = NA) %>% head(1)
     
-    if (i == unique(clinic_blood_data$id) %>% tail(1)) {
-      #filter out  single record
-      clinic_blood_data_1st_temp <- clinic_blood_data_1st_temp %>% janitor::get_dupes(id) %>% select(-"dupe_count")
-      clinic_inbody_data_1st_temp <- clinic_inbody_data_1st_temp[which(clinic_inbody_data_1st_temp$id %in% (clinic_blood_data_1st_temp %>% janitor::get_dupes(id) %>% select(-"dupe_count") %>% select("id") %>% pull() %>% unique())), ]
-      
-      clinic_inbody_data <- clinic_inbody_data_1st_temp
-      clinic_blood_data <- clinic_blood_data_1st_temp
-      cat("\n[執行時間]\n")
-      print(proc.time() - ptm)
-      rm(list = c("date_lower_cutoff", "date_upper_cutoff", "clinic_blood_data_1st_temp", "clinic_inbody_data_1st_temp",
-                  "B0_date", "I0_date", "T1_index", "date_upper_cutoff_blood", "date_upper_cutoff_inbody", "index", "blood_obs_count", "inbody_obs_count"))
-      
-      #eliminate same blood_date(the newcomimgs, those not fits criteria)
-      clinic_blood_data %<>% distinct() %>% janitor::get_dupes(id) %>% select(-dupe_count)
-      clinic_inbody_data %<>% filter(id %in% clinic_blood_data$id)
-      
-      #eliminate same inbody_date
-      clinic_inbody_data %<>% distinct() %>% janitor::get_dupes(id) %>% select(-dupe_count)
-      clinic_blood_data %<>% filter(id %in% clinic_inbody_data$id)
-      
-      
-      #output filter results
-      ##(1.) 1st treatment  (2.) 2 obs. (3.) at least 1mo interval
-      cat("Total Clients:", before_screening_data$id %>% unique() %>% length(), "counts\n",
-          "Excluded Clients:", before_screening_data$id %>% unique() %>% length() - clinic_blood_data$id %>% unique() %>% length(), "counts\n",
-          "Included Clients:", clinic_blood_data$id %>% unique() %>% length(), "counts\n")
-      
-      ##Venn: >1 blood record
-      x <- list(
-        All_clients = before_screening_data %>% select(id) %>% pull() %>% unique(),
-        Fit_criteria = clinic_blood_data %>% janitor::get_dupes(id) %>% select(id) %>% pull() %>% unique()
-      )
-      
-      plot_3 <- 
-      ggvenn(
-        x, 
-        fill_color = c("#0073C2", "#CD534C", "#00FA9A", "#EFC000", "#868686"),
-        stroke_size = 0.5, set_name_size = 4
-      ) +
-        labs(title = "Data Screening")+
-        theme(
-          plot.title = element_text(size = 20, face = "bold", hjust = 0.5, vjust = 2.0),
-          plot.margin = unit(c(0.5,0,0,0), "cm")
-        )
-      rm(x)
-      
-    }
+    a2_b <- clinic_blood_data[(clinic_blood_data$id == 454425),][v_b,]
+    a2_e <- clinic_blood_data[(clinic_blood_data$id == 454425),][v_e,]
+    a2 <- merge(a2_b,
+                a2_e,
+                by = "id", suffixes = c("_baseline","_endpoint"))
+    
+    
+    
+    #∆var / ∆var% 
+    a3 <- merge(select_if(a1_e, is.numeric) - select_if(a1_b, is.numeric),
+                ((select_if(a1_e, is.numeric) - select_if(a1_b, is.numeric))/select_if(a1_b, is.numeric)) %>% multiply_by(100) %>% round(2),
+                by = "id", suffixes = c("","%"))
+    names(a3) <- paste0("∆", names(a3))
+    a3 <- a3 %>% rename(id = `∆id`)
+    
+    a4 <- merge(select_if(a2_e, is.numeric) - select_if(a2_b, is.numeric),
+                ((select_if(a2_e, is.numeric) - select_if(a2_b, is.numeric))/select_if(a2_b, is.numeric)) %>% multiply_by(100) %>% round(2),
+                by = "id", suffixes = c("","%"))
+    names(a4) <- paste0("∆", names(a4))
+    a4 <- a4 %>% rename(id = `∆id`)
+    
+    
+    #establish df
+    stat_table <- Reduce(function(x,y) merge(x, y, by = "id", all.x = TRUE), list(a0, a1, a2, a3, a4), accumulate =FALSE)
+    stat_table <- stat_table[0,]
+    
+    cols_01_profile <- a0 %>% names() %>% length()
+    cols_02_inbody_baseline <- a1_b %>% names() %>% length() -1 + cols_01_profile
+    cols_03_inbody_endpoint <- a1_e %>% names() %>% length() -1 + cols_02_inbody_baseline
+    cols_04_blood_baseline <- a2_b %>% names() %>% length() -1 + cols_03_inbody_endpoint
+    cols_05_blood_endpoint <- a2_e %>% names() %>% length() -1 + cols_04_blood_baseline
+    cols_06_delta_inbody<- a3 %>% names() %>% length() -1 + cols_05_blood_endpoint
+    cols_07_delta_blood<- a4 %>% names() %>% length() -1 + cols_06_delta_inbody
+  }
+  
+  #2. mapping
+  #Profile
+  a0 <- stat_tm[(stat_tm$id == i),]
+  stat_table[j, seq(1, cols_01_profile)] <- a0
+  #Inbody   
+  #baseline (抓最近30天data)
+  v_b <- (clinic_inbody_data[(clinic_inbody_data$id == i) , ] %>% select(date_inbody) %>% pull - stat_tm[(stat_tm$id == i) , "date_t0"]) %>% abs()
+  v_b <- ifelse(v_b > 30, NA, v_b) %>% order(na.last = NA) %>% head(1)
+  #endpoint (抓最近30天data)
+  v_e <- (clinic_inbody_data[(clinic_inbody_data$id == i) , ] %>% select(date_inbody) %>% pull - stat_tm[(stat_tm$id == i) , "date_t1"]) %>% abs()
+  v_e <- ifelse(v_e > 30, NA, v_e) %>% order(na.last = NA) %>% head(1)
+  
+  a1_b <- clinic_inbody_data[(clinic_inbody_data$id == i),][v_b,]
+  a1_e <- clinic_inbody_data[(clinic_inbody_data$id == i),][v_e,]
+  a1 <- merge(a1_b,
+              a1_e,
+              by = "id", suffixes = c("_baseline","_endpoint"))
+  
+  if (nrow(a1_b) != 0) {
+    stat_table[j, seq(1 + cols_01_profile, cols_02_inbody_baseline)] <- a1_b %>% select(-id)
+  }
+  if (nrow(a1_e) != 0) {
+    stat_table[j, seq(1 + cols_02_inbody_baseline, cols_03_inbody_endpoint)] <- a1_e %>% select(-id)
+  }
+  
+  #Blood
+  #baseline (抓最近30天data)
+  v_b <- (clinic_blood_data[(clinic_blood_data$id == i) , ] %>% select(date_blood) %>% pull - stat_tm[(stat_tm$id == i) , "date_t0"]) %>% abs()
+  v_b <- ifelse(v_b > 30, NA, v_b) %>% order(na.last = NA) %>% head(1)
+  #endpoint (抓最近30天data)
+  v_e <- (clinic_blood_data[(clinic_blood_data$id == i) , ] %>% select(date_blood) %>% pull - stat_tm[(stat_tm$id == i) , "date_t1"]) %>% abs()
+  v_e <- ifelse(v_e > 30, NA, v_e) %>% order(na.last = NA) %>% head(1)
+  
+  a2_b <- clinic_blood_data[(clinic_blood_data$id == 454425),][v_b,]
+  a2_e <- clinic_blood_data[(clinic_blood_data$id == 454425),][v_e,]
+  a2 <- merge(a2_b,
+              a2_e,
+              by = "id", suffixes = c("_baseline","_endpoint"))
+  
+  if (nrow(a2_b) != 0) {
+    stat_table[j, seq(1 + cols_03_inbody_endpoint, cols_04_blood_baseline)] <- a2_b %>% select(-id)
+  }
+  if (nrow(a2_e) != 0) {
+    stat_table[j, seq(1 + cols_04_blood_baseline, cols_05_blood_endpoint)] <- a2_e %>% select(-id)
+  }
+  
+  #∆var / ∆var% 
+  if ((nrow(a1_e) != 0) & (nrow(a1_b) != 0)) {
+    a3 <- merge(select_if(a1_e, is.numeric) - select_if(a1_b, is.numeric),
+                ((select_if(a1_e, is.numeric) - select_if(a1_b, is.numeric))/select_if(a1_b, is.numeric)) %>% multiply_by(100) %>% round(2),
+                by = "id", suffixes = c("","%"))
+    names(a3) <- paste0("∆", names(a3))
+    a3 <- a3 %>% rename(id = `∆id`)
+    
+    stat_table[j, seq(1 + cols_05_blood_endpoint, cols_06_delta_inbody)] <- a3 %>% select(-id)
   }
   
   
-  #output table
-  # setdiff(before_screening_data$id %>% unique(), clinic_blood_data$id %>% unique()) %>% as.data.frame() %>% 
-  #   kable(format = "html", 
-  #         caption = paste0("<b>","Excluded: id List","<br>N=", before_screening_data$id %>% unique() %>% length() - clinic_blood_data$id %>% unique() %>% length(),"</b>"), 
-  #         align = "c") %>%
-  #   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-  #                             full_width = TRUE, font_size = 15) %>% 
-  #   scroll_box(height = "250px", width = "200px") %>% 
-  #   gsub("font-size: initial !important;", 
-  #        "font-size: 12pt !important;", 
-  #        .)
-  
-  
-  
-  
-  rm(list = c("med_id_pool"))
-  
-  
-  
-  
-  
-
-# 05. calculate delta,  product stat_table --------------------------------
-
-  
-  clinic_inbody_data_1st <- clinic_inbody_data
-  clinic_blood_data_1st <- clinic_blood_data
-  
-  a <- clinic_inbody_data_1st[seq(1,nrow(clinic_inbody_data_1st), 2),] 
-  names(a)[-1] <- paste0(a %>% select(-c("id")) %>% names(), "_baseline")
-  
-  b <- clinic_inbody_data_1st[seq(2,nrow(clinic_inbody_data_1st), 2),] 
-  names(b)[-1] <- paste0(b %>% select(-c("id")) %>% names(), "_endpoint")
-  
-  aa <- b %>% select(-c("id", "date_inbody_endpoint")) - a %>% select(-c("id", "date_inbody_baseline"))
-  aa <- cbind(a %>% select("id"), aa)
-  names(aa)[-1] <- paste0("∆", clinic_inbody_data_1st %>% select(-c("id","date_inbody")) %>% names())
-  
-  bb <- ((b %>% select(-c("id", "date_inbody_endpoint")) - a %>% select(-c("id", "date_inbody_baseline")))*100 /   a %>% select(-c("id", "date_inbody_baseline"))) %>% round(2) 
-  bb <- cbind(a %>% select("id"), bb)
-  names(bb)[-1] <- paste0("∆", clinic_inbody_data_1st %>% select(-c("id","date_inbody")) %>% names(), "%")
-  
-  c1 <- full_join(a, b, by = c("id"))
-  names(c1)[grep("date", names(c1))] <- c("date_baseline","date_endpoint")
-  c1 %<>% relocate(c("date_baseline","date_endpoint"), .after = "id")
-  
-  c1 <- full_join(c1, aa, by = c("id"))
-  c1 <- full_join(c1, bb, by = c("id"))
-  
-  
-  
-  
-  a <- clinic_blood_data_1st[seq(1,nrow(clinic_blood_data_1st), 2),] %>% select(-c("date_blood"))
-  names(a)[-1] <- paste0(a %>% select(-c("id")) %>% names(), "_baseline")
-  
-  b <- clinic_blood_data_1st[seq(2,nrow(clinic_blood_data_1st), 2),] %>% select(-c("date_blood"))
-  names(b)[-1] <- paste0(b %>% select(-c("id")) %>% names(), "_endpoint")
-  
-  aa <- b %>% select(-c("id")) - a %>% select(-c("id"))
-  aa <- cbind(a %>% select("id"), aa)
-  names(aa)[-1] <- paste0("∆", clinic_blood_data_1st %>% select(-c("id","date_blood")) %>% names())
-  
-  bb <- ((b %>% select(-c("id")) - a %>% select(-c("id"))) / a %>% select(-c("id")) *100) %>% round(2)
-  bb <- cbind(a %>% select("id"), bb)
-  names(bb)[-1] <- paste0("∆", clinic_blood_data_1st %>% select(-c("id","date_blood")) %>% names(), "%")
-  
-  
-  c2 <- full_join(a, b, by = c("id"))
-  c2 <- full_join(c2, aa, by = c("id"))
-  c2 <- full_join(c2, bb, by = c("id"))
-  
-  
-  stat_table_1st <- full_join(c1, c2, by = c("id"))
-  
-  rm(list = c("a","b", "c1", "c2", "clinic_inbody_data_1st", "clinic_blood_data_1st", "aa", "bb"))
-  
-  
-  
-  stat_table_1st <- lin_mapping(stat_table_1st, client_type, id, clinical_list, client_type, id)
-  stat_table_1st <- lin_mapping(stat_table_1st, age, id, clinical_list, age, id)
-  stat_table_1st <- lin_mapping(stat_table_1st, gender, id, clinical_list, gender, id)
-  
-  stat_table_1st <- lin_mapping(stat_table_1st, age, id, out_of_genesis_list_age_gender, age, id)
-  stat_table_1st <- lin_mapping(stat_table_1st, gender, id, out_of_genesis_list_age_gender, gender, id)
-  rm(out_of_genesis_list_age_gender)
-  
-  #With baseline OGTT data
-  stat_table_1st <- stat_table_1st[Reduce(dplyr::intersect,list(which(!is.na(stat_table_1st$glucose_ac_baseline)),
-                                                                which(!is.na(stat_table_1st$glucose_pc_1hr_baseline)),
-                                                                which(!is.na(stat_table_1st$glucose_pc_2hr_baseline)),
-                                                                which(!is.na(stat_table_1st$insulin_baseline)),
-                                                                which(!is.na(stat_table_1st$insulin_pc_1hr_baseline)),
-                                                                which(!is.na(stat_table_1st$insulin_pc_2hr_baseline)))),]
-  
-  
-  ###produce stat_table
-  stat_table_1st %<>% relocate(c("client_type","age","gender"), .after = "id")
-  
-  
-  
-  # 06 input_diet ---------------------------------------------------------
-  
-    #1-1. input diet record by day
-    diet_record <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/diet_record.csv", 
-                                   col_names = FALSE)
-    names(diet_record) <- c("id","date_diet","note_counts","pic_counts","essay_counts","light_green",
-                            "light_yellow","light_red","Cal","fat","protein","carb","x1","x2")
-    #data wrangling
-    diet_record <- diet_record %>% mutate(calorie_day = carb*4 + protein*4 + fat*9)
-    diet_record <- diet_record %>% mutate(`carb_E%` = round((carb*4/calorie_day) *100,2))
-    diet_record <- diet_record %>% mutate(`protein_E%` = round((protein*4/calorie_day) *100,2))
-    diet_record <- diet_record %>% mutate(`fat_E%` = round((fat*9/calorie_day) *100,2))
-  
-    #1-2. input diet meal by meal
-    diet_meal <- readr::read_csv("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/diet_meal.csv")
-    diet_meal$client_id %<>% as.integer()
-    diet_meal$date %<>% as.Date()
-    diet_meal[c("calorie","carbohydrate","fat","protein","fruits","vegetables","grains","meat_beans_low_fat",
-                "meat_beans_medium_fat","meat_beans_high_fat","milk_whole_fat","milk_low_fat","milk_skim",
-                "oil","meal_order","water_intake")] %<>% lapply(as.numeric)
-    diet_meal %<>% dplyr::rename(calorie_meal = calorie)
-    diet_meal %<>% dplyr::rename(id = client_id)
-    diet_meal %<>% mutate(meat_bean = rowSums(select(., meat_beans_low_fat, meat_beans_medium_fat, meat_beans_high_fat), na.rm = TRUE) )
-    diet_meal %<>% mutate(milk = rowSums(select(., milk_whole_fat, milk_low_fat, milk_skim), na.rm = TRUE) )
-    diet_meal %<>% select(-c("meat_beans_low_fat", "meat_beans_medium_fat","meat_beans_high_fat","milk_whole_fat","milk_low_fat","milk_skim"))
-    diet_meal %<>% select(c("id","date","type","calorie_meal","carbohydrate","fat","protein","fruits","vegetables","grains","meat_bean","milk", "oil","meal_order","water_intake"))
+  if ((nrow(a2_e) != 0) & (nrow(a2_b) != 0)) {
+    a4 <- merge(select_if(a2_e, is.numeric) - select_if(a2_b, is.numeric),
+                ((select_if(a2_e, is.numeric) - select_if(a2_b, is.numeric))/select_if(a2_b, is.numeric)) %>% multiply_by(100) %>% round(2),
+                by = "id", suffixes = c("","%"))
+    names(a4) <- paste0("∆", names(a4))
+    a4 <- a4 %>% rename(id = `∆id`)
     
-    diet_meal <- diet_meal[with(diet_meal, order(id, date)),]
-    
-    diet_meal <- diet_meal %>% select(c("id","date","fruits","vegetables","grains","meat_bean","milk","oil"))
-    diet_meal %<>% dplyr::rename(date_diet = date)
-    
-    #condense df by id, date
-    diet_meal <- 
-      diet_meal %>% 
-      group_by(id, date_diet) %>% 
-      summarise(fruits = sum(fruits, na.rm = TRUE),
-                vegetables = sum(vegetables, na.rm = TRUE),
-                grains = sum(grains, na.rm = TRUE),
-                meat_bean = sum(meat_bean, na.rm = TRUE),
-                milk = sum(milk, na.rm = TRUE),
-                oil = sum(oil, na.rm = TRUE),
-      )
-    
-  #merge w/ diet_record
-  diet_record <- merge(diet_record, diet_meal, by.x = c("id", "date_diet"), all.x = TRUE)
-  
-  
-  
-  #Sorting by Multiple Columns
-  diet_record <- diet_record[with(diet_record, order(id, date_diet)),]
-  
-  library(dplyr)
-  diet_record <- diet_record %>% select("id","date_diet","carb_E%","protein_E%","fat_E%","calorie_day","note_counts","pic_counts","essay_counts",
-                                        "light_green","light_yellow","light_red",
-                                        "fruits","vegetables","grains","meat_bean","milk","oil")
-  
-  #filter by id
-  diet_record <- diet_record[which(diet_record$id %in% stat_table_1st$id),]
-  
-  
-  #filter diet_record between baseline_date to end-point_date
-  #add filter criteria
-  diet_record <- lin_mapping(diet_record, date_baseline, id, stat_table_1st, date_baseline, id)
-  diet_record <- lin_mapping(diet_record, date_endpoint, id, stat_table_1st, date_endpoint, id)
-  #filter code
-  diet_record <- diet_record %>% filter( (date_diet >= date_baseline) & (date_diet <= date_endpoint) )
-  
-  
-  ##[20230208] adjust low calorie_day outliers
-  cut_off_calorie_day <- 500
-  diet_record[diet_record$calorie_day < cut_off_calorie_day, "calorie_day"] <- NA
-  pool_id <- diet_record %>% filter(is.na(calorie_day)) %>% select(id) %>% unique() %>% pull()
-  for (i in pool_id) {
-    diet_record[(diet_record$id == i) & (is.na(diet_record$calorie_day)), "calorie_day"] <- 
-      diet_record %>% filter(id == i) %>% select(calorie_day) %>% pull() %>% mean(na.rm = TRUE)
-    if (i == pool_id %>% tail(1)) {
-      rm(pool_id)
-    }
+    stat_table[j, seq(1 + cols_06_delta_inbody, cols_07_delta_blood)] <- a4 %>% select(-id) 
   }
   
   
-  #****1st nutritient_E% correlation with ∆HDL, ∆LDL[Q1.怎麼吃幅度最低??!]
-  
-  #****[Q2. Obedience with Inbody data, ∆HDL, ∆LDL?]
-  #1st treatment period, upload day % 
-  #input id list  
-  diet_obedience <- as.data.frame(unique(diet_record$id))
-  names(diet_obedience)[1] <- "id"
-  
-  
-  for (i in c(diet_obedience$id)) {
-    #create new col 
-    if (i == c(diet_obedience$id) %>% head(1)) {
-      diet_obedience[,c("day_count","upload_day_%","note_count","light_G","light_Y","light_R","pic_count",
-                        "carb_E%","protein_E%","fat_E%", "calorie_day",
-                        "fruits","vegetables","grains","meat_bean","milk","oil")] <- NA
-      j = 1
-      cat("\n\n[Establish diet table...]\n")
-    }
-    
-    #inbody_T0 inbody_T1
-    diet_T0 <- stat_table_1st %>% filter(id == i) %>% select("date_baseline") %>% pull()
-    diet_T0 <- diet_record %>% filter(id == i) %>% filter(date_diet >= diet_T0) %>% select(date_diet) %>% pull() %>% head(1)
-    diet_T1 <- stat_table_1st %>% filter(id == i) %>% select("date_endpoint") %>% pull()
-    
-    diet_record_temp <- diet_record %>% filter( (date_diet >= diet_T0) & (date_diet <= diet_T1) )
+  if (j == length(unique(stat_tm[["id"]]))) {
+    cat("[執行時間]\n")
+    print(proc.time() - ptm)
+    print("\n[Completed!]")
+    rm(list = c("med_id_pool", "a0", "a1", "a2", "a1_b", "a1_e", "a2_b", "a2_e", "a3", "a4", "v_b", "v_e",
+                "cols_01_profile", "cols_02_inbody_baseline", "cols_03_inbody_endpoint", "cols_04_blood_baseline",
+                "cols_05_blood_endpoint", "cols_06_delta_inbody", "cols_07_delta_blood"))
     
     
-    #upload calorie_day
-      diet_obedience[which(diet_obedience$id == i),"calorie_day"] <- (diet_record_temp %>% filter(id == i) %>% select(calorie_day) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% nrow()) %>% round(2)
-    #upload day count
-      diet_obedience[which(diet_obedience$id == i),"day_count"] <- diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow()
-    #upload day count%
-      diet_obedience[which(diet_obedience$id == i),"upload_day_%"] <- ((diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())*100/ ((diet_T1 - diet_T0 + 1) %>% as.numeric())) %>% round(2)
-    #upload meal_note count
-      diet_obedience[which(diet_obedience$id == i),"note_count"] <- diet_record_temp %>% filter(id == i) %>% select(note_counts) %>% sum(na.rm = TRUE)
-    #Light counts: green, yellow, red
-      diet_obedience[which(diet_obedience$id == i),"light_G"] <- diet_record_temp %>% filter(id == i) %>% select(light_green) %>% sum(na.rm = TRUE)
-      diet_obedience[which(diet_obedience$id == i),"light_Y"] <- diet_record_temp %>% filter(id == i) %>% select(light_yellow) %>% sum(na.rm = TRUE)
-      diet_obedience[which(diet_obedience$id == i),"light_R"] <- diet_record_temp %>% filter(id == i) %>% select(light_red) %>% sum(na.rm = TRUE)
-    #Pic count
-      diet_obedience[which(diet_obedience$id == i),"pic_count"] <- diet_record_temp %>% filter(id == i) %>% select(pic_counts) %>% sum(na.rm = TRUE)
-    #3 types of nutrients calorie_day_%
-      diet_obedience[which(diet_obedience$id == i),"carb_E%"] <- 
-        round((sum((diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`carb_E%`)) %>% select(`carb_E%`)*0.01) * diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`carb_E%`)) %>% select(`calorie_day`)) / sum(diet_record_temp %>% filter(id == i) %>% select(`calorie_day`)))*100,2)
-      diet_obedience[which(diet_obedience$id == i),"protein_E%"] <- 
-        round((sum((diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`protein_E%`)) %>% select(`protein_E%`)*0.01) * diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`protein_E%`)) %>% select(`calorie_day`)) / sum(diet_record_temp %>% filter(id == i) %>% select(`calorie_day`)))*100,2)
-      diet_obedience[which(diet_obedience$id == i),"fat_E%"] <- 
-        round((sum((diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`fat_E%`)) %>% select(`fat_E%`)*0.01) * diet_record_temp %>% filter(id == i) %>% filter(!is.nan(`fat_E%`)) %>% select(`calorie_day`)) / sum(diet_record_temp %>% filter(id == i) %>% select(`calorie_day`)))*100,2)
-      
-    #6 types of food
-      #fruits / upload day count
-      diet_obedience[which(diet_obedience$id == i),"fruits"] <- (diet_record_temp %>% filter(id == i) %>% select(fruits) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
-      #vegetables / upload day count
-      diet_obedience[which(diet_obedience$id == i),"vegetables"] <- (diet_record_temp %>% filter(id == i) %>% select(vegetables) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
-      #grains / upload day count
-      diet_obedience[which(diet_obedience$id == i),"grains"] <- (diet_record_temp %>% filter(id == i) %>% select(grains) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
-      #meat_bean / upload day count
-      diet_obedience[which(diet_obedience$id == i),"meat_bean"] <- (diet_record_temp %>% filter(id == i) %>% select(meat_bean) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
-      #milk / upload day count
-      diet_obedience[which(diet_obedience$id == i),"milk"] <- (diet_record_temp %>% filter(id == i) %>% select(milk) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
-      #oil / upload day count
-      diet_obedience[which(diet_obedience$id == i),"oil"] <- (diet_record_temp %>% filter(id == i) %>% select(oil) %>% sum(na.rm = TRUE)) / (diet_record_temp %>% filter(id == i) %>% filter((date_diet >= diet_T0) & (date_diet <= diet_T1)) %>% nrow())
-    
-    
-    
-    if (i == c(diet_obedience$id) %>% tail(1)) {
-      rm(diet_record_temp)
-      cat("\n[Completed!]\n")
-    }
-    progress(j, length(c(diet_obedience$id)))
-    j = j + 1
     
   }
   
+  progress(j, length(unique(stat_tm[["id"]])))
+  j = j + 1
   
-  
-  #mutate: pic_note
-  diet_obedience <- round(diet_obedience %>% mutate(pic_per_note = pic_count / note_count),2)
-  diet_obedience <- diet_obedience %>% mutate( `light_G_%`  = round(light_G/(light_G + light_Y + light_R)*100,2) )
-  diet_obedience <- diet_obedience %>% mutate( `light_Y_%`  = round(light_Y/(light_G + light_Y + light_R)*100,2) )
-  diet_obedience <- diet_obedience %>% mutate( `light_R_%`  = round(light_R/(light_G + light_Y + light_R)*100,2) )
-  
-  #map client_type
-  diet_obedience <- lin_mapping(diet_obedience, client_type, id , clinical_list, client_type, id)
-  
-  
-  ###join diet_record
-  stat_table_1st <- full_join(stat_table_1st, diet_obedience, by = c("id", "client_type"))
-  
-  #add Doctor
-  stat_table_1st$doctor <- "宋醫師"
-  stat_table_1st <- lin_mapping(stat_table_1st, doctor, id, clinical_list, doctor, id, overwrite = TRUE)
-  
-  
-  #add other vars
-    ##total AUC
-  stat_table_1st$tAUCg <- lin_AUC_calc(stat_table_1st, stat_table_1st %>% names() %>% grep("glucose", ., value = TRUE) %>% grep("baseline", ., value = TRUE))
-  stat_table_1st$tAUCi <- lin_AUC_calc(stat_table_1st, stat_table_1st %>% names() %>% grep("insulin", ., value = TRUE) %>% grep("baseline", ., value = TRUE))
-    ##OGIRIndex: iAUC-i(-30) - iAUC-g(+50)
-  stat_table_1st <- stat_table_1st %>% mutate(OGIRIndex = lin_AUC_calc(stat_table_1st, stat_table_1st %>% names() %>% grep("insulin", ., value = TRUE) %>% grep("baseline", ., value = TRUE), increment_value = -30) - 
-                                                lin_AUC_calc(stat_table_1st, stat_table_1st %>% names() %>% grep("glucose", ., value = TRUE) %>% grep("baseline", ., value = TRUE), increment_value = 50))
-  
-  
-  
+}
 
-# Split into OB/DM --------------------------------------------------------
 
-  #Dataset for Following analysis
-  stat_table_1st_ob <- stat_table_1st %>% filter(client_type != 1) %>% filter(!is.na(insulin_baseline) & !is.na(insulin_pc_1hr_baseline) & !is.na(insulin_pc_2hr_baseline)) 
-  stat_table_1st_dm <- stat_table_1st %>% filter(client_type == 1) %>% filter(!is.na(insulin_baseline) & !is.na(insulin_pc_1hr_baseline) & !is.na(insulin_pc_2hr_baseline)) 
-  
-  
-  
-  
-  
+
+## temp --------------------------------------------------------------------
+
+df06_Diet_day_tmp <- df06_Diet_day[which(df06_Diet_day[["client_id"]] %in% unique(stat_table[["id"]])),]
+df06_Diet_day_tmp$date_t0 <- NA
+df06_Diet_day_tmp$date_t0 <- df06_Diet_day_tmp$date_t0 %>% as.Date()
+df06_Diet_day_tmp <- lin_mapping(df06_Diet_day_tmp, date_t0, client_id, stat_table, date_t0, id)
+df06_Diet_day_tmp$date_t1 <- NA
+df06_Diet_day_tmp$date_t1 <- df06_Diet_day_tmp$date_t1 %>% as.Date()
+df06_Diet_day_tmp <- lin_mapping(df06_Diet_day_tmp, date_t1, client_id, stat_table, date_t1, id)
+
+df06_Diet_day_tmp <- df06_Diet_day_tmp %>% filter((date_diet >= date_t0) & (date_diet <= date_t1))
+
+
+df06_Diet_day_tmp <- 
+df06_Diet_day_tmp %>% 
+  group_by(client_id) %>% 
+  summarise(
+    upload_day_p = (n() *100 / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2), 
+    note_counts = sum(note_counts, na.rm = TRUE),
+    pic_counts = sum(pic_counts, na.rm = TRUE),
+    
+    light_green_p = (sum(light_green_count, na.rm = TRUE) *100 / (sum(sum(light_green_count, na.rm = TRUE),
+                                                                      sum(light_yellow_count, na.rm = TRUE),
+                                                                      sum(light_red_count, na.rm = TRUE)))) %>% round(2),
+    light_yellow_p = (sum(light_yellow_count, na.rm = TRUE) *100 / (sum(sum(light_green_count, na.rm = TRUE),
+                                                                        sum(light_yellow_count, na.rm = TRUE),
+                                                                        sum(light_red_count, na.rm = TRUE)))) %>% round(2),
+    light_red_p = (sum(light_red_count, na.rm = TRUE) *100 / (sum(sum(light_green_count, na.rm = TRUE),
+                                                                  sum(light_yellow_count, na.rm = TRUE),
+                                                                  sum(light_red_count, na.rm = TRUE)))) %>% round(2),
+    
+    carb_ep = (sum(carbohydrate, na.rm = TRUE)*4*100 / sum(calorie, na.rm = TRUE)) %>% round(2),
+    protein_ep = (sum(protein, na.rm = TRUE)*4*100 / sum(calorie, na.rm = TRUE)) %>% round(2),
+    fat_ep = (sum(fat, na.rm = TRUE)*9*100 / sum(calorie, na.rm = TRUE)) %>% round(2),
+    calorie = (sum(calorie, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2), 
+    calorie_deficit_day = (sum(calorie_deficit, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2), 
+    calorie_deficit_sum = sum(calorie_deficit, na.rm = TRUE) %>% round(2),
+    
+    fruits = (sum(fruits, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2),  
+    vegetables = (sum(vegetables, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2),  
+    grains = (sum(grains, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2),  
+    meat_bean = (sum(meat_bean, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2),  
+    milk = (sum(milk, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2),  
+    oil = (sum(oil, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2)
+  )
+
+names(df06_Diet_day_tmp) <- names(df06_Diet_day_tmp) %>% lin_ch_en_format(format = "en", origin = "raw_en")
+
+stat_table <- merge(stat_table,
+                    df06_Diet_day_tmp, 
+                    by.x = "id", all.x = TRUE)
+
+lin_mapping(stat_table, client_type, id, df01_profile, client_type, id) %>% View()
+
+
+# [Move forward] Clean client_type of df01_profile -------------------------------------------------------
+
+#[Source 1,2:] df01_profile, client_type_is.na, look-up from clinic note
+#1.not clinic
+a1 <- df01_profile %>% filter(!((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow"))) 
+#2.clinic, !is.na:client_type #map_ref
+a2 <- df01_profile %>% filter((!is.na(client_type)) & ((org_name == "genesisclinic") | (org_name == "topshow")))
+#3.clinic
+a3 <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+#4. map 2 & 3 / adv.clinic_list
+a3 <- lin_mapping(a3, client_type, id, a2, client_type, id)
+a3 <- lin_mapping(a3, client_type, id, clinical_adv_list, client_type, id)
+#5. rbind, order
+a4 <- a1 %>% rbind(a3) 
+a4 <- a4[with(a4, order(date_t0, id)),]
+# a4 %>% nrow()
+df01_profile <- a4
+rm(list = c("a1","a2","a3","a4"))
+
+#[Source 3:]df01_profile, client_type_is.na, look-up from blood_first_record
+#1.not clinic
+a1 <- df01_profile %>% filter(!((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow"))) 
+df01_profile_tmp <- df01_profile[is.na(df01_profile[["client_type"]]) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), ]
+#a2.clinic, blood_first_record #map_ref
+a2 <- df05_biochem[which(df05_biochem[["id"]] %in% df01_profile_tmp[["id"]]),]
+a2 <- a2[with(a2, order(id, date_blood)),]
+a2 <- a2 %>% filter(DM != "Unclassified")
+a2 <- a2 %>% distinct(id, .keep_all = TRUE)
+##if DM > client_type == "1"
+a2$client_type = NA
+a2$client_type <- ifelse(a2$DM == "DM", "1", "2")
+# table(a2$DM, a2$client_type)
+#3.clinic
+a3 <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+#4. map 2 & 3 / blood_first_record
+a3 <- lin_mapping(a3, client_type, id, a2, client_type, id)
+#5. rbind, order
+a4 <- a1 %>% rbind(a3) 
+a4 <- a4[with(a4, order(date_t0, id)),]
+# a4 %>% nrow()
+df01_profile <- a4
+rm(list = c("a1","a2","a3","a4"))
+
+#[Source 4:]**temp adjustment - to be refine in the future: client_type_is.na : 2 Obesity
+df01_profile[(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "client_type"] <- 2
+
+# df01_profile[(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "id"] %>% 
+#   unique() %>% length()
+# df01_profile[!(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "id"] %>% 
+#   unique() %>% length()
+
+
+# [Move forward] Map client_type from df01_profile to stat_table -------------------------------------------------------
+a3 <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+stat_table <- lin_mapping(stat_table, client_type, id, a3, client_type, id)
+rm(a3)
+
+#Create OB. dataset
+stat_table_1st_ob <- stat_table %>% filter((client_type == 2) & 
+                                         (!is.na(weight_baseline)) & (!is.na(weight_endpoint)) & 
+                                         (!is.na(glucose_ac_baseline)) & (!is.na(glucose_ac_endpoint)) &
+                                         (!is.na(note_count)))
+
+
+#Create DM. dataset
+stat_table_1st_dm <- stat_table %>% filter((client_type == 1) & 
+                                         (!is.na(weight_baseline)) & (!is.na(weight_endpoint)) & 
+                                         (!is.na(glucose_ac_baseline)) & (!is.na(glucose_ac_endpoint)) &
+                                         (!is.na(note_count))) %>% nrow()
+
+
+
+rm(list = c("stat_tm", "clinic_blood_data_ori","clinic_inbody_data_ori","df01_profile_tmp","df06_Diet_day_tmp"))

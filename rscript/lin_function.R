@@ -631,10 +631,11 @@ lin_exclude_NA_col <- function(df, variables){
 
 # [Function 8:] progess bar -------------------------------
 progress <- function (x, max = 100) {
+  time <- difftime(Sys.time(), start_time, units = "secs") %>% round(0) %>% hms::as_hms()
   percent <- x / max * 100
   cat(sprintf('\r[%-50s] %d%%',
               paste(rep('=', percent / 2), collapse = ''),
-              floor(percent)), paste0("(", x, "/", max, ")"))
+              floor(percent)), paste0("(", x, "/", max, ") ", time))
   if (x == max)
     cat('\n')
 }

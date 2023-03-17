@@ -468,13 +468,12 @@ stat_tm <- stat_tm %>% filter( ((id %in% stat_tm[which(duplicated(stat_tm$id)),"
 
 
 for (i in c(unique(stat_tm[["id"]]))) {
-  # Start the clock!
-  ptm <- proc.time()
-  start_time <- Sys.time()
-  
   #1. create dataframe
   if (i == (c(unique(stat_tm[["id"]])) %>% head(1))) {
     j = 1
+    # Start the clock!
+    ptm <- proc.time()
+    start_time <- Sys.time()
     
     #use id = 454425, to establish table format
     #Profile
@@ -514,13 +513,13 @@ for (i in c(unique(stat_tm[["id"]]))) {
                 ((select_if(a1_e, is.numeric) - select_if(a1_b, is.numeric))/select_if(a1_b, is.numeric)) %>% multiply_by(100) %>% round(2),
                 by = "id", suffixes = c("","%"))
     names(a3) <- paste0("∆", names(a3))
-    a3 <- a3 %>% rename(id = `∆id`)
-    
+    a3 <- a3 %>% dplyr::rename(id = `∆id`)
+  
     a4 <- merge(select_if(a2_e, is.numeric) - select_if(a2_b, is.numeric),
                 ((select_if(a2_e, is.numeric) - select_if(a2_b, is.numeric))/select_if(a2_b, is.numeric)) %>% multiply_by(100) %>% round(2),
                 by = "id", suffixes = c("","%"))
     names(a4) <- paste0("∆", names(a4))
-    a4 <- a4 %>% rename(id = `∆id`)
+    a4 <- a4 %>% dplyr::rename(id = `∆id`)
     
     
     #establish df
@@ -569,8 +568,8 @@ for (i in c(unique(stat_tm[["id"]]))) {
   v_e <- (clinic_blood_data[(clinic_blood_data$id == i) , ] %>% select(date_blood) %>% pull - stat_tm[(stat_tm$id == i) , "date_t1"]) %>% abs()
   v_e <- ifelse(v_e > 30, NA, v_e) %>% order(na.last = NA) %>% head(1)
   
-  a2_b <- clinic_blood_data[(clinic_blood_data$id == 454425),][v_b,]
-  a2_e <- clinic_blood_data[(clinic_blood_data$id == 454425),][v_e,]
+  a2_b <- clinic_blood_data[(clinic_blood_data$id == i),][v_b,]
+  a2_e <- clinic_blood_data[(clinic_blood_data$id == i),][v_e,]
   a2 <- merge(a2_b,
               a2_e,
               by = "id", suffixes = c("_baseline","_endpoint"))
@@ -588,7 +587,7 @@ for (i in c(unique(stat_tm[["id"]]))) {
                 ((select_if(a1_e, is.numeric) - select_if(a1_b, is.numeric))/select_if(a1_b, is.numeric)) %>% multiply_by(100) %>% round(2),
                 by = "id", suffixes = c("","%"))
     names(a3) <- paste0("∆", names(a3))
-    a3 <- a3 %>% rename(id = `∆id`)
+    a3 <- a3 %>% dplyr::rename(id = `∆id`)
     
     stat_table[j, seq(1 + cols_05_blood_endpoint, cols_06_delta_inbody)] <- a3 %>% select(-id)
   }
@@ -599,26 +598,24 @@ for (i in c(unique(stat_tm[["id"]]))) {
                 ((select_if(a2_e, is.numeric) - select_if(a2_b, is.numeric))/select_if(a2_b, is.numeric)) %>% multiply_by(100) %>% round(2),
                 by = "id", suffixes = c("","%"))
     names(a4) <- paste0("∆", names(a4))
-    a4 <- a4 %>% rename(id = `∆id`)
+    a4 <- a4 %>% dplyr::rename(id = `∆id`)
     
     stat_table[j, seq(1 + cols_06_delta_inbody, cols_07_delta_blood)] <- a4 %>% select(-id) 
   }
   
   
+  progress(j, length(unique(stat_tm[["id"]])))
+  j = j + 1
+  
   if (j == length(unique(stat_tm[["id"]]))) {
-    cat("[執行時間]\n")
+    cat("\n[執行時間]\n")
     print(proc.time() - ptm)
     print("\n[Completed!]")
     rm(list = c("med_id_pool", "a0", "a1", "a2", "a1_b", "a1_e", "a2_b", "a2_e", "a3", "a4", "v_b", "v_e",
                 "cols_01_profile", "cols_02_inbody_baseline", "cols_03_inbody_endpoint", "cols_04_blood_baseline",
                 "cols_05_blood_endpoint", "cols_06_delta_inbody", "cols_07_delta_blood"))
     
-    
-    
   }
-  
-  progress(j, length(unique(stat_tm[["id"]])))
-  j = j + 1
   
 }
 
@@ -676,7 +673,7 @@ stat_table <- merge(stat_table,
                     df06_Diet_day_tmp, 
                     by.x = "id", all.x = TRUE)
 
-lin_mapping(stat_table, client_type, id, df01_profile, client_type, id) %>% View()
+# lin_mapping(stat_table, client_type, id, df01_profile, client_type, id) %>% View()
 
 
 # [Move forward] Clean client_type of df01_profile -------------------------------------------------------

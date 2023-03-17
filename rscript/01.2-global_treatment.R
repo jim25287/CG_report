@@ -229,10 +229,9 @@ rm(list = c("a", "b", "data"))
 
 # Line plot ---------------------------------------------------------------
 #Establish summary table
-a <- stat_table_1st_ob %>% select(grep("baseline$", stat_table_1st_ob %>% names())) %>%
-  select(-c("date_baseline", "extracellular_water_ratio_baseline", "wepa50_baseline", "e2_baseline", "testosterone_baseline"))
-b <- stat_table_1st_ob %>% select(grep("endpoint$", stat_table_1st_ob %>% names())) %>%
-  select(-c("date_endpoint", "extracellular_water_ratio_endpoint", "wepa50_endpoint", "e2_endpoint", "testosterone_endpoint"))
+a <- stat_table_1st_ob %>% select(grep("baseline$", stat_table_1st_ob %>% names())) %>% select_if(is.numeric)
+
+b <- stat_table_1st_ob %>% select(grep("endpoint$", stat_table_1st_ob %>% names())) %>% select_if(is.numeric)
 
 #[D0] mean
 stat_table_1st_ob_temp <- 
@@ -404,14 +403,14 @@ names(profile_efficacy) <- names(profile_efficacy) %>% lin_ch_en_format(format =
 
 profile_baseline <- stat_table_1st_ob %>% 
   select(c("age", "bmi_baseline","pbf_baseline","vfa_baseline","bsmi_baseline","pbm_baseline","wc_baseline","bmr_baseline",
-           "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline", "tAUCg", "tAUCi", "OGIRIndex",
+           "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline", "tAUCg_baseline", "tAUCi_baseline", "OGIRIndex_baseline",
            "tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
            "testosterone_baseline"))
 
 names(profile_baseline) <- names(profile_baseline) %>% lin_ch_en_format(format = "ch", origin = "en")
 
 profile_diet <- stat_table_1st_ob %>% 
-  select(c("upload_day_%", "pic_count","calorie_day","carb_E%","protein_E%","fat_E%","fruits","vegetables","grains","meat_bean","milk", "oil","light_G_%","light_Y_%","light_R_%"))
+  select(c("upload_day_%", "pic_counts","calorie_day","carb_E%","protein_E%","fat_E%","fruits","vegetables","grains","meat_bean","milk", "oil","light_G_%","light_Y_%","light_R_%"))
 
 names(profile_diet) <- names(profile_diet) %>% lin_ch_en_format(format = "ch", origin = "en")
 

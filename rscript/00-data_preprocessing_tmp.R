@@ -429,7 +429,7 @@ df09_hormone[c("hormone_L","hormone_P","hormone_t","hormone_c","hormone_l","horm
 
 
 
-# 03.1 - temppppppp --------------------------------------------------------------
+# 03.1 - Create clinic datasets:topshow, genesisclinic --------------------------------------------------------------
 
 #C1. Select clinic clients: topshow, genesisclinic
 table((df01_profile %>% filter((org_name == "topshow") | org_name == "genesisclinic"))$org_name)
@@ -677,9 +677,9 @@ stat_table <- merge(stat_table,
 lin_mapping(stat_table, client_type, id, df01_profile, client_type, id) %>% View()
 
 
-# [Move forward]clean client_type of df01_profile -------------------------------------------------------
+# [Move forward] Clean client_type of df01_profile -------------------------------------------------------
 
-#df01_profile, client_type_is.na, look-up from clinic note
+#[Source 1,2:] df01_profile, client_type_is.na, look-up from clinic note
 #1.not clinic
 a1 <- df01_profile %>% filter(!((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow"))) 
 #2.clinic, !is.na:client_type #map_ref
@@ -696,7 +696,7 @@ a4 <- a4[with(a4, order(date_t0, id)),]
 df01_profile <- a4
 rm(list = c("a1","a2","a3","a4"))
 
-#df01_profile, client_type_is.na, look-up from blood_first_record
+#[Source 3:]df01_profile, client_type_is.na, look-up from blood_first_record
 #1.not clinic
 a1 <- df01_profile %>% filter(!((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow"))) 
 df01_profile_tmp <- df01_profile[is.na(df01_profile[["client_type"]]) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), ]
@@ -720,7 +720,7 @@ a4 <- a4[with(a4, order(date_t0, id)),]
 df01_profile <- a4
 rm(list = c("a1","a2","a3","a4"))
 
-#**temp adjustment - to be refine in the future: client_type_is.na : 2 Obesity
+#[Source 4:]**temp adjustment - to be refine in the future: client_type_is.na : 2 Obesity
 df01_profile[(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "client_type"] <- 2
 
 # df01_profile[(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "id"] %>% 
@@ -729,8 +729,14 @@ df01_profile[(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"
 #   unique() %>% length()
 
 
+# [Move forward] Map client_type from df01_profile to stat_table -------------------------------------------------------
+a3 <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+stat_table <- lin_mapping(stat_table, client_type, id, a3, client_type, id)
+rm(a3)
+
+
 x <- list(
-  `All_clients` = stat_tm[["id"]] %>% unique(),
+  `All_clients` = stat_table[["id"]] %>% unique(),
   `Obesity` =  stat_table[stat_table[["client_type"]] == 2, "id"],
   `Diabetes` =  stat_table[stat_table[["client_type"]] == 1, "id"],
   `Inbody` = stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],

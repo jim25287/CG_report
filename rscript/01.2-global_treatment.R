@@ -519,19 +519,19 @@ cor_table_02 <- M2_df %>% gvisTable(options=list(frozenColumns = 2,
 # Effi.  stratification ---------------------------------------------------
 
 #Divide into 3 group based on ∆weight
-QQ1_stat_table_1st_bad <- stat_table_1st %>% filter(client_type != 1) %>% filter(`∆weight%` > -3)
+QQ1_stat_table_1st_bad <- stat_table_1st_ob %>% filter(`∆weight%` > -3)
 QQ1_stat_table_1st_bad$`∆weight%` %>%summary()
 QQ1_stat_table_1st_bad$id %>% unique() %>% length()
 QQ1_stat_table_1st_bad %>% summary()
 QQ1_stat_table_1st_bad$gp <- "Poor"
 
-QQ1_stat_table_1st_medium <- stat_table_1st %>% filter(client_type != 1) %>% filter((`∆weight%` > -10) & (`∆weight%` < -5) )
+QQ1_stat_table_1st_medium <- stat_table_1st_ob %>% filter((`∆weight%` > -10) & (`∆weight%` < -5) )
 QQ1_stat_table_1st_medium$`∆weight%` %>%summary()
 QQ1_stat_table_1st_medium$id %>% unique() %>% length()
 QQ1_stat_table_1st_medium %>% summary()
 QQ1_stat_table_1st_medium$gp <- "Medium"
 
-QQ1_stat_table_1st_good <- stat_table_1st %>% filter(client_type != 1) %>% filter(`∆weight%` < -10)
+QQ1_stat_table_1st_good <- stat_table_1st_ob %>% filter(`∆weight%` < -10)
 QQ1_stat_table_1st_good$`∆weight%` %>%summary()
 QQ1_stat_table_1st_good$id %>% unique() %>% length()
 QQ1_stat_table_1st_good %>% summary()
@@ -541,50 +541,51 @@ QQ1_stat_table_1st <- rbind(QQ1_stat_table_1st_bad, QQ1_stat_table_1st_good)
 QQ1_stat_table_1st <- rbind(QQ1_stat_table_1st, QQ1_stat_table_1st_medium)
 QQ1_stat_table_1st$gp %<>% factor(levels = c("Poor", "Medium", "Good"))
 
+             #profile
+vars_en <- c("id","client_type","age","gender","date_t0","date_t1",
+             #inbody - baseline
+             "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","pbm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
+             #blood- baseline
+             "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
+             #inbody - endpoint
+             "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","pbm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
+             #blood- endpoint
+             "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint","lipase_endpoint",
+             #diet
+             "upload_day_%","note_count","pic_counts","carb_E%","protein_E%","fat_E%","calorie_day","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
+             #others
+             "gp",
+             #inbody - ∆
+             "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
+             #blood - ∆
+             "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase",
+             #inbody - ∆%
+             "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",
+             #blood - ∆%
+             "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆lipase%"
+)
 
+QQ1_stat_table_1st <- QQ1_stat_table_1st %>% select(vars_en)
 
-#turn ∆ into positve(reverse)
-QQ1_stat_table_1st_a <- QQ1_stat_table_1st %>% select(-grep("∆", names(QQ1_stat_table_1st))) 
-#rm NA vars
-QQ1_stat_table_1st_a %<>% select(-c("bm_baseline", "bm_endpoint"))
-QQ1_stat_table_1st_a %<>% select(-grep("tbwffm", names(QQ1_stat_table_1st_a)))
-QQ1_stat_table_1st_a %<>% select(-grep("extracellular", names(QQ1_stat_table_1st_a)))
-QQ1_stat_table_1st_a %<>% select(-grep("wepa50", names(QQ1_stat_table_1st_a)))
-QQ1_stat_table_1st_a %<>% select(-grep("e2", names(QQ1_stat_table_1st_a)))
-QQ1_stat_table_1st_a %<>% select(-grep("testosterone", names(QQ1_stat_table_1st_a)))
-QQ1_stat_table_1st_a %<>% select(-grep("hr", names(QQ1_stat_table_1st_a)))
+vars_en <- lin_ch_en_format(x = vars_en, format = "en", origin = "raw_en")
+names(QQ1_stat_table_1st) <- lin_ch_en_format(x = names(QQ1_stat_table_1st), format = "en", origin = "raw_en")
 
 
 #Setting improvement direction
-##Improvement: Uncertain, default setting
-QQ1_stat_table_1st_b <- QQ1_stat_table_1st %>% 
-  select(c("∆bmr","∆bmr%", "∆lipase","∆lipase%"))
-#觀察值不夠: select(c("∆extracellular_water_ratio","∆wepa50","∆bmr","∆extracellular_water_ratio%","∆wepa50%","∆bmr%","∆e2","∆testosterone","∆e2%","∆testosterone%"))
 
-##Improvement: negative
+QQ1_stat_table_1st_a <- QQ1_stat_table_1st %>% select(-grep("∆", names(QQ1_stat_table_1st)))
+
+##Improvement: Uncertain, default setting
+QQ1_stat_table_1st_b <- QQ1_stat_table_1st %>% select(c("∆bmr","∆bmr%", "∆lipase","∆lipase%"))
+##Improvement: negative (減少越多，越往上長)
 QQ1_stat_table_1st_c <- QQ1_stat_table_1st %>% select(c("∆weight","∆bmi","∆bf","∆pbf","∆vfa","∆wc","∆ffm","∆weight%","∆bmi%","∆bf%","∆pbf%","∆vfa%","∆wc%","∆ffm%","∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆tg","∆tc","∆ldl","∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆tg%","∆tc%","∆ldl%")) %>% multiply_by(-1)
 ##Improvement: positive
 QQ1_stat_table_1st_d <- QQ1_stat_table_1st %>% select(c("∆bsmi","∆bm","∆bsmi%","∆bm%","∆homa_beta","∆hdl","∆homa_beta%","∆hdl%"))
 
 QQ1_stat_table_1st <- Reduce(cbind,list(QQ1_stat_table_1st_a, QQ1_stat_table_1st_b, QQ1_stat_table_1st_c, QQ1_stat_table_1st_d), accumulate =FALSE) 
 
-
-
-#Sort var order: baseline, endpoint, diet, ∆, ∆%
-  vars_en <- c("id","client_type","age","gender","date_baseline","date_endpoint",
-            "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","pbm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
-            "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
-            "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","pbm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
-            "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint","lipase_endpoint",
-            "day_count","upload_day_%","note_count","pic_count","carb_E%","protein_E%","fat_E%","calorie_day","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
-            "gp",
-            "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
-            "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase",
-            "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",
-            "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆lipase%"
-  )
-
-QQ1_stat_table_1st %<>% select(vars_en)
+#order again!!
+QQ1_stat_table_1st <- QQ1_stat_table_1st %>% select(vars_en)
 
 #change colname to run plot
 QQ1_stat_table_1st_for_plot <- QQ1_stat_table_1st
@@ -592,10 +593,10 @@ QQ1_stat_table_1st_for_plot <- QQ1_stat_table_1st
 names(QQ1_stat_table_1st_for_plot) <- gsub("∆", "delta_", names(QQ1_stat_table_1st_for_plot))
 names(QQ1_stat_table_1st_for_plot) <- gsub("%", "_percent", names(QQ1_stat_table_1st_for_plot))
 
-#new
-var_vector <- c(setdiff(vars_en %>% grep("baseline$", .), vars_en %>% grep("date", .)),
-                setdiff(vars_en %>% grep("endpoint$", .), vars_en %>% grep("date", .)),
-                vars_en %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE),
+#set output plot order
+var_vector <- c(vars_en %>% grep("baseline$", .),
+                vars_en %>% grep("endpoint$", .),
+                vars_en %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp|date", ., invert = TRUE),
                 setdiff(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .)),
                 intersect(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .))
 )
@@ -617,6 +618,7 @@ for (i in c(var_vector)) {
   j <- match(i, var_vector)
   if (j == 1) {
     vector_pvalue <- c()
+    start_time <- Sys.time()
   }
   
   a <- QQ1_stat_table_1st_for_plot %>% colnames() %>% head(i) %>% tail(1)

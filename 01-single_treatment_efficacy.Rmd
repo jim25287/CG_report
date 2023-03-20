@@ -15,37 +15,32 @@ editor_options:
 ## 資料集(Datasets) {#vens_grap_ob}
 
 ```{r}
-plot_1
+plot_venn_0
 cat("\n<br>")
-cat(" 體組成Inbody:", clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>",
-    "血檢報告:", clinic_blood_data_ori %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>",
-    "初日診所:", clinical_list %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>",
-    "初日+北秀:", Reduce(dplyr::intersect, list(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                                                 clinic_blood_data_ori %>% select(id) %>% pull() %>% unique(),
-                                                 clinical_list %>% select(id) %>% pull() %>% unique())) %>% length(), "+",
-    dplyr::setdiff((dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                                                 clinic_blood_data_ori %>% select(id) %>% pull() %>% unique())),
-                   clinical_list %>% select(id) %>% pull() %>% unique()) %>% length(), "=",
-    dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length(),"筆 \n<br>")
+cat(" 減重門診客戶:", stat_table[stat_table[["client_type"]] == 2, "id"] %>% unique() %>% length(), "位 \n<br>",
+    "控糖門診客戶:", stat_table[stat_table[["client_type"]] == 1, "id"] %>% unique() %>% length(), "位 \n<br>")
 ```
 
 **納入標準:**
 
 1.  首次方案：減重療程
-2.  至少有2筆體組成(Inbody)、血檢報告資料
-3.  評估成效資料時間差:大於1個月
+2.  包含「體組成」(Inbody)、「血檢報告」及「飲食紀錄」等數據資料
+3.  前、後測時間點誤差均在合理範圍(體組成±7days, 血檢±15days)
 4.  有完整初始狀態OGTT血檢報告
 5.  各項變數均無遺漏值(missing value)
 
 ```{r}
-plot_3
+plot_venn_2
 cat("\n<br>")
-cat(" 總共:", dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length(),"筆 \n<br>",
-    "排除:", (dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length()) - (stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique() %>% length()), "筆 \n<br>",
-    "納入分析:", stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>")
+cat(" 總共:", stat_table[stat_table[["client_type"]] == 2, "id"] %>% unique() %>% length() ,"筆 \n<br>",
+    "排除:", (stat_table[stat_table[["client_type"]] == 2, "id"] %>% unique() %>% length()) - (Reduce(intersect, list(stat_table[stat_table[["client_type"]] == 2, "id"],
+                       stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
+                       stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
+                       stat_table[!is.na(stat_table[["note_count"]]), "id"])) %>% length()) , "筆 \n<br>",
+    "納入分析:", Reduce(intersect, list(stat_table[stat_table[["client_type"]] == 2, "id"],
+                       stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
+                       stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
+                       stat_table[!is.na(stat_table[["note_count"]]), "id"])) %>% length(), "筆 \n<br>")
 ```
 
 ## 客戶輪廓分析 {#porfile_ob}
@@ -217,7 +212,7 @@ plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
 ```{r, results='asis', fig.width= 10, fig.height=44}
-plot_grid(plotlist = myplots[41:52], ncol = 2, labels = paste0(LETTERS[5], seq(1,26)))
+plot_grid(plotlist = myplots[41:57], ncol = 2, labels = paste0(LETTERS[5], seq(1,26)))
 ```
 
 ### 成效(Effectiveness) {#effectiveness_ob .unnumbered}
@@ -225,25 +220,25 @@ plot_grid(plotlist = myplots[41:52], ncol = 2, labels = paste0(LETTERS[5], seq(1
 #### **成效(∆)-Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[53:68], ncol = 2, labels = paste0(LETTERS[6], seq(1,10)))
+plot_grid(plotlist = myplots[58:67], ncol = 2, labels = paste0(LETTERS[6], seq(1,10)))
 ```
 
 #### **成效**(∆)-Blood
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[69:78], ncol = 2, labels = paste0(LETTERS[7], seq(1,10)))
+plot_grid(plotlist = myplots[68:77], ncol = 2, labels = paste0(LETTERS[7], seq(1,10)))
 ```
 
 #### **成效(%)-Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[79:88], ncol = 2, labels = paste0(LETTERS[8], seq(1,10)))
+plot_grid(plotlist = myplots[78:87], ncol = 2, labels = paste0(LETTERS[8], seq(1,10)))
 ```
 
 #### **成效(%)-Blood**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[89:98], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
+plot_grid(plotlist = myplots[88:97], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
 ```
 
 ### Summary {#Summary_ob .unnumbered}
@@ -313,7 +308,7 @@ plot_grid(plotlist = myplots_plot_testosterone[1:10], ncol = 2, labels = paste0(
 #### **Blood**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[11:21], ncol = 2, labels = paste0(LETTERS[2], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[11:20], ncol = 2, labels = paste0(LETTERS[2], seq(1,50)))
 ```
 
 ### 介入後狀態(Endpoint) {#endpoint_test .unnumbered}
@@ -321,13 +316,13 @@ plot_grid(plotlist = myplots_plot_testosterone[11:21], ncol = 2, labels = paste0
 #### **Inbody**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[22:31], ncol = 2, labels = paste0(LETTERS[3], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[21:30], ncol = 2, labels = paste0(LETTERS[3], seq(1,50)))
 ```
 
 #### **Blood**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[32:41], ncol = 2, labels = paste0(LETTERS[4], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1,50)))
 ```
 
 ### 飲食(Diet) {#diet_test .unnumbered}
@@ -335,7 +330,7 @@ plot_grid(plotlist = myplots_plot_testosterone[32:41], ncol = 2, labels = paste0
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
 ```{r, results='asis', fig.width= 5, fig.height=44}
-plot_grid(plotlist = myplots_plot_testosterone[42:59], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[41:57], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
 ```
 
 ### 成效(Effectiveness) {#effectiveness_test .unnumbered}
@@ -343,25 +338,25 @@ plot_grid(plotlist = myplots_plot_testosterone[42:59], ncol = 2, labels = paste0
 #### **成效(∆)-Inbody**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[60:69], ncol = 2, labels = paste0(LETTERS[6], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[58:67], ncol = 2, labels = paste0(LETTERS[6], seq(1,50)))
 ```
 
 #### **成效**(∆)-Blood
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[70:79], ncol = 2, labels = paste0(LETTERS[7], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[68:77], ncol = 2, labels = paste0(LETTERS[7], seq(1,50)))
 ```
 
 #### **成效(%)-Inbody**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[80:89], ncol = 2, labels = paste0(LETTERS[8], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[78:87], ncol = 2, labels = paste0(LETTERS[8], seq(1,50)))
 ```
 
 #### **成效(%)-Blood**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[90:99], ncol = 2, labels = paste0(LETTERS[9], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[88:97], ncol = 2, labels = paste0(LETTERS[9], seq(1,50)))
 ```
 
 ```{r, results='asis', fig.align='left', paged.print=TRUE}

@@ -955,24 +955,35 @@ lin_ch_en_format <- function(x, format, origin){
   }
   
   #2. return vars not establish in the vars_table
-  if (length(x[which(!(x %in% vars_table[[origin]]))]) != 0) {
-    cat("\n[Not matched list:]\n")
-    return(x[which(!(x %in% vars_table[[origin]]))])
-  }else{
-    #3. change format
-    for (i in c(1:length(x))) {
-      if (i == 1) {
-        #重複選第一筆
-        results <- vars_table[vars_table[[origin]] %in% (x[i]), format] %>% head(1)
+  if (length(x[intersect(which(!(x %in% vars_table[[origin]])), which(!(x %in% vars_table[[format]])))]) != 0) {
+    cat("\n[Unknown vars list:]\n")
+    print(x[intersect(which(!(x %in% vars_table[[origin]])), which(!(x %in% vars_table[[format]])))])
+    cat("\n")
+    }
+  # if (length(x[which(!(x %in% vars_table[[origin]]))]) != 0) {
+  #   cat("\n[Not matched list:]\n")
+  #   print(x[which(!(x %in% vars_table[[origin]]))])
+  #   cat("\n")
+  #   }
+  #3. change format
+  for (i in c(1:length(x))) {
+    if (i == 1) {
+      #重複選第一筆
+      # results <- vars_table[vars_table[[origin]] %in% (x[i]), format] %>% head(1)
+      results <- c()
+      }
+        
+    #Only change names in origin list.
+    if (x[i] %in% vars_table[[origin]] %>% not()) {
+      results <- append(results, x[i])
       }else{
         #重複選第一筆
         results <- append(results, vars_table[vars_table[[origin]] %in% (x[i]), format] %>% head(1))
-      }
-    } 
-    results <- results %>% as.character()
-    cat("\n[Successfully Match:]\n")
-    return(results)
-  }
+        }
+    }
+  results <- results %>% as.character()
+  cat("\n[Done/Match Result]\n")
+  return(results)
 }
 
 

@@ -18,7 +18,7 @@ output:
     self_contained: false
     config:
       toc:
-        #collapse: chapter
+        collapse: subsection
       download: null
       edit: null
       sharing: null
@@ -79,22 +79,37 @@ options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 
 ```
 
-```{r input rscript, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
+```{r alternative try I: input workspace, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 
 load("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/WSpace_preproc.RData")
+
+
+#Load packages
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
+
+library(pacman)
+pacman::p_load(magrittr, knitr, kableExtra, dplyr, readr, readxl, tibble, showtext, extraInserts,
+               ggvenn, ggplot2,knitr, kableExtra, openxlsx, lubridate, cowplot, ggpubr, webshot,
+               stringr)
+#font
+font_add(family = "berlin_default", regular = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/font/STHeiti Light.ttc")
+showtext_auto(enable = TRUE)
+
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-main_page_stat.R")
+
+
 
 ```
 
 # Highlight {#index .unnumbered}
 
-**1.初日診所(台北)累積客戶統計：***(北秀門診462人另計)*
+**1.初日診所(台北)累積客戶統計：**
 
 ```{r}
 client_monthly_stat_report %>% plot()
 ```
 
-**#＃總計「累積服務客戶數」:** `r client_monthly_stat_report_total_client`{.underline}**(人次)**
+**#＃總計「累積服務客戶數」:** [**`r client_monthly_stat_report_total_client`**]{.underline}**(人次)**
 
 **2.初日減重門診 - 單次療程**(分析人數: `r success_df_freq[["Total"]] %>% max()`)：
 

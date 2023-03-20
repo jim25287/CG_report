@@ -1,4 +1,4 @@
-save.image("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/WSpace_preproc.RData")
+# save.image("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/WSpace_preproc.RData")
 
 
 #身體維度資料 e.g., wc 改用 3D data ##**缺date 欄位
@@ -526,7 +526,14 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
     
   
   
+    df05_biochem[(df05_biochem$id == 463448) , ] %>% select(date_blood) %>% pull
+    df05_biochem[(df05_biochem$id == 463448) , "date_blood"] %>% pull
+    clinic_blood_data[(clinic_blood_data$id == 463448) , "date_blood"] %>% pull
   
+    
+    df02_inbody[(df02_inbody$id == 463448) , ] %>% select(date_inbody) %>% pull
+    clinic_inbody_data[(clinic_inbody_data$id == 463448) , "date_inbody"] %>% pull
   
-  
-  
+    
+    
+    

@@ -25,7 +25,7 @@
 ## temp: from clinical list. future: from PostgreSQL
 ## build OB/DM note_col
 #Establish category
-clinical_stat_category <- factor(levels = (c("Total", "OB", "OB(ongoing)", "DM", "DM(ongoing)")))
+clinical_stat_category <- factor(levels = (c("Total", "OB", "OB(~)", "DM", "DM(~)")))
 #Establish dashboard df
 accum_client_df <- data.frame(date = rep(seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month"), each = levels(clinical_stat_category) %>% length()), 
                               category = rep(levels(clinical_stat_category), seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length()),
@@ -68,7 +68,6 @@ rm(client_stat_df_tmp)
 
 #Establish auxiliary df
 client_stat_df$class_buy_cumsum_all <- client_stat_df$class_buy %>% cumsum()
-client_stat_df[is.na(client_stat_df$class_finish), "class_finish"] <- 0
 client_stat_df$class_finish_cumsum_all <- client_stat_df$class_finish %>% cumsum()
 client_stat_df <- client_stat_df %>% mutate(class_ongoing_all = class_buy_cumsum_all - class_finish_cumsum_all)
 
@@ -83,9 +82,11 @@ client_stat_df <- client_stat_df %>% mutate(class_ongoing_sub = class_buy_cumsum
 #fill in accum_client_df
 accum_client_df[accum_client_df$category == "Total", "value"] <- client_stat_df[client_stat_df$client_type == 2, "class_buy_cumsum_all"]
 accum_client_df[accum_client_df$category == "OB", "value"] <- client_stat_df[client_stat_df$client_type == 2, "class_finish_cumsum_sub"]
-accum_client_df[accum_client_df$category == "OB(ongoing)", "value"] <- client_stat_df[client_stat_df$client_type == 2, "class_ongoing_sub"]
+accum_client_df[accum_client_df$category == "OB(~)", "value"] <- client_stat_df[client_stat_df$client_type == 2, "class_ongoing_sub"]
 accum_client_df[accum_client_df$category == "DM", "value"] <- client_stat_df[client_stat_df$client_type == 1, "class_finish_cumsum_sub"]
-accum_client_df[accum_client_df$category == "DM(ongoing)", "value"] <- client_stat_df[client_stat_df$client_type == 1, "class_ongoing_sub"]
+accum_client_df[accum_client_df$category == "DM(~)", "value"] <- client_stat_df[client_stat_df$client_type == 1, "class_ongoing_sub"]
+
+accum_client_df[(accum_client_df$date == "2021-09-01") & (accum_client_df$category == "Total") , "anno_title"] <- "Genesis Opening"
 
 rm(list = c("clinical_stat_category", "client_stat_df"))
 client_monthly_stat_report_total_client <- accum_client_df %>% filter(category == "Total") %>% select(value) %>% max(na.rm = TRUE)
@@ -100,7 +101,9 @@ client_monthly_stat_report <- googleVis::gvisAnnotationChart(accum_client_df,
                                                                displayAnnotations = TRUE,
                                                                #chart = "{chartArea:{backgroundColor:'#003b70'}}",
                                                                legendPosition='newRow',
-                                                               width=750, height=350, gvis.editor = "[選項]:圖表轉換"
+                                                               width = 800, height = 350,
+                                                               # width = "100%", height = 350,
+                                                               gvis.editor = "[選項]:圖表轉換"
                                                              ))
 #output
 ##client_monthly_stat_report %>% plot()

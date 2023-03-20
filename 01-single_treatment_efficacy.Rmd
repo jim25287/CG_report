@@ -64,15 +64,15 @@ gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
 
 減重部分：
 
-在女性客戶中，高達98%在療程中實現減重目的(目標設定不同)。其中將近45％表現優異(降幅\>8%)，40%表現良好(降幅4\~8%)。
+在女性客戶中，高達98%在療程中實現減重目的(目標設定不同)。其中將近35％表現優異(降幅\>8%)，47%表現良好(降幅4\~8%)。
 
-在男性客戶中，100%在療程中實現減重目的(目標設定不同)。其中將近4％表現超乎預期(降幅\>15%)、40％表現優異(降幅\>8%)，40%表現良好(降幅4\~8%)。ㄞㄞ
+在男性客戶中，100%在療程中實現減重目的(目標設定不同)。其中將近1％表現超乎預期(降幅\>15%)、40％表現優異(降幅\>8%)，45%表現良好(降幅4\~8%)。
 
 減脂部分：
 
-在女性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近35％表現超乎預期(降幅\>15%)，40%表現優異(降幅\>8%)，16%表現良好(降幅4\~8%)。
+在女性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近27％表現超乎預期(降幅\>15%)，46%表現優異(降幅\>8%)，16%表現良好(降幅4\~8%)。
 
-在男性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近46％表現超乎預期(降幅\>15%)，29%表現優異(降幅\>8%)，19%表現良好(降幅4\~8%)。
+在男性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近52％表現超乎預期(降幅\>15%)，29%表現優異(降幅\>8%)，11%表現良好(降幅4\~8%)。
 
 ```{r, results='asis', fig.width = 4, fig.height= 4}
 plot_stack_col_female %>% plot()
@@ -115,8 +115,7 @@ line_plot
         -   「水果」、「五穀雜糧」與減重成效成負相關。
 
 ```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
-corrplot(M1, 
-         p.mat = M_test1$p,
+corrplot::corrplot(M1, p.mat = M_test1$p,
          type = "lower",
          insig = "label_sig",
          sig.level = c(.001, .01, .05), pch.cex = .8, pch.col = "black",
@@ -126,6 +125,7 @@ corrplot(M1,
          title = "[Correlation] Efficacy x Diet", 
          #c(bottom, left, top, right)
          mar = c(0,0,1,0))
+         
 
 ```
 
@@ -144,7 +144,7 @@ knitr::kable(
 此外，根據1.2.2 整體成效分析，體脂肪降幅相較體重降幅明顯，顯示不論初始狀態如何，每一個人在單次療程中減少去的體脂重「可能」差不多(待進一步分析)。
 
 ```{r, results='asis', fig.width = 9, fig.height= 9.5, warning=FALSE}
-corrplot(M2, 
+corrplot::corrplot(M2, 
          p.mat = M_test2$p,
          type = "lower",
          insig = "label_sig",
@@ -275,7 +275,7 @@ googleVis::gvisMerge(pie_testosterone_01, pie_testosterone_02) %>% plot()
 男性荷爾蒙「睪固酮」血中濃度與「體重」、「體脂」，以及「空腹血糖」、「空腹胰島素」和「胰島素抗性」(IR)具有顯著負相關。換句話說，相較於「睪固酮」濃度正常的人，[「睪固酮」低下]{.underline}者傾向有[較高的「體重」、「體脂」]{.underline}，[「空腹血糖」、「空腹胰島素」和「胰島素抗性」(IR)也較高]{.underline}。\
 
 ```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
-  corrplot(M_testosterone,
+  corrplot::corrplot(M_testosterone,
            p.mat = M_testosterone_test$p,
            type = "lower",
            insig = "label_sig",

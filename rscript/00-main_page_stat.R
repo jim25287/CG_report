@@ -86,7 +86,7 @@ accum_client_df[accum_client_df$category == "OB(~)", "value"] <- client_stat_df[
 accum_client_df[accum_client_df$category == "DM", "value"] <- client_stat_df[client_stat_df$client_type == 1, "class_finish_cumsum_sub"]
 accum_client_df[accum_client_df$category == "DM(~)", "value"] <- client_stat_df[client_stat_df$client_type == 1, "class_ongoing_sub"]
 
-accum_client_df[(accum_client_df$date == "2021-09-01") & (accum_client_df$category == "Total") , "anno_title"] <- "Genesis Opening"
+# accum_client_df[(accum_client_df$date == "2021-09-01") & (accum_client_df$category == "Total") , "anno_title"] <- "Genesis Opening"
 
 rm(list = c("clinical_stat_category", "client_stat_df"))
 client_monthly_stat_report_total_client <- accum_client_df %>% filter(category == "Total") %>% select(value) %>% max(na.rm = TRUE)
@@ -101,9 +101,9 @@ client_monthly_stat_report <- googleVis::gvisAnnotationChart(accum_client_df,
                                                                displayAnnotations = TRUE,
                                                                #chart = "{chartArea:{backgroundColor:'#003b70'}}",
                                                                legendPosition='newRow',
-                                                               width = 800, height = 350,
-                                                               # width = "100%", height = 350,
-                                                               gvis.editor = "[選項]:圖表轉換"
+                                                               # width = 800, height = 350,
+                                                               width = "100%", height = 350,
+                                                               gvis.editor = "[選項]:圖表轉換", displayAnnotations = FALSE
                                                              ))
 #output
 ##client_monthly_stat_report %>% plot()

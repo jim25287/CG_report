@@ -105,7 +105,7 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 
 **1.初日診所(台北)累積客戶統計：**
 
-```{r}
+```{r, results='asis', fig.width = 6}
 client_monthly_stat_report %>% plot()
 ```
 

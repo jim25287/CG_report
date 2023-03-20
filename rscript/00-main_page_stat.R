@@ -27,25 +27,31 @@
 #Establish category
 clinical_stat_category <- factor(levels = (c("Total", "OB", "OB(ongoing)", "DM", "DM(ongoing)")))
 #Establish dashboard df
-accum_client_df <- data.frame(date = rep(clinical_list[["class_date_1"]] %>% lubridate::floor_date(unit = "month") %>% unique() %>% na.exclude(), each = levels(clinical_stat_category) %>% length()), 
-                              category = rep(levels(clinical_stat_category), clinical_list[["class_date_1"]] %>% lubridate::floor_date(unit = "month") %>% unique() %>% na.exclude() %>% length()),
-                              value = rep(NA, (clinical_list[["class_date_1"]] %>% lubridate::floor_date(unit = "month") %>% unique() %>% na.exclude() %>% length())*(levels(clinical_stat_category) %>% length())),
-                              anno_title = rep(NA, (clinical_list[["class_date_1"]] %>% lubridate::floor_date(unit = "month") %>% unique() %>% na.exclude() %>% length())*(levels(clinical_stat_category) %>% length())),
-                              anno_text = rep(NA, (clinical_list[["class_date_1"]] %>% lubridate::floor_date(unit = "month") %>% unique() %>% na.exclude() %>% length())*(levels(clinical_stat_category) %>% length())))
+accum_client_df <- data.frame(date = rep(seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month"), each = levels(clinical_stat_category) %>% length()), 
+                              category = rep(levels(clinical_stat_category), seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length()),
+                              value = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())),
+                              anno_title = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())),
+                              anno_text = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())))
+
+main_pagedf <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+
 #floor date for monthly calculation
-clinical_list <- clinical_list %>% mutate(date_cate = class_date_1 %>% lubridate::floor_date(unit = "month"))
-clinical_list <- clinical_list %>% mutate(date_finish = class_date_2 %>% lubridate::floor_date(unit = "month"))
+main_pagedf <- main_pagedf %>% mutate(date_cate = date_t0 %>% lubridate::floor_date(unit = "month"))
+main_pagedf <- main_pagedf %>% mutate(date_finish = date_t1 %>% lubridate::floor_date(unit = "month"))
 #clean client_type as factor
-clinical_list$client_type <- factor(clinical_list$client_type, levels = c("1", "2"))
+main_pagedf$client_type <- factor(main_pagedf$client_type, levels = c("1", "2"))
 
 #thr summarise to integrate finish/ongoing df, group by date, client_type, exclude NA col(missing value: class_date)
+client_stat_df_tmp <- data.frame(date = rep(seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month"), each = levels(main_pagedf$client_type) %>% length()), 
+                                 client_type = rep(levels(main_pagedf$client_type), seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())
+                                 )
 client_stat_df <- 
-  left_join(clinical_list %>% 
+  left_join(main_pagedf %>% 
               group_by(date_cate, client_type, .drop = FALSE) %>% 
               summarise(
                 n = n()
               ) %>% dplyr::rename(date = date_cate),
-            clinical_list %>% 
+            main_pagedf %>% 
               group_by(date_finish, client_type, .drop = FALSE) %>% 
               summarise(
                 n = n()
@@ -54,6 +60,11 @@ client_stat_df <-
   ) %>% lin_exclude_NA_col(., variables = c("date", "client_type"))
 
 client_stat_df <- client_stat_df %>% dplyr::rename(class_buy = n.x, class_finish = n.y)
+
+client_stat_df <- merge(client_stat_df, client_stat_df_tmp, by.y = c("date", "client_type"), all.y = TRUE) 
+client_stat_df[is.na(client_stat_df)] <- 0
+rm(client_stat_df_tmp)
+
 
 #Establish auxiliary df
 client_stat_df$class_buy_cumsum_all <- client_stat_df$class_buy %>% cumsum()

@@ -172,6 +172,7 @@ for (i in unique(df03_FLC_self_report$id)) {
   if (i == head(unique(df03_FLC_self_report$id), 1)) {
     j = 1
     df03_FLC_self_report$class_order <- NA
+    start_time <- Sys.time()
   }
   df03_FLC_self_report[which(df03_FLC_self_report[["id"]] == i), "class_order"] <- which(df03_FLC_self_report[["id"]] == i) %>% order()
   progress(j, unique(df03_FLC_self_report$id) %>% length())
@@ -280,8 +281,13 @@ for (i in c(df04_non_FLC_self_report %>% names() %>% grep("∆", ., value = TRUE
     ifelse(df04_non_FLC_self_report[[i]] < quantile(df04_non_FLC_self_report[[i]], 0.05, na.rm = TRUE) | df04_non_FLC_self_report[[i]] > quantile(df04_non_FLC_self_report[[i]], 0.95, na.rm = TRUE), NA, df04_non_FLC_self_report[[i]])
 }
 
+#rm commercial outliers
+  # df04_non_FLC_self_report %>% select(`∆weight`) %>% summary()
+df04_non_FLC_self_report <- df04_non_FLC_self_report[df04_non_FLC_self_report[["∆weight"]] >= quantile(df04_non_FLC_self_report[["∆weight"]], 0.25, na.rm = TRUE), ] %>% janitor::remove_empty("rows")
+
 #sample size report
 df04_non_FLC_self_report$id %>% unique() %>% length()
+
 
 
 #df04_non_FLC_self_report %>% summary()
@@ -294,6 +300,11 @@ df04_non_FLC_self_report$id %>% unique() %>% length()
 #     `∆wc%` = mean(`∆wc%`, na.rm = TRUE),
 #     n = n()
 #   )
+
+#Output datasets
+
+# write.table(df04_non_FLC_self_report %>% filter(date_endpoint <= "2022-09-01"), file = "datasets_non_flc")
+
 
 # 02.5 - [Data Preprocessing] 05_biochem --------------------------------------------------
 

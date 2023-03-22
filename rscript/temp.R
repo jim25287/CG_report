@@ -537,3 +537,15 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
     
     
     
+    
+    
+    
+
+# FLC & non-FLC -----------------------------------------------------------
+
+
+    
+    
+    
+        
+    

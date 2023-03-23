@@ -1078,6 +1078,7 @@ lin_DM_diagnosis <- function(df = NULL, variables){
   library(data.table)
   library(magrittr)
   
+  
   df[["DM"]] <- "Unclassified"
   
   setDT(df)[
@@ -1098,6 +1099,8 @@ lin_DM_diagnosis <- function(df = NULL, variables){
       (eval(parse(text = variables[4])) < 140),
     DM := "Normal"]
   
+  
+  df[["DM"]] <- factor(df[["DM"]], levels = (c("Normal","Pre-DM","DM","Unclassified")))
   
   cat("\n[Completed!]\n")
   cat("\n[執行時間]\n")

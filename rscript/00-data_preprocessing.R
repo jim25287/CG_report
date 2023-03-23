@@ -245,6 +245,9 @@ df04_non_FLC_self_report <- df04_non_FLC_self_report %>% distinct(id, date_free_
 
 df04_non_FLC_self_report <- df04_non_FLC_self_report %>% select(-c("dupe_count", "date_time", "earliest_date", "second_date"))
 
+#change colname
+names(df04_non_FLC_self_report) <- names(df04_non_FLC_self_report) %>% lin_ch_en_format(format = "en", origin = "raw_en")
+
 #clean pre/post table
 
 df04_non_FLC_self_report_tmp <- df04_non_FLC_self_report
@@ -299,8 +302,8 @@ df04_non_FLC_self_report$id %>% unique() %>% length()
 
 #df04_non_FLC_self_report %>% summary()
 
-# df04_non_FLC_self_report %>% 
-#   group_by(gender_baseline) %>% 
+# df04_non_FLC_self_report %>%
+#   group_by(gender) %>%
 #   summarize(
 #     `∆weight%` = mean(`∆weight%`, na.rm = TRUE),
 #     `∆fat%` = mean(`∆fat%`, na.rm = TRUE),

@@ -344,13 +344,12 @@ stat_table_1st_ob_temp_barchart <- stat_table_1st_ob_temp_barchart %>% mutate(sd
 
 
 #line chart
-line_plot_df <- stat_table_1st_ob_temp_barchart %>% filter(variable %in% c("weight","bmi","bf", "pbf","bsmi",  "bm", "vfa","wc", "ffm","bmr","hba1c", "glucose_ac", "insulin","homa_ir", "homa_beta", "tg", "tc", "hdl", "ldl","lipase") )
-var_ch <- c("體重", "BMI", "體脂重", "體脂率", "骨骼肌指數", "肌肉重", "內臟脂肪", "腰圍", "除脂體重", "基礎代謝率", "糖化血色素",
-            "空腹血糖", "空腹胰島素", "HOMA-IR", "HOMA-Beta", "三酸甘油脂", "總膽固醇", "HDL", "LDL", "解脂酶")
+var_ch <- c("weight","bmi","bf", "pbf","bsmi",  "bm", "vfa","wc", "ffm","bmr","hba1c", "glucose_ac", "insulin","homa_ir", "homa_beta", "tg", "tc", "hdl", "ldl", "uric_acid", "amylase","lipase")
+line_plot_df <- stat_table_1st_ob_temp_barchart %>% filter(variable %in% var_ch)
+var_ch <- var_ch %>% lin_ch_en_format(format = "ch", origin = "en")
 
 line_plot_df$variable <- var_ch %>% rep(each = 2)
-line_plot_df$variable <- line_plot_df$variable %>% factor(levels = c("體重", "BMI", "體脂重", "體脂率", "骨骼肌指數", "肌肉重", "內臟脂肪", "腰圍", "除脂體重", "基礎代謝率", "糖化血色素",
-                                                               "空腹血糖", "空腹胰島素", "HOMA-IR", "HOMA-Beta", "三酸甘油脂", "總膽固醇", "HDL", "LDL", "解脂酶"))
+line_plot_df$variable <- line_plot_df$variable %>% factor(levels = var_ch)
 
 
 line_plot <- 
@@ -546,11 +545,11 @@ vars_en <- c("id","client_type","age","gender","date_t0","date_t1",
              #inbody - baseline
              "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","pbm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
              #blood- baseline
-             "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
+             "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline", "uric_acid_baseline", "amylase_baseline","lipase_baseline",
              #inbody - endpoint
              "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","pbm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
              #blood- endpoint
-             "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint","lipase_endpoint",
+             "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint", "uric_acid_endpoint", "amylase_endpoint","lipase_endpoint",
              #diet
              "upload_day_%","note_count","pic_counts","carb_E%","protein_E%","fat_E%","calorie_day","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
              #others
@@ -558,11 +557,11 @@ vars_en <- c("id","client_type","age","gender","date_t0","date_t1",
              #inbody - ∆
              "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
              #blood - ∆
-             "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase",
+             "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆uric_acid","∆amylase","∆lipase",
              #inbody - ∆%
              "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",
              #blood - ∆%
-             "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆lipase%"
+             "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆uric_acid%","∆amylase%","∆lipase%"
 )
 
 QQ1_stat_table_1st <- QQ1_stat_table_1st %>% select(vars_en)
@@ -576,11 +575,14 @@ names(QQ1_stat_table_1st) <- lin_ch_en_format(x = names(QQ1_stat_table_1st), for
 QQ1_stat_table_1st_a <- QQ1_stat_table_1st %>% select(-grep("∆", names(QQ1_stat_table_1st)))
 
 ##Improvement: Uncertain, default setting
-QQ1_stat_table_1st_b <- QQ1_stat_table_1st %>% select(c("∆bmr","∆bmr%", "∆lipase","∆lipase%"))
+QQ1_stat_table_1st_b <- QQ1_stat_table_1st %>% select(grep("∆", names(QQ1_stat_table_1st), value = TRUE) %>% 
+                                                        grep(paste(c("bmr", "uric_acid", "amylase", "lipase"), collapse = "|"), ., value = TRUE))
 ##Improvement: negative (減少越多，越往上長)
-QQ1_stat_table_1st_c <- QQ1_stat_table_1st %>% select(c("∆weight","∆bmi","∆bf","∆pbf","∆vfa","∆wc","∆ffm","∆weight%","∆bmi%","∆bf%","∆pbf%","∆vfa%","∆wc%","∆ffm%","∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆tg","∆tc","∆ldl","∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆tg%","∆tc%","∆ldl%")) %>% multiply_by(-1)
+QQ1_stat_table_1st_c <- QQ1_stat_table_1st %>% select(grep("∆", names(QQ1_stat_table_1st), value = TRUE) %>% 
+                                                        grep(paste(c("weight", "bmi", "bf", "pbf", "vfa", "wc", "ffm", "hba1c", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., value = TRUE)) %>% multiply_by(-1)
 ##Improvement: positive
-QQ1_stat_table_1st_d <- QQ1_stat_table_1st %>% select(c("∆bsmi","∆bm","∆bsmi%","∆bm%","∆homa_beta","∆hdl","∆homa_beta%","∆hdl%"))
+QQ1_stat_table_1st_d <- QQ1_stat_table_1st %>% select(grep("∆", names(QQ1_stat_table_1st), value = TRUE) %>% 
+                                                        grep(paste(c("bsmi", "bm$", "bm%", "homa_beta", "hdl", "homa_beta"), collapse = "|"), ., value = TRUE)) %>% multiply_by(-1)
 
 QQ1_stat_table_1st <- Reduce(cbind,list(QQ1_stat_table_1st_a, QQ1_stat_table_1st_b, QQ1_stat_table_1st_c, QQ1_stat_table_1st_d), accumulate =FALSE) 
 

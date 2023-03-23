@@ -33,7 +33,7 @@ accum_client_df <- data.frame(date = rep(seq(as.Date(main_pagedf$date_cate %>% u
                               anno_title = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())),
                               anno_text = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())))
 
-main_pagedf <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+main_pagedf <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow") | (org_name == "lumez"))
 
 #floor date for monthly calculation
 main_pagedf <- main_pagedf %>% mutate(date_cate = date_t0 %>% lubridate::floor_date(unit = "month"))

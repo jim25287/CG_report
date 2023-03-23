@@ -190,7 +190,7 @@ plot_grid(plotlist = myplots[1:10], ncol = 2, labels = paste0(LETTERS[1], seq(1,
 #### **Blood**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[11:20], ncol = 2, labels = paste0(LETTERS[2], seq(1,10)))
+plot_grid(plotlist = myplots[11:22], ncol = 2, labels = paste0(LETTERS[2], seq(1,10)))
 ```
 
 ### 介入後狀態(Endpoint) {#endpoint_ob .unnumbered}
@@ -198,13 +198,13 @@ plot_grid(plotlist = myplots[11:20], ncol = 2, labels = paste0(LETTERS[2], seq(1
 #### **Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[21:30], ncol = 2, labels = paste0(LETTERS[3], seq(1,10)))
+plot_grid(plotlist = myplots[23:32], ncol = 2, labels = paste0(LETTERS[3], seq(1,10)))
 ```
 
 #### **Blood**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1,10)))
+plot_grid(plotlist = myplots[33:44], ncol = 2, labels = paste0(LETTERS[4], seq(1,10)))
 ```
 
 ### 飲食(Diet) {#diet_ob .unnumbered}
@@ -212,7 +212,7 @@ plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
 ```{r, results='asis', fig.width= 10, fig.height=44}
-plot_grid(plotlist = myplots[41:57], ncol = 2, labels = paste0(LETTERS[5], seq(1,26)))
+plot_grid(plotlist = myplots[45:61], ncol = 2, labels = paste0(LETTERS[5], seq(1,26)))
 ```
 
 ### 成效(Effectiveness) {#effectiveness_ob .unnumbered}
@@ -220,25 +220,25 @@ plot_grid(plotlist = myplots[41:57], ncol = 2, labels = paste0(LETTERS[5], seq(1
 #### **成效(∆)-Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[58:67], ncol = 2, labels = paste0(LETTERS[6], seq(1,10)))
+plot_grid(plotlist = myplots[62:71], ncol = 2, labels = paste0(LETTERS[6], seq(1,10)))
 ```
 
 #### **成效**(∆)-Blood
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[68:77], ncol = 2, labels = paste0(LETTERS[7], seq(1,10)))
+plot_grid(plotlist = myplots[72:83], ncol = 2, labels = paste0(LETTERS[7], seq(1,10)))
 ```
 
 #### **成效(%)-Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[78:87], ncol = 2, labels = paste0(LETTERS[8], seq(1,10)))
+plot_grid(plotlist = myplots[84:93], ncol = 2, labels = paste0(LETTERS[8], seq(1,10)))
 ```
 
 #### **成效(%)-Blood**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[88:97], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
+plot_grid(plotlist = myplots[94:105], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
 ```
 
 ### Summary {#Summary_ob .unnumbered}

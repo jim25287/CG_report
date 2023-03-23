@@ -3,6 +3,7 @@
 SELECT
   consulting_client_summaries.client_id,
   clients.gender,
+  clients.birthday,
   (TIMEZONE('UTC', consulting_client_summaries.created_at) AT TIME ZONE 'Asia/Taipei')::DATE AS date_free_version,
   TIMEZONE('UTC', consulting_client_summaries.created_at) AT TIME ZONE 'Asia/Taipei' AS date_time,
   consulting_client_summaries.weight,

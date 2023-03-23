@@ -533,6 +533,33 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
     
     df02_inbody[(df02_inbody$id == 463448) , ] %>% select(date_inbody) %>% pull
     clinic_inbody_data[(clinic_inbody_data$id == 463448) , "date_inbody"] %>% pull
+    
+    
+    
+    
+    
+    
+    
+    df03_FLC_self_report %>% 
+      group_by(gender) %>% 
+      summarise(
+        weight = mean(`∆weight(%)`, na.rm = TRUE),
+        fat = mean(`∆Fat(%)` , na.rm = TRUE)
+      )
+    df03_FLC_self_report$`∆weight(%)` %>% summary()
+    df03_FLC_self_report$`∆Fat(%)` %>% summary()
+    
+    
+    
+    
+    df04_non_FLC_self_report %>%  
+      group_by(gender_baseline) %>% 
+      summarise(
+        weight = mean(`∆weight%`, na.rm = TRUE),
+        fat = mean(`∆fat%` , na.rm = TRUE)
+      )
+    df04_non_FLC_self_report$`∆weight%` %>% summary()
+    df04_non_FLC_self_report$`∆fat%` %>% summary()
   
     
     
@@ -540,10 +567,52 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
     
     
     
-
+    
+    
 # FLC & non-FLC -----------------------------------------------------------
+    
+    
+    (Sys.Date() - months(6)) %>% lubridate::floor_date(unit = "month")
+    df03_FLC_self_report %>% filter(date_flc_T1 <= "2022-09-01") 
+    #csv
+    
+    
+
+# Lee query ---------------------------------------------------------------
 
 
+    #Effectiveness: age_gp < 25, clinic, FLC, non-FLC: plot: barplot, x:C/F/NF_by_gender; y = vars; facet: age_gp
+    
+    #01.clinic (C)
+    stat_table_1st_ob$age_gp <- cut(stat_table_1st_ob$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
+    stat_table_1st_ob$org_name_gp <- "Med"
+    #02.FLC (F)
+    df03_FLC_self_report$age_gp <- cut(df03_FLC_self_report$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
+    df03_FLC_self_report <- df03_FLC_self_report %>% rename("∆weight%" = "∆weight(%)")
+    df03_FLC_self_report$org_name_gp <- "Diet"
+    # 03.non-FLC (NF) [note]: 2023.03.23 no age var.
+    # df04_non_FLC_self_report$age_gp <- cut(df04_non_FLC_self_report$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
+    # df03_FLC_self_report$org_name_gp <- "Control"
+    
+    #merge Q_dr.lee_01_datasets  
+    Q_dr.lee_01_datasets <- Reduce(rbind, list(stat_table_1st_ob %>% select(`∆weight%`, age_gp, gender, org_name_gp), df03_FLC_self_report %>% select(`∆weight%`, age_gp, gender, org_name_gp) %>% lin_exclude_NA_col("∆weight%")))
+
+      Q_dr.lee_01_datasets %>% 
+        filter(age_gp == "<25") %>% 
+        select(org_name_gp, gender, `∆weight%`, age_gp) %>% rename(value = "∆weight%") %>% 
+        ggbarplot(x = "gender", y = "value", fill = "org_name_gp", alpha = 0.5, width = 0.5,
+                  add = "mean_se", add.params = list(group = "org_name_gp"),
+                  position = position_dodge(0.7), legend = "right", legend.title = "Program")
+    
+    
+    
+    
+    
+    stat_table_1st_ob %>% select(`∆weight%`, age_gp, gender)
+    
+    
+    
+    
     
     
     

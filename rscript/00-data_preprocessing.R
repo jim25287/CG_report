@@ -142,7 +142,6 @@ df02_inbody <- df02_inbody[-which(df02_inbody$bmi >100),]
 
 
 # 02.3 - [Data Preprocessing] 03_FLC_self_report --------------------------------------------------
-#***[Note:] 20230310_not_full_obs.
 
 df03_FLC_self_report <- tmp_03
 

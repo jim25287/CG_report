@@ -1,3 +1,6 @@
+# save.image("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/WSpace_preproc.RData")
+
+
 #身體維度資料 e.g., wc 改用 3D data ##**缺date 欄位
 
 
@@ -254,8 +257,8 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   print(proc.time() - ptm)
   
   # [執行時間:03_FLC_self_report]
-  # 使用者   系統   流逝 
-  # 1.063   0.634 667.688 
+  # 使用者    系統    流逝 
+  # 0.474   0.331 724.842 
   ptm <- proc.time()
   tmp_03 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "03_FLC_self_report.sql")))
   cat("[執行時間:03_FLC_self_report]\n")
@@ -469,16 +472,80 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   #progress, DM function
     ##Done
   #client type
+    ##Done
+  
+  #df01_profile, client_type_is.na, look-up from clinic note
+    #1.not clinic
+    a1 <- df01_profile %>% filter(!((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow"))) 
+    #2.clinic, !is.na:client_type #map_ref
+    a2 <- df01_profile %>% filter((!is.na(client_type)) & ((org_name == "genesisclinic") | (org_name == "topshow")))
+    #3.clinic
+    a3 <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+    #4. map 2 & 3 / adv.clinic_list
+    a3 <- lin_mapping(a3, client_type, id, a2, client_type, id)
+    a3 <- lin_mapping(a3, client_type, id, clinical_adv_list, client_type, id)
+    #5. rbind, order
+    a4 <- a1 %>% rbind(a3) 
+    a4 <- a4[with(a4, order(date_t0, id)),]
+    # a4 %>% nrow()
+    df01_profile <- a4
+    rm(list = c("a1","a2","a3","a4"))
+  
+  #df01_profile, client_type_is.na, look-up from blood_first_record
+    #1.not clinic
+    a1 <- df01_profile %>% filter(!((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow"))) 
+    df01_profile_tmp <- df01_profile[is.na(df01_profile[["client_type"]]) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), ]
+    #a2.clinic, blood_first_record #map_ref
+    a2 <- df05_biochem[which(df05_biochem[["id"]] %in% df01_profile_tmp[["id"]]),]
+    a2 <- a2[with(a2, order(id, date_blood)),]
+    a2 <- a2 %>% filter(DM != "Unclassified")
+    a2 <- a2 %>% distinct(id, .keep_all = TRUE)
+      ##if DM > client_type == "1"
+    a2$client_type = NA
+    a2$client_type <- ifelse(a2$DM == "DM", "1", "2")
+    # table(a2$DM, a2$client_type)
+    #3.clinic
+    a3 <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+    #4. map 2 & 3 / blood_first_record
+    a3 <- lin_mapping(a3, client_type, id, a2, client_type, id)
+    #5. rbind, order
+    a4 <- a1 %>% rbind(a3) 
+    a4 <- a4[with(a4, order(date_t0, id)),]
+    # a4 %>% nrow()
+    df01_profile <- a4
+    rm(list = c("a1","a2","a3","a4"))
+    
+    #**temp adjustment - to be refine in the future: client_type_is.na : 2 Obesity
+    df01_profile[(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "client_type"] <- 2
+    
+    # df01_profile[(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "id"] %>% 
+    #   unique() %>% length()
+    # df01_profile[!(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "id"] %>% 
+    #   unique() %>% length()
+  
+    
   
   
+    df05_biochem[(df05_biochem$id == 463448) , ] %>% select(date_blood) %>% pull
+    df05_biochem[(df05_biochem$id == 463448) , "date_blood"] %>% pull
+    clinic_blood_data[(clinic_blood_data$id == 463448) , "date_blood"] %>% pull
   
+    
+    df02_inbody[(df02_inbody$id == 463448) , ] %>% select(date_inbody) %>% pull
+    clinic_inbody_data[(clinic_inbody_data$id == 463448) , "date_inbody"] %>% pull
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+    
+    
+    
+    
+    
+    
+
+# FLC & non-FLC -----------------------------------------------------------
+
+
+    
+    
+    
+        
+    

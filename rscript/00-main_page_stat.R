@@ -25,27 +25,33 @@
 ## temp: from clinical list. future: from PostgreSQL
 ## build OB/DM note_col
 #Establish category
-clinical_stat_category <- factor(levels = (c("Total", "OB", "OB(ongoing)", "DM", "DM(ongoing)")))
+clinical_stat_category <- factor(levels = (c("Total", "OB", "OB(~)", "DM", "DM(~)")))
 #Establish dashboard df
-accum_client_df <- data.frame(date = rep(clinical_list[["class_date_1"]] %>% lubridate::floor_date(unit = "month") %>% unique() %>% na.exclude(), each = levels(clinical_stat_category) %>% length()), 
-                              category = rep(levels(clinical_stat_category), clinical_list[["class_date_1"]] %>% lubridate::floor_date(unit = "month") %>% unique() %>% na.exclude() %>% length()),
-                              value = rep(NA, (clinical_list[["class_date_1"]] %>% lubridate::floor_date(unit = "month") %>% unique() %>% na.exclude() %>% length())*(levels(clinical_stat_category) %>% length())),
-                              anno_title = rep(NA, (clinical_list[["class_date_1"]] %>% lubridate::floor_date(unit = "month") %>% unique() %>% na.exclude() %>% length())*(levels(clinical_stat_category) %>% length())),
-                              anno_text = rep(NA, (clinical_list[["class_date_1"]] %>% lubridate::floor_date(unit = "month") %>% unique() %>% na.exclude() %>% length())*(levels(clinical_stat_category) %>% length())))
+accum_client_df <- data.frame(date = rep(seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month"), each = levels(clinical_stat_category) %>% length()), 
+                              category = rep(levels(clinical_stat_category), seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length()),
+                              value = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())),
+                              anno_title = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())),
+                              anno_text = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())))
+
+main_pagedf <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+
 #floor date for monthly calculation
-clinical_list <- clinical_list %>% mutate(date_cate = class_date_1 %>% lubridate::floor_date(unit = "month"))
-clinical_list <- clinical_list %>% mutate(date_finish = class_date_2 %>% lubridate::floor_date(unit = "month"))
+main_pagedf <- main_pagedf %>% mutate(date_cate = date_t0 %>% lubridate::floor_date(unit = "month"))
+main_pagedf <- main_pagedf %>% mutate(date_finish = date_t1 %>% lubridate::floor_date(unit = "month"))
 #clean client_type as factor
-clinical_list$client_type <- factor(clinical_list$client_type, levels = c("1", "2"))
+main_pagedf$client_type <- factor(main_pagedf$client_type, levels = c("1", "2"))
 
 #thr summarise to integrate finish/ongoing df, group by date, client_type, exclude NA col(missing value: class_date)
+client_stat_df_tmp <- data.frame(date = rep(seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month"), each = levels(main_pagedf$client_type) %>% length()), 
+                                 client_type = rep(levels(main_pagedf$client_type), seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())
+                                 )
 client_stat_df <- 
-  left_join(clinical_list %>% 
+  left_join(main_pagedf %>% 
               group_by(date_cate, client_type, .drop = FALSE) %>% 
               summarise(
                 n = n()
               ) %>% dplyr::rename(date = date_cate),
-            clinical_list %>% 
+            main_pagedf %>% 
               group_by(date_finish, client_type, .drop = FALSE) %>% 
               summarise(
                 n = n()
@@ -55,9 +61,13 @@ client_stat_df <-
 
 client_stat_df <- client_stat_df %>% dplyr::rename(class_buy = n.x, class_finish = n.y)
 
+client_stat_df <- merge(client_stat_df, client_stat_df_tmp, by.y = c("date", "client_type"), all.y = TRUE) 
+client_stat_df[is.na(client_stat_df)] <- 0
+rm(client_stat_df_tmp)
+
+
 #Establish auxiliary df
 client_stat_df$class_buy_cumsum_all <- client_stat_df$class_buy %>% cumsum()
-client_stat_df[is.na(client_stat_df$class_finish), "class_finish"] <- 0
 client_stat_df$class_finish_cumsum_all <- client_stat_df$class_finish %>% cumsum()
 client_stat_df <- client_stat_df %>% mutate(class_ongoing_all = class_buy_cumsum_all - class_finish_cumsum_all)
 
@@ -72,9 +82,11 @@ client_stat_df <- client_stat_df %>% mutate(class_ongoing_sub = class_buy_cumsum
 #fill in accum_client_df
 accum_client_df[accum_client_df$category == "Total", "value"] <- client_stat_df[client_stat_df$client_type == 2, "class_buy_cumsum_all"]
 accum_client_df[accum_client_df$category == "OB", "value"] <- client_stat_df[client_stat_df$client_type == 2, "class_finish_cumsum_sub"]
-accum_client_df[accum_client_df$category == "OB(ongoing)", "value"] <- client_stat_df[client_stat_df$client_type == 2, "class_ongoing_sub"]
+accum_client_df[accum_client_df$category == "OB(~)", "value"] <- client_stat_df[client_stat_df$client_type == 2, "class_ongoing_sub"]
 accum_client_df[accum_client_df$category == "DM", "value"] <- client_stat_df[client_stat_df$client_type == 1, "class_finish_cumsum_sub"]
-accum_client_df[accum_client_df$category == "DM(ongoing)", "value"] <- client_stat_df[client_stat_df$client_type == 1, "class_ongoing_sub"]
+accum_client_df[accum_client_df$category == "DM(~)", "value"] <- client_stat_df[client_stat_df$client_type == 1, "class_ongoing_sub"]
+
+# accum_client_df[(accum_client_df$date == "2021-09-01") & (accum_client_df$category == "Total") , "anno_title"] <- "Genesis Opening"
 
 rm(list = c("clinical_stat_category", "client_stat_df"))
 client_monthly_stat_report_total_client <- accum_client_df %>% filter(category == "Total") %>% select(value) %>% max(na.rm = TRUE)
@@ -89,7 +101,9 @@ client_monthly_stat_report <- googleVis::gvisAnnotationChart(accum_client_df,
                                                                displayAnnotations = TRUE,
                                                                #chart = "{chartArea:{backgroundColor:'#003b70'}}",
                                                                legendPosition='newRow',
-                                                               width=750, height=350, gvis.editor = "[選項]:圖表轉換"
+                                                               # width = 800, height = 350,
+                                                               width = "100%", height = 350,
+                                                               gvis.editor = "[選項]:圖表轉換", displayAnnotations = FALSE
                                                              ))
 #output
 ##client_monthly_stat_report %>% plot()

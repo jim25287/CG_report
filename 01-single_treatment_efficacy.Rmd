@@ -15,37 +15,32 @@ editor_options:
 ## 資料集(Datasets) {#vens_grap_ob}
 
 ```{r}
-plot_1
+plot_venn_0
 cat("\n<br>")
-cat(" 體組成Inbody:", clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>",
-    "血檢報告:", clinic_blood_data_ori %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>",
-    "初日診所:", clinical_list %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>",
-    "初日+北秀:", Reduce(dplyr::intersect, list(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                                                 clinic_blood_data_ori %>% select(id) %>% pull() %>% unique(),
-                                                 clinical_list %>% select(id) %>% pull() %>% unique())) %>% length(), "+",
-    dplyr::setdiff((dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                                                 clinic_blood_data_ori %>% select(id) %>% pull() %>% unique())),
-                   clinical_list %>% select(id) %>% pull() %>% unique()) %>% length(), "=",
-    dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length(),"筆 \n<br>")
+cat(" 減重門診客戶:", stat_table[stat_table[["client_type"]] == 2, "id"] %>% unique() %>% length(), "位 \n<br>",
+    "控糖門診客戶:", stat_table[stat_table[["client_type"]] == 1, "id"] %>% unique() %>% length(), "位 \n<br>")
 ```
 
 **納入標準:**
 
 1.  首次方案：減重療程
-2.  至少有2筆體組成(Inbody)、血檢報告資料
-3.  評估成效資料時間差:大於1個月
+2.  包含「體組成」(Inbody)、「血檢報告」及「飲食紀錄」等數據資料
+3.  前、後測時間點誤差均在合理範圍(體組成±7days, 血檢±15days)
 4.  有完整初始狀態OGTT血檢報告
 5.  各項變數均無遺漏值(missing value)
 
 ```{r}
-plot_3
+plot_venn_2
 cat("\n<br>")
-cat(" 總共:", dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length(),"筆 \n<br>",
-    "排除:", (dplyr::intersect(clinic_inbody_data_ori %>% select(id) %>% pull() %>% unique(),
-                     clinic_blood_data_ori %>% select(id) %>% pull() %>% unique()) %>% length()) - (stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique() %>% length()), "筆 \n<br>",
-    "納入分析:", stat_table_1st %>% filter(client_type != 1) %>% select(id) %>% pull() %>% unique() %>% length(), "筆 \n<br>")
+cat(" 總共:", stat_table[stat_table[["client_type"]] == 2, "id"] %>% unique() %>% length() ,"筆 \n<br>",
+    "排除:", (stat_table[stat_table[["client_type"]] == 2, "id"] %>% unique() %>% length()) - (Reduce(intersect, list(stat_table[stat_table[["client_type"]] == 2, "id"],
+                       stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
+                       stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
+                       stat_table[!is.na(stat_table[["note_count"]]), "id"])) %>% length()) , "筆 \n<br>",
+    "納入分析:", Reduce(intersect, list(stat_table[stat_table[["client_type"]] == 2, "id"],
+                       stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
+                       stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
+                       stat_table[!is.na(stat_table[["note_count"]]), "id"])) %>% length(), "筆 \n<br>")
 ```
 
 ## 客戶輪廓分析 {#porfile_ob}
@@ -69,15 +64,15 @@ gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
 
 減重部分：
 
-在女性客戶中，高達98%在療程中實現減重目的(目標設定不同)。其中將近45％表現優異(降幅\>8%)，40%表現良好(降幅4\~8%)。
+在女性客戶中，高達98%在療程中實現減重目的(目標設定不同)。其中將近35％表現優異(降幅\>8%)，47%表現良好(降幅4\~8%)。
 
-在男性客戶中，100%在療程中實現減重目的(目標設定不同)。其中將近4％表現超乎預期(降幅\>15%)、40％表現優異(降幅\>8%)，40%表現良好(降幅4\~8%)。ㄞㄞ
+在男性客戶中，100%在療程中實現減重目的(目標設定不同)。其中將近1％表現超乎預期(降幅\>15%)、40％表現優異(降幅\>8%)，45%表現良好(降幅4\~8%)。
 
 減脂部分：
 
-在女性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近35％表現超乎預期(降幅\>15%)，40%表現優異(降幅\>8%)，16%表現良好(降幅4\~8%)。
+在女性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近27％表現超乎預期(降幅\>15%)，46%表現優異(降幅\>8%)，16%表現良好(降幅4\~8%)。
 
-在男性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近46％表現超乎預期(降幅\>15%)，29%表現優異(降幅\>8%)，19%表現良好(降幅4\~8%)。
+在男性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近52％表現超乎預期(降幅\>15%)，29%表現優異(降幅\>8%)，11%表現良好(降幅4\~8%)。
 
 ```{r, results='asis', fig.width = 4, fig.height= 4}
 plot_stack_col_female %>% plot()
@@ -120,8 +115,7 @@ line_plot
         -   「水果」、「五穀雜糧」與減重成效成負相關。
 
 ```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
-corrplot(M1, 
-         p.mat = M_test1$p,
+corrplot::corrplot(M1, p.mat = M_test1$p,
          type = "lower",
          insig = "label_sig",
          sig.level = c(.001, .01, .05), pch.cex = .8, pch.col = "black",
@@ -131,6 +125,7 @@ corrplot(M1,
          title = "[Correlation] Efficacy x Diet", 
          #c(bottom, left, top, right)
          mar = c(0,0,1,0))
+         
 
 ```
 
@@ -149,7 +144,7 @@ knitr::kable(
 此外，根據1.2.2 整體成效分析，體脂肪降幅相較體重降幅明顯，顯示不論初始狀態如何，每一個人在單次療程中減少去的體脂重「可能」差不多(待進一步分析)。
 
 ```{r, results='asis', fig.width = 9, fig.height= 9.5, warning=FALSE}
-corrplot(M2, 
+corrplot::corrplot(M2, 
          p.mat = M_test2$p,
          type = "lower",
          insig = "label_sig",
@@ -217,7 +212,7 @@ plot_grid(plotlist = myplots[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
 ```{r, results='asis', fig.width= 10, fig.height=44}
-plot_grid(plotlist = myplots[41:52], ncol = 2, labels = paste0(LETTERS[5], seq(1,26)))
+plot_grid(plotlist = myplots[41:57], ncol = 2, labels = paste0(LETTERS[5], seq(1,26)))
 ```
 
 ### 成效(Effectiveness) {#effectiveness_ob .unnumbered}
@@ -225,25 +220,25 @@ plot_grid(plotlist = myplots[41:52], ncol = 2, labels = paste0(LETTERS[5], seq(1
 #### **成效(∆)-Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[53:68], ncol = 2, labels = paste0(LETTERS[6], seq(1,10)))
+plot_grid(plotlist = myplots[58:67], ncol = 2, labels = paste0(LETTERS[6], seq(1,10)))
 ```
 
 #### **成效**(∆)-Blood
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[69:78], ncol = 2, labels = paste0(LETTERS[7], seq(1,10)))
+plot_grid(plotlist = myplots[68:77], ncol = 2, labels = paste0(LETTERS[7], seq(1,10)))
 ```
 
 #### **成效(%)-Inbody**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[79:88], ncol = 2, labels = paste0(LETTERS[8], seq(1,10)))
+plot_grid(plotlist = myplots[78:87], ncol = 2, labels = paste0(LETTERS[8], seq(1,10)))
 ```
 
 #### **成效(%)-Blood**
 
 ```{r, results='asis', fig.width= 10, fig.height=20}
-plot_grid(plotlist = myplots[89:98], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
+plot_grid(plotlist = myplots[88:97], ncol = 2, labels = paste0(LETTERS[9], seq(1,10)))
 ```
 
 ### Summary {#Summary_ob .unnumbered}
@@ -280,7 +275,7 @@ googleVis::gvisMerge(pie_testosterone_01, pie_testosterone_02) %>% plot()
 男性荷爾蒙「睪固酮」血中濃度與「體重」、「體脂」，以及「空腹血糖」、「空腹胰島素」和「胰島素抗性」(IR)具有顯著負相關。換句話說，相較於「睪固酮」濃度正常的人，[「睪固酮」低下]{.underline}者傾向有[較高的「體重」、「體脂」]{.underline}，[「空腹血糖」、「空腹胰島素」和「胰島素抗性」(IR)也較高]{.underline}。\
 
 ```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
-  corrplot(M_testosterone,
+  corrplot::corrplot(M_testosterone,
            p.mat = M_testosterone_test$p,
            type = "lower",
            insig = "label_sig",
@@ -313,7 +308,7 @@ plot_grid(plotlist = myplots_plot_testosterone[1:10], ncol = 2, labels = paste0(
 #### **Blood**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[11:21], ncol = 2, labels = paste0(LETTERS[2], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[11:20], ncol = 2, labels = paste0(LETTERS[2], seq(1,50)))
 ```
 
 ### 介入後狀態(Endpoint) {#endpoint_test .unnumbered}
@@ -321,13 +316,13 @@ plot_grid(plotlist = myplots_plot_testosterone[11:21], ncol = 2, labels = paste0
 #### **Inbody**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[22:31], ncol = 2, labels = paste0(LETTERS[3], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[21:30], ncol = 2, labels = paste0(LETTERS[3], seq(1,50)))
 ```
 
 #### **Blood**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[32:41], ncol = 2, labels = paste0(LETTERS[4], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1,50)))
 ```
 
 ### 飲食(Diet) {#diet_test .unnumbered}
@@ -335,7 +330,7 @@ plot_grid(plotlist = myplots_plot_testosterone[32:41], ncol = 2, labels = paste0
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
 ```{r, results='asis', fig.width= 5, fig.height=44}
-plot_grid(plotlist = myplots_plot_testosterone[42:59], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[41:57], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
 ```
 
 ### 成效(Effectiveness) {#effectiveness_test .unnumbered}
@@ -343,25 +338,25 @@ plot_grid(plotlist = myplots_plot_testosterone[42:59], ncol = 2, labels = paste0
 #### **成效(∆)-Inbody**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[60:69], ncol = 2, labels = paste0(LETTERS[6], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[58:67], ncol = 2, labels = paste0(LETTERS[6], seq(1,50)))
 ```
 
 #### **成效**(∆)-Blood
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[70:79], ncol = 2, labels = paste0(LETTERS[7], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[68:77], ncol = 2, labels = paste0(LETTERS[7], seq(1,50)))
 ```
 
 #### **成效(%)-Inbody**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[80:89], ncol = 2, labels = paste0(LETTERS[8], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[78:87], ncol = 2, labels = paste0(LETTERS[8], seq(1,50)))
 ```
 
 #### **成效(%)-Blood**
 
 ```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[90:99], ncol = 2, labels = paste0(LETTERS[9], seq(1,50)))
+plot_grid(plotlist = myplots_plot_testosterone[88:97], ncol = 2, labels = paste0(LETTERS[9], seq(1,50)))
 ```
 
 ```{r, results='asis', fig.align='left', paged.print=TRUE}

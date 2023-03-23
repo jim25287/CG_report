@@ -631,10 +631,11 @@ lin_exclude_NA_col <- function(df, variables){
 
 # [Function 8:] progess bar -------------------------------
 progress <- function (x, max = 100) {
+  time <- difftime(Sys.time(), start_time, units = "secs") %>% round(0) %>% hms::as_hms()
   percent <- x / max * 100
   cat(sprintf('\r[%-50s] %d%%',
               paste(rep('=', percent / 2), collapse = ''),
-              floor(percent)), paste0("(", x, "/", max, ")"))
+              floor(percent)), paste0("(", x, "/", max, ") ", time))
   if (x == max)
     cat('\n')
 }
@@ -954,24 +955,35 @@ lin_ch_en_format <- function(x, format, origin){
   }
   
   #2. return vars not establish in the vars_table
-  if (length(x[which(!(x %in% vars_table[[origin]]))]) != 0) {
-    cat("\n[Not matched list:]\n")
-    return(x[which(!(x %in% vars_table[[origin]]))])
-  }else{
-    #3. change format
-    for (i in c(1:length(x))) {
-      if (i == 1) {
-        #重複選第一筆
-        results <- vars_table[vars_table[[origin]] %in% (x[i]), format] %>% head(1)
+  if (length(x[intersect(which(!(x %in% vars_table[[origin]])), which(!(x %in% vars_table[[format]])))]) != 0) {
+    cat("\n[Unknown vars list:]\n")
+    print(x[intersect(which(!(x %in% vars_table[[origin]])), which(!(x %in% vars_table[[format]])))])
+    cat("\n")
+    }
+  # if (length(x[which(!(x %in% vars_table[[origin]]))]) != 0) {
+  #   cat("\n[Not matched list:]\n")
+  #   print(x[which(!(x %in% vars_table[[origin]]))])
+  #   cat("\n")
+  #   }
+  #3. change format
+  for (i in c(1:length(x))) {
+    if (i == 1) {
+      #重複選第一筆
+      # results <- vars_table[vars_table[[origin]] %in% (x[i]), format] %>% head(1)
+      results <- c()
+      }
+        
+    #Only change names in origin list.
+    if (x[i] %in% vars_table[[origin]] %>% not()) {
+      results <- append(results, x[i])
       }else{
         #重複選第一筆
         results <- append(results, vars_table[vars_table[[origin]] %in% (x[i]), format] %>% head(1))
-      }
-    } 
-    results <- results %>% as.character()
-    cat("\n[Successfully Match:]\n")
-    return(results)
-  }
+        }
+    }
+  results <- results %>% as.character()
+  cat("\n[Done/Match Result]\n")
+  return(results)
 }
 
 
@@ -1045,8 +1057,7 @@ lin_timestamp <- function(time = Sys.time()){
 
 
 # [Function 10:] Insulin Response Pattern Categorization -------------------------------
-#****[20221219 version, confirmed]
-lin_DM_diagnosis <- function(df = NULL, variablesL){
+lin_DM_diagnosis <- function(df = NULL, variables){
   
   
   if (is.null(df)) {
@@ -1055,7 +1066,8 @@ lin_DM_diagnosis <- function(df = NULL, variablesL){
         "1. hba1c\n",
         "2. glucose_ac\n",
         "3. glucose_pc_1hr\n",
-        "4. glucose_pc_2hr\n\n"
+        "4. glucose_pc_2hr\n",
+        "try: df %>% names() %>% grep(\"hba1c|glucose\", ., value = TRUE)\n\n"
         )
   }
   
@@ -1069,22 +1081,22 @@ lin_DM_diagnosis <- function(df = NULL, variablesL){
   df[["DM"]] <- "Unclassified"
   
   setDT(df)[
-    (eval(parse(text = variables[1])) >= 6.5) |
-      (eval(parse(text = variables[2])) >= 126) |
-      (eval(parse(text = variables[4])) >= 200),
-    DM := "DM"]
-  
-  setDT(df)[
     ((eval(parse(text = variables[1])) >= 5.7) & (eval(parse(text = variables[1])) < 6.5)) |
       ((eval(parse(text = variables[2])) >= 100) & (eval(parse(text = variables[2])) < 126)) |
       ((eval(parse(text = variables[4])) >= 140) & (eval(parse(text = variables[4])) < 200)),
     DM := "Pre-DM"]
   
   setDT(df)[
+    (eval(parse(text = variables[1])) >= 6.5) |
+      (eval(parse(text = variables[2])) >= 126) |
+      (eval(parse(text = variables[4])) >= 200),
+    DM := "DM"]
+  
+  setDT(df)[
     (eval(parse(text = variables[1])) < 5.7) &
       (eval(parse(text = variables[2])) < 100) &
       (eval(parse(text = variables[4])) < 140),
-    DM := "DM"]
+    DM := "Normal"]
   
   
   cat("\n[Completed!]\n")

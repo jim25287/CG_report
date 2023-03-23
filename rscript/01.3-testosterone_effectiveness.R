@@ -68,6 +68,7 @@ pie_testosterone_02 <-
 
 
 
+
 # 2. Correlation ----------------------------------------------------------
   #male
 
@@ -79,15 +80,16 @@ names(profile_efficacy) <- names(profile_efficacy) %>% lin_ch_en_format(format =
 
 ##add testosterone_baseline
 profile_baseline <- stat_table_1st_ob %>% filter(gender == "male") %>%  
-  select(c("age", "bmi_baseline","pbf_baseline","vfa_baseline","bsmi_baseline","bm_baseline","wc_baseline","bmr_baseline",
-           "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
+  select(c("age", "bmi_baseline","pbf_baseline","vfa_baseline","bsmi_baseline","pbm_baseline","wc_baseline","bmr_baseline",
+           "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline", "tAUCg_baseline", "tAUCi_baseline", "OGIRIndex_baseline",
+           "tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
            "testosterone_baseline"))
 names(profile_baseline) <- names(profile_baseline) %>% lin_ch_en_format(format = "ch", origin = "en")
 
 
 
 profile_diet <- stat_table_1st_ob %>% filter(gender == "male") %>%  
-  select(c("upload_day_%", "pic_count","calorie_day","carb_E%","protein_E%","fat_E%","fruits","vegetables","grains","meat_bean","milk", "oil","light_G_%","light_Y_%","light_R_%"))
+  select(c("upload_day_%", "pic_counts","calorie_day","carb_E%","protein_E%","fat_E%","fruits","vegetables","grains","meat_bean","milk", "oil","light_G_%","light_Y_%","light_R_%"))
 names(profile_diet) <- names(profile_diet) %>% lin_ch_en_format(format = "ch", origin = "en")
 
 
@@ -201,20 +203,45 @@ a <- a[complete.cases(a$gp),]
 
 
 
+
+
+#profile
+vars_en <- c("id","client_type","age","gender","date_t0","date_t1",
+             #inbody - baseline
+             "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","pbm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
+             #blood- baseline
+             "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
+             #inbody - endpoint
+             "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","pbm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
+             #blood- endpoint
+             "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint","lipase_endpoint",
+             #diet
+             "upload_day_%","note_count","pic_counts","carb_E%","protein_E%","fat_E%","calorie_day","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
+             #others
+             "gp",
+             #inbody - ∆
+             "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
+             #blood - ∆
+             "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase",
+             #inbody - ∆%
+             "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",
+             #blood - ∆%
+             "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆lipase%"
+)
+
+a %<>% select(vars_en)
+
+vars_en <- lin_ch_en_format(x = vars_en, format = "en", origin = "raw_en")
+names(a) <- lin_ch_en_format(x = names(a), format = "en", origin = "raw_en")
+
 #turn ∆ into positve(reverse)
 tmp_1 <- a %>% select(-grep("∆", names(a))) 
-#rm NA vars
-tmp_1 %<>% select(-grep("extracellular", names(tmp_1)))
-tmp_1 %<>% select(-grep("wepa50", names(tmp_1)))
-tmp_1 %<>% select(-grep("e2", names(tmp_1)))
-tmp_1 %<>% select(-grep("hr", names(tmp_1)))
 
 
 #Setting improvement direction
 ##Improvement: Uncertain, default setting
 tmp_2 <- a %>% 
   select(c("∆bmr","∆bmr%", "∆lipase","∆lipase%"))
-#觀察值不夠: select(c("∆extracellular_water_ratio","∆wepa50","∆bmr","∆extracellular_water_ratio%","∆wepa50%","∆bmr%","∆e2","∆testosterone","∆e2%","∆testosterone%"))
 
 ##Improvement: negative
 tmp_3 <- a %>% select(c("∆weight","∆bmi","∆bf","∆pbf","∆vfa","∆wc","∆ffm","∆weight%","∆bmi%","∆bf%","∆pbf%","∆vfa%","∆wc%","∆ffm%","∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆tg","∆tc","∆ldl","∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆tg%","∆tc%","∆ldl%")) %>% multiply_by(-1)
@@ -225,39 +252,26 @@ a <- Reduce(cbind,list(tmp_1, tmp_2, tmp_3, tmp_4), accumulate =FALSE)
 
 rm(list = c("tmp_1","tmp_2","tmp_3","tmp_4"))
 
-#Sort var order: baseline, endpoint, diet, ∆, ∆%
-
-vars_en <- c("id","client_type","age","gender","date_baseline","date_endpoint",
-             "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","pbm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
-             "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline", "testosterone_baseline",
-             "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","pbm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
-             "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint","lipase_endpoint",
-             "day_count","upload_day_%","note_count","pic_count","carb_E%","protein_E%","fat_E%","calorie_day","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
-             "gp",
-             "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
-             "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase",
-             "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",
-             "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆lipase%"
-)
-
-
-a %<>% select(vars_en)
-
-b <- a
+#order again!!
+a <- a %>% select(vars_en)
 
 #change colname to run plot
-QQ1_stat_table_1st_for_plot <- a
-names(QQ1_stat_table_1st_for_plot) <- gsub("∆", "delta_", names(QQ1_stat_table_1st_for_plot))
-names(QQ1_stat_table_1st_for_plot) <- gsub("%", "_percent", names(QQ1_stat_table_1st_for_plot))
+#table_used
+c <- a
+#plot_used
+b <- a
+names(b) <- gsub("∆", "delta_", names(b))
+names(b) <- gsub("%", "_percent", names(b))
 
 
 #new
-var_vector <- c(setdiff(vars_en %>% grep("baseline$", .), vars_en %>% grep("date", .)),
-                setdiff(vars_en %>% grep("endpoint$", .), vars_en %>% grep("date", .)),
-                vars_en %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp", ., invert = TRUE),
+var_vector <- c(vars_en %>% grep("baseline$", .),
+                vars_en %>% grep("endpoint$", .),
+                vars_en %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp|date", ., invert = TRUE),
                 setdiff(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .)),
                 intersect(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .))
 )
+
 
 #Establish vars_table for visualization
 myplot_table <- data.frame(num = seq(1, length(vars_en)),
@@ -276,15 +290,16 @@ for (i in c(var_vector)) {
   j <- match(i, var_vector)
   if (j == 1) {
     vector_pvalue <- c()
+    start_time <- Sys.time()
   }
   
-  a <- QQ1_stat_table_1st_for_plot %>% colnames() %>% head(i) %>% tail(1)
+  a <- b %>% colnames() %>% head(i) %>% tail(1)
   a_title <- myplot_table[myplot_table$num == j, "vars_ch"]
   
   
   #p.sign?
   stat.test <- 
-    QQ1_stat_table_1st_for_plot %>%
+    b %>%
     rstatix::dunn_test(as.formula(paste(a, "gp", sep = " ~ ")),p.adjust.method = "bonferroni")
   stat.test <- stat.test %>% rstatix::add_y_position()
   
@@ -296,7 +311,7 @@ for (i in c(var_vector)) {
   
   #plot
   plot_testosterone <- 
-    QQ1_stat_table_1st_for_plot %>% 
+    b %>% 
     ggboxplot(x = "gp", y = a, fill = "gp", alpha = 0.5, width = 0.5, 
               title = a_title,
               legend = "none", xlab = FALSE, ylab = FALSE) +
@@ -325,7 +340,7 @@ for (i in c(var_vector)) {
 #(3.)output statistics table
 #for customed summary table [summary table]
 summary_table_testosterone <- 
-  b %>% select(var_vector, "gp") %>% 
+  c %>% select(var_vector, "gp") %>% 
   group_by(gp) %>% 
   summarize_at(vars_en[var_vector],
                function(x) paste(mean(x, na.rm = TRUE) %>% round(2), (sd(x, na.rm = TRUE)/sqrt(n())) %>% round(2), sep = " ± ")
@@ -340,7 +355,7 @@ names(summary_table_testosterone) <- c(rep(c("Low", "Normal")), "顯著差異")
 rownames(summary_table_testosterone) <- myplot_table$vars_ch
 
 summary_table_testosterone <- 
-rbind("人數" = table(b$gp) %>% as.numeric() %>% append(""), summary_table_testosterone)
+rbind("人數" = table(c$gp) %>% as.numeric() %>% append(""), summary_table_testosterone)
 
 table_02_testosterone <- 
   summary_table_testosterone %>% 

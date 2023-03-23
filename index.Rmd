@@ -48,13 +48,13 @@ options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
 
 #Does source() rscript need to move to the same project dir??
-  # lin_connect_db("connect")
-  # path_sql <- "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/sql/"
+  lin_connect_db("connect")
+  path_sql <- "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/sql/"
 
   # tmp_01 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "01_profile.sql")))
   # tmp_02 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "02_inbody.sql")))
   # tmp_03 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "03_FLC_self_report.sql")))
-  # tmp_04 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "04_non_FLC_self_report.sql")))
+  tmp_04 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "04_non_FLC_self_report.sql")))
   # tmp_05 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "05_biochem.sql")))
   # 
   # tmp_06 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "06_Diet_day.sql")))
@@ -62,8 +62,8 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
   # tmp_08 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "08_3D_scanner.sql")))
   # tmp_09 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "09_hormone.sql")))
 
-  # lin_connect_db("exit")
-  # rm(path_sql)
+  lin_connect_db("exit")
+  rm(path_sql)
   
 ```
 

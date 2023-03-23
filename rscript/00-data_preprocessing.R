@@ -45,15 +45,13 @@ df01_profile[Reduce(dplyr::intersect, list(grep("初日|初日001|G001", df01_pr
                                      which(df01_profile[["date_t0"]] >= "2021-08-30"),
                                      grep("cofit", df01_profile[["org_name"]])))
        , "org_name"] <- "genesisclinic"
-#Q1-4. 1. 進階計畫 2. 診所進階計畫 3. 宋醫師進階計畫: 2, 3 => genesisclinic
-#"診所進階(genesis)宋醫師進階(topshow)" AND "org_name == cofit" AND "初日開幕後" "秀傳門診結束"
-df01_profile[(grepl("宋醫師進階", df01_profile[["program_name"]])) & (grepl("cofit", df01_profile[["org_name"]])) & (df01_profile[["date_t0"]] <= "2022-09-01"), "org_name"] <- "topshow"
-
+#Q1-4. 初日開幕前的"診所進階計畫"(topshow); 初日開幕後的"診所進階計畫"(genesisclinic)
+#"診所進階(genesis)" AND "org_name == cofit" AND "初日開幕後" "秀傳門診結束"
+df01_profile[(grepl("診所進階", df01_profile[["program_name"]])) & (grepl("cofit", df01_profile[["org_name"]])) & (df01_profile[["date_t0"]] < "2021-08-30"), "org_name"] <- "topshow"
 df01_profile[(grepl("診所進階", df01_profile[["program_name"]])) & (grepl("cofit", df01_profile[["org_name"]])) & (df01_profile[["date_t0"]] >= "2021-08-30"), "org_name"] <- "genesisclinic"
-df01_profile[(grepl("宋醫師進階", df01_profile[["program_name"]])) & (grepl("cofit", df01_profile[["org_name"]])) & (df01_profile[["date_t0"]] > "2022-09-01"), "org_name"] <- "genesisclinic"
-
 
 #Q1-5. FLC班 => cofit
+df01_profile[(grepl("宋醫師進階", df01_profile[["program_name"]])) & (grepl("topshow|genesisclinic", df01_profile[["org_name"]])), "org_name"] <- "cofit"
 df01_profile[grep("FLC", df01_profile[["program_name"]]), "org_name"] <- "cofit"
 
 #C1-1. class_freq by org_name
@@ -64,6 +62,7 @@ for (i in unique(df01_profile$id)) {
   if (i == head(unique(df01_profile$id), 1)) {
     j = 1
     df01_profile$class_order <- NA
+    start_time <- Sys.time()
   }
   
   for (k in c(1:(df01_profile[which(df01_profile[["id"]] == i), "org_name"] %>% unique() %>% length()))) {
@@ -195,6 +194,7 @@ df04_non_FLC_self_report <- df04_non_FLC_self_report %>% janitor::get_dupes(id)
 df04_non_FLC_self_report <- df04_non_FLC_self_report %>% lin_exclude_NA_col(c("id", "date_time"))
 #C3. order
 df04_non_FLC_self_report <- df04_non_FLC_self_report[with(df04_non_FLC_self_report, order(id, date_free_version)),]
+
 #C4. filter ∆day = 2 months(60 days + 14)
 
 # Group the data by id and find the earliest date for each id
@@ -255,13 +255,13 @@ names(a)[-1] <- paste0(a %>% select(-c("id")) %>% names(), "_baseline")
 b <- df04_non_FLC_self_report_tmp[seq(2,nrow(df04_non_FLC_self_report_tmp), 2),] 
 names(b)[-1] <- paste0(b %>% select(-c("id")) %>% names(), "_endpoint")
 
-aa <- b %>% select(-c("id", "date_free_version_endpoint", "gender_endpoint")) - a %>% select(-c("id", "date_free_version_baseline", "gender_baseline"))
+aa <- b %>% select(-c("id", "date_free_version_endpoint", "gender_endpoint","btd_endpoint")) - a %>% select(-c("id", "date_free_version_baseline", "gender_baseline", "btd_baseline"))
 aa <- cbind(a %>% select("id"), aa)
-names(aa)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version", "gender")) %>% names())
+names(aa)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version", "gender","btd")) %>% names())
 
-bb <- (((b %>% select(-c("id", "date_free_version_endpoint", "gender_endpoint"))) - a %>% select(-c("id", "date_free_version_baseline","gender_baseline")))*100 /   a %>% select(-c("id", "date_free_version_baseline","gender_baseline"))) %>% round(2) 
+bb <- (((b %>% select(-c("id", "date_free_version_endpoint", "gender_endpoint","btd_endpoint"))) - a %>% select(-c("id", "date_free_version_baseline","gender_baseline", "btd_baseline")))*100 /   a %>% select(-c("id", "date_free_version_baseline","gender_baseline", "btd_baseline"))) %>% round(2) 
 bb <- cbind(a %>% select("id"), bb)
-names(bb)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version", "gender")) %>% names(), "%")
+names(bb)[-1] <- paste0("∆", df04_non_FLC_self_report_tmp %>% select(-c("id","date_free_version", "gender","btd")) %>% names(), "%")
 
 c1 <- full_join(a, b, by = c("id"))
 names(c1)[grep("date", names(c1))] <- c("date_baseline","date_endpoint")
@@ -271,6 +271,14 @@ c1 <- full_join(c1, aa, by = c("id"))
 c1 <- full_join(c1, bb, by = c("id"))
 df04_non_FLC_self_report <- c1
 rm(list = c("a","aa","b","bb","c1","df04_non_FLC_self_report_tmp"))
+
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% select(-btd_endpoint, -gender_endpoint)
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% rename(btd = btd_baseline)
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% rename(gender = gender_baseline)
+
+
+#C5. age: b%<>% %<>% td - date_t0 年齡(療程起始當天計算)
+df04_non_FLC_self_report$age <- (lubridate::ymd(df04_non_FLC_self_report$date_baseline) - lubridate::ymd(df04_non_FLC_self_report$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
 
 #rm outliers
 df04_non_FLC_self_report <- df04_non_FLC_self_report %>% lin_exclude_NA_col(grep("weight",names(.), value = TRUE))

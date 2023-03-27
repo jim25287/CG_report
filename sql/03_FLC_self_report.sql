@@ -31,7 +31,7 @@ WITH
   notes_of_flc_courses AS (
     SELECT notes.*
     FROM notes
-    INNER JOIN group_classes_of_flc_program_join_users_and_clients ON notes.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
+    INNER JOIN group_classes_of_flc_program_join_users_and_clients ON group_classes_of_flc_program_join_users_and_clients.client_id = notes.client_id
            AND notes.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
     --    Temp
       WHERE notes.created_at BETWEEN '2023-03-01' AND '2023-04-01'
@@ -40,34 +40,29 @@ WITH
     SELECT
       note_assets.id, note_assets.data, notes_of_flc_courses.client_id,
       note_assets.data->>'light' AS light,
-      note_assets.date
+      note_assets.date,
+      note_assets.note_id
     FROM note_assets
     INNER JOIN notes_of_flc_courses
-    ON note_assets.note_id = notes_of_flc_courses.id
+    ON notes_of_flc_courses.id = note_assets.note_id
     WHERE note_assets.url IS NOT NULL
   ),
   notes_aggregation_of_flc_courses AS (
     SELECT
       notes.client_id,
-      SUM((notes.data->>'carbohydrate')::NUMERIC) OVER() AS carbohydrate,
-      (notes.data->>'protein')::NUMERIC AS protein,
-      (notes.data->>'fat')::NUMERIC AS fat,
-      COUNT(notes.date) OVER(PARTITION BY notes.client_id) AS notes_count,
+      SUM((notes.data->>'carbohydrate')::NUMERIC) AS carbohydrate,
+      SUM((notes.data->>'protein')::NUMERIC) AS protein,
+      SUM((notes.data->>'fat')::NUMERIC) AS fat,
+      COUNT(notes.date) OVER(PARTITION BY notes.client_id, notes.date) AS notes_count,
       notes.date,
-      MAX(notes.date) OVER(PARTITION BY notes.client_id) AS max_notes_date
+      MAX(notes.date) OVER(PARTITION BY notes.client_id) AS max_notes_date,
+      COUNT(notes.client_id) AS note_assets_count,
+      COUNT(notes.client_id) FILTER (WHERE light = 'green') AS note_assets_g_light_count,
+      COUNT(notes.client_id) FILTER (WHERE light = 'yellow') AS note_assets_y_light_count,
+      COUNT(notes.client_id) FILTER (WHERE light = 'red')  AS note_assets_r_light_count
     FROM notes_of_flc_courses AS notes
-    GROUP BY notes.client_id, notes.date, notes.data
-  ),
-  note_assets_count_of_flc_courses AS (
-    SELECT
-      client_id,
-      COUNT(id) OVER (PARTITION BY client_id) AS note_assets_count,
-      note_assets_of_flc_courses.date AS date,
-      COUNT(id) FILTER (WHERE light = 'green') OVER(PARTITION BY client_id) AS note_assets_g_light_count,
-      COUNT(id) FILTER (WHERE light = 'yellow') OVER(PARTITION BY client_id) AS note_assets_y_light_count,
-      COUNT(id) FILTER (WHERE light = 'red') OVER(PARTITION BY client_id) AS note_assets_r_light_count
-    FROM note_assets_of_flc_courses
-    GROUP BY id, client_id, note_assets_of_flc_courses.date, light
+    LEFT JOIN note_assets_of_flc_courses AS note_assets ON note_assets.note_id = notes.id
+    GROUP BY notes.client_id, notes.date
   ),
   consulting_client_summaries_before AS (
     SELECT DISTINCT ON (consulting_client_summaries.client_id) consulting_client_summaries.*
@@ -84,7 +79,6 @@ WITH
     ORDER BY client_id DESC, date ASC
   )
 
-
 SELECT 
   group_classes_of_flc_program_join_users_and_clients.g_id AS class_id,
   group_classes_of_flc_program_join_users_and_clients.class_name AS class_name,
@@ -99,12 +93,12 @@ SELECT
 --  (CURRENT_DATE - group_classes_of_flc_program_join_users_and_clients.birthday) / 365 AS age,
   group_classes_of_flc_program_join_users_and_clients.gender,
   group_classes_of_flc_program_join_users_and_clients.current->>'height' AS height,
-  notes_aggregation_of_flc_courses.notes_count AS day_count,
-  note_assets_count_of_flc_courses.note_assets_count AS pic_count,
-  note_assets_count_of_flc_courses.note_assets_g_light_count, 0 AS light_G_count,
-  (SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_g_light_count, 0))) / NULLIF(SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_g_light_count, 0)) + SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_y_light_count, 0)) + SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_r_light_count, 0)), 0) AS light_G_p,
-  (SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_y_light_count, 0))) / NULLIF(SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_g_light_count, 0)) + SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_y_light_count, 0)) + SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_r_light_count, 0)), 0) AS light_Y_p,
-  (SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_r_light_count, 0))) / NULLIF(SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_g_light_count, 0)) + SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_y_light_count, 0)) + SUM(COALESCE(note_assets_count_of_flc_courses.note_assets_r_light_count, 0)), 0) AS light_R_p,
+  COUNT(DISTINCT notes_aggregation_of_flc_courses.date) AS day_count,
+  SUM(notes_aggregation_of_flc_courses.note_assets_count) AS pic_count,
+  SUM(notes_aggregation_of_flc_courses.note_assets_g_light_count) AS light_G_count,
+  (SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_g_light_count, 0))) / NULLIF(SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_g_light_count, 0)) + SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_y_light_count, 0)) + SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_r_light_count, 0)), 0) AS light_G_p,
+  (SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_y_light_count, 0))) / NULLIF(SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_g_light_count, 0)) + SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_y_light_count, 0)) + SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_r_light_count, 0)), 0) AS light_Y_p,
+  (SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_r_light_count, 0))) / NULLIF(SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_g_light_count, 0)) + SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_y_light_count, 0)) + SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_r_light_count, 0)), 0) AS light_R_p,
   SUM(notes_aggregation_of_flc_courses.carbohydrate) AS carbohydrate,
   SUM(notes_aggregation_of_flc_courses.protein) AS protein,
   SUM(notes_aggregation_of_flc_courses.fat) AS fat,
@@ -130,13 +124,9 @@ LEFT JOIN LATERAL (
 ) AS notes_aggregation_of_flc_courses
   ON notes_aggregation_of_flc_courses.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
   AND notes_aggregation_of_flc_courses.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
-LEFT JOIN LATERAL (
-  SELECT * FROM note_assets_count_of_flc_courses
-) AS note_assets_count_of_flc_courses
-  ON note_assets_count_of_flc_courses.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
-  AND note_assets_count_of_flc_courses.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
 LEFT JOIN consulting_client_summaries_before ON group_classes_of_flc_program_join_users_and_clients.client_id = consulting_client_summaries_before.client_id
 LEFT JOIN consulting_client_summaries_after ON group_classes_of_flc_program_join_users_and_clients.client_id = consulting_client_summaries_after.client_id
+  where group_classes_of_flc_program_join_users_and_clients.client_id = 31139
 GROUP BY
   group_classes_of_flc_program_join_users_and_clients.g_id,
   group_classes_of_flc_program_join_users_and_clients.class_name,
@@ -149,9 +139,6 @@ GROUP BY
   group_classes_of_flc_program_join_users_and_clients.birthday,
   group_classes_of_flc_program_join_users_and_clients.gender,
   group_classes_of_flc_program_join_users_and_clients.current->>'height',
-  notes_aggregation_of_flc_courses.notes_count,
-  note_assets_count_of_flc_courses.note_assets_count,
-  note_assets_count_of_flc_courses.note_assets_g_light_count,
   consulting_client_summaries_before.weight,
   consulting_client_summaries_after.weight,
   consulting_client_summaries_before.bmi,
@@ -160,6 +147,5 @@ GROUP BY
   consulting_client_summaries_after.body_fat_mass,
   consulting_client_summaries_before.waist_circumference,
   consulting_client_summaries_after.waist_circumference
-
 
 

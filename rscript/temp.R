@@ -259,6 +259,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   # [執行時間:03_FLC_self_report]
   # 使用者    系統    流逝 
   # 0.474   0.331 724.842 
+  # 2.531    1.356 1572.082
   ptm <- proc.time()
   tmp_03 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "03_FLC_self_report.sql")))
   cat("[執行時間:03_FLC_self_report]\n")
@@ -621,11 +622,109 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
     
     
     
+
+# uric acid ---------------------------------------------------------------
+
     
+      stat_table_1st_ob <- stat_table_1st_ob %>% mutate(delta_sua_gp = paste(sua_gp_baseline, sua_gp_endpoint, sep = ">")) 
+      
+      table(stat_table_1st_ob$delta_sua_gp)
+      
+      
+      stat.test <- 
+      stat_table_1st_ob %>% 
+        filter(!is.na(sua_gp_baseline)) %>% 
+        select(delta_sua_gp, gender, `∆weight%`) %>% rename(value = "∆weight%") %>% 
+        mutate(value_adj = value %>% multiply_by(-1)) %>% 
+        group_by(gender) %>% 
+        rstatix::t_test(value_adj ~ delta_sua_gp) %>%
+        rstatix::add_xy_position(x = "gender", fun = "mean_sd", dodge = 0.5)
+      
+      plot_SUA_03 <- 
+      stat_table_1st_ob %>% 
+        filter(!is.na(sua_gp_baseline)) %>% 
+        select(delta_sua_gp, gender, `∆weight%`) %>% rename(value = "∆weight%") %>% 
+        mutate(value_adj = value %>% multiply_by(-1)) %>% 
+        ggbarplot(x = "gender", y = "value_adj", fill = "delta_sua_gp", alpha = 0.5, width = 0.5,
+                  add = "mean_se", add.params = list(group = "delta_sua_gp"),
+                  label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, 
+                  position = position_dodge(0.5), 
+                  xlab = "", ylab = "∆Weight Loss(%)", title = paste0("減重成效", " x 尿酸", (" (cutoff = 5.5)")),
+                  legend = "right", legend.title = "SUA Group", ggtheme = theme_light() ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        stat_pvalue_manual(
+          stat.test, label = "p.adj.signif", tip.length = 0.01,
+          bracket.nudge.y = -2, hide.ns = TRUE
+        ) +
+        scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+      
+      
+      
+      table(stat_table_1st_ob$sua_gp_baseline, stat_table_1st_ob$sua_gp_endpoint)
+      
+      
+      plot_SUA_01 <- 
+      stat_table_1st_ob %>% 
+        ggscatter(x = "uric_acid_baseline", y = "weight_baseline",
+                  color = "black",
+                  fill = "red",
+                  shape = 21,
+                  size = 1,
+                  add = "reg.line",  # Add regressin line
+                  add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+                  conf.int = TRUE, # Add confidence interval
+                  title = "Correlation(Weight x SUA):Baseline",
+                  xlab = "uric_acid(mg/dL)",
+                  ylab = "Weight(kg)",
+                  # xlim = c(0, 13),
+                  # ylim = c(0, 180),
+        ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
+        annotate("text", x=5.3, y=155, label="Cutoff = 5.5 mg/dL", angle=90) +
+        stat_cor(method = "pearson", size = 5, label.x = 10, label.y = 45) # Add correlation coefficient)
+      
+      plot_SUA_02 <- 
+      stat_table_1st_ob %>% 
+        ggscatter(x = "uric_acid_endpoint", y = "weight_endpoint",
+                  color = "black",
+                  fill = "red",
+                  shape = 21,
+                  size = 1,
+                  add = "reg.line",  # Add regressin line
+                  add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+                  conf.int = TRUE, # Add confidence interval
+                  title = "Correlation(Weight x SUA):Endpoint",
+                  xlab = "uric_acid(mg/dL)",
+                  ylab = "Weight(kg)",
+                  # xlim = c(0, 13),
+                  # ylim = c(0, 180),
+        ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
+        annotate("text", x=5.3, y=150, label="Cutoff = 5.5 mg/dL", angle=90) +
+        stat_cor(method = "pearson", size = 5, label.x = 7, label.y = 45) # Add correlation coefficient)
     
-    
-    
-    
+      
+      
+      ggarrange(
+        ggarrange(plot_SUA_01, plot_SUA_02, ncol = 2, labels = c("A", "B")),
+        ggarrange(plot_SUA_03, labels = "C"),
+        nrow = 2
+      )
+        
     
         
     

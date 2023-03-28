@@ -349,6 +349,10 @@ df05_biochem <- df05_biochem %>% mutate(OGIRIndex = lin_AUC_calc(df05_biochem, d
 
 df05_biochem <- df05_biochem %>% lin_DM_diagnosis(c("hba1c", "glucose_ac", "glucose_pc_1hr","glucose_pc_2hr"))
 
+#uric acid
+cutoffs_sua <- 5.5
+df05_biochem$sua_gp <- df05_biochem$uric_acid %>% cut(c(-Inf, cutoffs_sua, Inf), c("Normal", "High"))
+
 
 # 02.6 - [Data Preprocessing] 07_Diet_meal --------------------------------------------------
 

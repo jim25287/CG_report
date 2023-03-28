@@ -12,9 +12,10 @@ WITH
     INNER JOIN programs ON group_classes.program_id = programs.id
     INNER JOIN users ON group_classes.user_id = users.id
     WHERE programs.org_id = 3
-      AND group_classes.name NOT LIKE '%初日%' AND group_classes.name NOT LIKE '%宋醫師進階%' AND group_classes.name NOT LIKE '%診所進階%'
+      AND programs.id NOT IN (8, 24, 28, 34)
+--       AND group_classes.name NOT LIKE '%初日%' AND group_classes.name NOT LIKE '%宋醫師進階%' AND group_classes.name NOT LIKE '%診所進階%'
 --    Temp
-      AND group_classes.created_at BETWEEN '2023-03-01' AND '2023-04-01'
+--      AND group_classes.created_at BETWEEN '2023-03-01' AND '2023-04-01'
   ),
   group_classes_of_flc_program_join_users_and_clients AS (
     SELECT 
@@ -34,7 +35,7 @@ WITH
     INNER JOIN group_classes_of_flc_program_join_users_and_clients ON group_classes_of_flc_program_join_users_and_clients.client_id = notes.client_id
            AND notes.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
     --    Temp
-      WHERE notes.created_at BETWEEN '2023-03-01' AND '2023-04-01'
+--      WHERE notes.created_at BETWEEN '2023-03-01' AND '2023-04-01'
   ),
   note_assets_of_flc_courses AS (
     SELECT
@@ -126,7 +127,6 @@ LEFT JOIN LATERAL (
   AND notes_aggregation_of_flc_courses.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
 LEFT JOIN consulting_client_summaries_before ON group_classes_of_flc_program_join_users_and_clients.client_id = consulting_client_summaries_before.client_id
 LEFT JOIN consulting_client_summaries_after ON group_classes_of_flc_program_join_users_and_clients.client_id = consulting_client_summaries_after.client_id
-  where group_classes_of_flc_program_join_users_and_clients.client_id = 31139
 GROUP BY
   group_classes_of_flc_program_join_users_and_clients.g_id,
   group_classes_of_flc_program_join_users_and_clients.class_name,
@@ -147,5 +147,3 @@ GROUP BY
   consulting_client_summaries_after.body_fat_mass,
   consulting_client_summaries_before.waist_circumference,
   consulting_client_summaries_after.waist_circumference
-
-

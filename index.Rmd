@@ -65,10 +65,6 @@ options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
   # lin_connect_db("exit")
   # rm(path_sql)
   
-  # ptm <- proc.time()
-  # tmp_03 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "03_FLC_self_report.sql")))
-  # cat("[執行時間:03_FLC_self_report]\n")
-  # print(proc.time() - ptm)
   
 ```
 

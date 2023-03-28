@@ -725,17 +725,235 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         nrow = 2
       )
         
-    
+      
+      #corr
+      
+      profile_efficacy <- stat_table_1st_ob %>% 
+        select(c("∆weight%","∆bf%","∆bm%","∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆lipase","∆uric_acid"))
+      
+      names(profile_efficacy) <- names(profile_efficacy) %>% lin_ch_en_format(format = "ch", origin = "en")
+      
+      profile_baseline <- stat_table_1st_ob %>% 
+        select(c("age", "bmi_baseline","pbf_baseline","pbm_baseline",
+                 "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline", "tAUCg_baseline", "tAUCi_baseline", "OGIRIndex_baseline",
+                 "tg_baseline","tc_baseline","hdl_baseline","ldl_baseline","lipase_baseline",
+                 "uric_acid_baseline"))
+      
+      names(profile_baseline) <- names(profile_baseline) %>% lin_ch_en_format(format = "ch", origin = "en")
+      
+      profile_diet <- stat_table_1st_ob %>% 
+        select(c("upload_day_%", "pic_counts","calorie_day","carb_E%","protein_E%","fat_E%","fruits","vegetables","grains","meat_bean","milk", "oil","light_G_%","light_Y_%","light_R_%"))
+      
+      names(profile_diet) <- names(profile_diet) %>% lin_ch_en_format(format = "ch", origin = "en")
+      
+      
+      ##[Method 2] corrplot
+      
+      library(corrplot)
+      #[Correlation r] Efficacy x Diet
+      M1_sua <- cor(cbind(-profile_efficacy, profile_diet), use = "pairwise.complete.obs")
+      #[2Do]change row,col names into chinese
+      M_test1_sua <- cor.mtest(cbind(-profile_efficacy, profile_diet) , conf.level = .95)
+      M_col_sua <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+      
+      
+      # run corrplot plot
+      corrplot(M1_sua,
+               p.mat = M_test1_sua$p,
+               type = "lower",
+               insig = "label_sig",
+               sig.level = c(.001, .01, .05), pch.cex = .8, pch.col = "black",
+               tl.col = "black", tl.srt = 35, tl.cex = 1.0,
+               cl.ratio = 0.1,
+               col = M_col_sua(200),
+               title = "[Correlation] Uric acid x Diet",
+               #c(bottom, left, top, right)
+               mar = c(0,0,1,0))
+
+      for (i in c(1:length(colnames(M1_sua)))) {
+        if (i == 1) {
+          M1_value <- M1_sua %>% round(2) 
+          M1_sign <- M_test1_sua$p %>% stats::symnum(corr = FALSE, na = FALSE, cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", "**", "*", ".", "ns")) %>% as.data.frame.matrix()
+          M1_df <- M1_value
+          M1_df[,] <- NA
+        }
+        
+        M1_df[,i] <- paste0(M1_value[,i], " (", M1_sign[,i], ")")
+        
+        if (i ==  length(colnames(M1_sua))) {
+          rm(list = c("M1_value", "M1_sign"))
+          M1_df <- M1_df %>% as.data.frame()
+          M1_df <- M1_df %>% add_column(vars = rownames(M1_df), .before = names(M1_df)[1])
+          M1_df <- M1_df %>% add_column("#" = seq(1, nrow(M1_df)), .before = names(M1_df)[1])
+        }
+        
+      } 
+      
+      cor_table_01_sua <- M1_df %>% gvisTable(options=list(frozenColumns = 2,
+                                                       height=300))
+      
+      
+      M2_sua <- cor(cbind(-profile_efficacy, profile_baseline), use = "pairwise.complete.obs")
+      #[2Do]change row,col names into chinese
+      M_test2_sua <- cor.mtest(cbind(-profile_efficacy, profile_baseline) , conf.level = .95)
+      M_col_sua <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+      
+      
+      #run corrplot plot
+      corrplot(M2_sua,
+               p.mat = M_test2_sua$p,
+               type = "lower",
+               insig = "label_sig",
+               sig.level = c(.001, .01, .05), pch.cex = .8, pch.col = "black",
+               tl.col = "black", tl.srt = 35, tl.cex = 1.0,
+               cl.ratio = 0.1,
+               col = M_col_sua(200),
+               title = "[Correlation] Efficacy x Baseline",
+               #c(bottom, left, top, right)
+               mar = c(0,0,1,0))
+      
+      
+      # stat_table_1st_ob$`protein_E%`
+      stat_table_1st_ob %>% rename(delta_uric_acid = `∆uric_acid`) %>% rename(fat = `fat_E%`) %>% 
+        ggscatter(x = "delta_uric_acid", y = "fat",
+                  color = "black",
+                  fill = "red",
+                  shape = 21,
+                  size = 1,
+                  add = "reg.line",  # Add regressin line
+                  add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+                  conf.int = TRUE, # Add confidence interval
+                  title = "Correlation(Weight x SUA):Diet",
+                  xlab = "∆uric_acid(mg/dL)",
+                  ylab = "Intake:Protein(E%)",
+                  # xlim = c(0, 13),
+                  # ylim = c(0, 180),
+        ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        stat_cor(method = "pearson", size = 5, label.x = 0, label.y = 45) # Add correlation coefficient)
+      
+      
+      
+      #
+      stat_table_1st_ob$meat_bean
+      
+      stat.test <- 
+        stat_table_1st_ob %>% 
+        filter(!is.na(sua_gp_baseline)) %>% 
+        select(delta_sua_gp, gender, `fat_E%`) %>% rename(value = "fat_E%") %>% 
+        mutate(value_adj = value %>% multiply_by(1)) %>% 
+        group_by(gender) %>% 
+        rstatix::t_test(value_adj ~ delta_sua_gp) %>%
+        rstatix::add_xy_position(x = "gender", fun = "mean_sd", dodge = 0.5)
+      
+      stat_table_1st_ob %>% 
+        filter(!is.na(sua_gp_baseline)) %>% 
+        select(delta_sua_gp, gender, `fat_E%`) %>% rename(value = "fat_E%") %>% 
+        mutate(value_adj = value %>% multiply_by(1)) %>% 
+        ggbarplot(x = "gender", y = "value_adj", fill = "delta_sua_gp", alpha = 0.5, width = 0.5,
+                  add = "mean_se", add.params = list(group = "delta_sua_gp"),
+                  label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, 
+                  position = position_dodge(0.5), 
+                  xlab = "", ylab = "Intake: fat(E%)", title = paste0("Diet", " x 尿酸"),
+                  legend = "right", legend.title = "SUA Group", ggtheme = theme_light() ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        stat_pvalue_manual(
+          stat.test, label = "p.adj.signif", tip.length = 0.01,
+          bracket.nudge.y = 1, step.increase = 0.05, hide.ns = TRUE
+        ) +
+        scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+      
+      
       
 
 # 星座 ----------------------------------------------------------------------
 
-      # a <- df01_profile %>% filter(org_name %in% c("topshow", "genesisclinic", "lumez")) %>% distinct(id, .keep_all = TRUE)  #Clinic
-      a <- df01_profile %>% distinct(id, .keep_all = TRUE)  #All
+      a <- df01_profile %>% filter(org_name %in% c("topshow", "genesisclinic", "lumez")) %>% distinct(id, .keep_all = TRUE)  #Clinic
+      b <- stat_table %>% rename(delta_weight_p = `∆weight%`)
+      a <- lin_mapping(a, bmi_baseline, id, b, bmi_baseline, id)
+      a <- lin_mapping(a, delta_weight_p, id, b, delta_weight_p, id)
+      a <- lin_mapping(a, homa_ir_baseline, id, b, homa_ir_baseline, id)
+      a <- lin_mapping(a, "upload_day_%", id, b, "upload_day_%", id)
+      a <- a %>% filter(!is.na(delta_weight_p))
+      # a <- df01_profile %>% distinct(id, .keep_all = TRUE)  #All
       a <- lin_astrological_type(a, "btd")
       a1 <- table(a$astro) %>% addmargins() %>% as.data.frame()
+      table(a$astro, a$gender) %>% addmargins()
       a1[with(a1, order(Freq, decreasing = TRUE)),]
       
+      
+      a %>% 
+        filter(!is.na(astro)) %>% 
+        select(astro, gender, `bmi_baseline`) %>% rename(value = "bmi_baseline") %>% 
+        mutate(value_adj = value %>% multiply_by(1)) %>% 
+        ggbarplot(x = "gender", y = "value_adj", fill = "astro", alpha = 0.5, width = 0.7,
+                  add = "mean", add.params = list(group = "astro"),
+                  label = TRUE, lab.nb.digits = 1, lab.pos = "out", lab.vjust = -2, lab.size = 2,
+                  position = position_dodge(0.7), 
+                  xlab = "", ylab = "weight(Kg)", title = paste0("BMI", "x 星座"),
+                  legend = "right", legend.title = "Group", ggtheme = theme_light() ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+      a %>% 
+        filter(!is.na(astro)) %>% 
+        select(astro, gender, `homa_ir_baseline`) %>% rename(value = "homa_ir_baseline") %>% 
+        mutate(value_adj = value %>% multiply_by(1)) %>% 
+        ggbarplot(x = "gender", y = "value_adj", fill = "astro", alpha = 0.5, width = 0.7,
+                  add = "mean", add.params = list(group = "astro"),
+                  label = TRUE, lab.nb.digits = 1, lab.pos = "out", lab.vjust = -2, lab.size = 2,
+                  position = position_dodge(0.7), 
+                  xlab = "", ylab = "HOMA-IR", title = paste0("胰島素阻抗", "x 星座"),
+                  legend = "right", legend.title = "Group", ggtheme = theme_light() ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+      a %>% 
+        filter(!is.na(astro)) %>% 
+        select(astro, gender, `delta_weight_p`) %>% rename(value = "delta_weight_p") %>% 
+        mutate(value_adj = value %>% multiply_by(-1)) %>% 
+        ggbarplot(x = "gender", y = "value_adj", fill = "astro", alpha = 0.5, width = 0.7,
+                  add = "mean", add.params = list(group = "astro"),
+                  label = TRUE, lab.nb.digits = 1, lab.pos = "out", lab.vjust = -2, lab.size = 2,
+                  position = position_dodge(0.7), 
+                  xlab = "", ylab = "∆weight%(Kg)", title = paste0("減重成效", "x 星座"),
+                  legend = "right", legend.title = "Group", ggtheme = theme_light() ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+      a %>% 
+        filter(!is.na(astro)) %>% 
+        select(astro, gender, `"upload_day_%"`) %>% rename(value = `"upload_day_%"`) %>% 
+        mutate(value_adj = value %>% multiply_by(1)) %>% 
+        ggbarplot(x = "gender", y = "value_adj", fill = "astro", alpha = 0.5, width = 0.7,
+                  add = "mean", add.params = list(group = "astro"),
+                  label = TRUE, lab.nb.digits = 1, lab.pos = "out", lab.vjust = -2, lab.size = 2,
+                  position = position_dodge(0.7), 
+                  xlab = "", ylab = "飲食完成率(%)", title = paste0("飲食完成率", "x 星座"),
+                  legend = "right", legend.title = "Group", ggtheme = theme_light() ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
       
       
       

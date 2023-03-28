@@ -33,7 +33,14 @@ accum_client_df <- data.frame(date = rep(seq(as.Date(main_pagedf$date_cate %>% u
                               anno_title = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())),
                               anno_text = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())))
 
-main_pagedf <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow") | (org_name == "lumez"))
+
+#秀傳開幕後("2020-09-30") 開始計算
+main_pagedf <- df01_profile %>% filter((date_t0 >= "2020-09-30") & (org_name %in% c("genesisclinic","topshow","lumez")))
+
+#[Problem] topshow w/t client_type : all weight loss: 2
+#[Problem] lumez list? advance:client_type?
+main_pagedf[(is.na(main_pagedf[["client_type"]])), "client_type"] <- 2
+
 
 #floor date for monthly calculation
 main_pagedf <- main_pagedf %>% mutate(date_cate = date_t0 %>% lubridate::floor_date(unit = "month"))

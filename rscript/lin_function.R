@@ -1114,3 +1114,88 @@ lin_DM_diagnosis <- function(df = NULL, variables){
   return(df)
   
 }
+
+
+
+# [Function 11:] Astrological sign -------------------------------------------------------
+
+
+lin_astrological_type <- function(df, variables){
+  
+  # "水瓶座 (Aquarius)"：01-21 ~ 02-19
+  # "雙魚座 (Pisces)"：02-20 ~ 03-20
+  # "牡羊座 (Aries)"：03-21 ~ 04-20
+  # "金牛座 (Taurus)" ：04-21 ~ 05-21
+  # "雙子座 (Gemini)"：05-22 ~ 06-21
+  # "巨蟹座 (Cancer)"：06-22 ~ 07-22
+  # "獅子座 (Leo)"：07-23 ~ 08-23
+  # "處女座 (Virgo)"：08-24 ~ 09-23
+  # "天秤座 (Libra)"：09-24 ~ 10-23
+  # "天蠍座 (Scorpio)"：10-24 ~ 11-22
+  # "射手座 (Sagittarius)"：11-23 ~ 12-21
+  # "摩羯座 (Capricorn)"：12-22 ~ 01-20
+  
+  # Example: lin_astrological_type(a, "btd")
+  
+  # Start the clock!
+  ptm <- proc.time()
+  
+  library(data.table)
+  library(magrittr)
+  
+  df[["btd_date"]] <- as.Date(df[[variables]]) %>% format("%m-%d")
+  
+  df[["astro"]] <- "Unclassified"
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "01-21") & (eval(parse(text = "btd_date")) <= "02-19")) ,
+    astro := "水瓶座"]
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "02-20") & (eval(parse(text = "btd_date")) <= "03-20")) ,
+    astro := "雙魚座"]
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "03-21") & (eval(parse(text = "btd_date")) <= "04-20")) ,
+    astro := "牡羊座"]
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "04-21") & (eval(parse(text = "btd_date")) <= "05-21")) ,
+    astro := "金牛座"]
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "05-22") & (eval(parse(text = "btd_date")) <= "06-21")) ,
+    astro := "雙子座"]
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "06-22") & (eval(parse(text = "btd_date")) <= "07-22")) ,
+    astro := "巨蟹座"]
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "07-23") & (eval(parse(text = "btd_date")) <= "08-23")) ,
+    astro := "獅子座"]
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "08-24") & (eval(parse(text = "btd_date")) <= "09-23")) ,
+    astro := "處女座"]
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "09-24") & (eval(parse(text = "btd_date")) <= "10-23")) ,
+    astro := "天秤座"]
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "10-24") & (eval(parse(text = "btd_date")) <= "11-22")) ,
+    astro := "天蠍座"]
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "11-23") & (eval(parse(text = "btd_date")) <= "12-21")) ,
+    astro := "射手座"]
+  setDT(df)[
+    ((eval(parse(text = "btd_date")) >= "12-22") | (eval(parse(text = "btd_date")) <= "01-20")) ,
+    astro := "摩羯座"]
+  
+  df[["astro"]] <- factor(df[["astro"]], levels = (c("水瓶座","雙魚座","牡羊座","金牛座","雙子座","巨蟹座","獅子座","處女座","天秤座","天蠍座","射手座","摩羯座")))
+  
+  df <- df %>% select(-btd_date)
+  
+  cat("\n[Completed!]\n")
+  cat("\n[執行時間]\n")
+  print(proc.time() - ptm)
+  
+  cat("\n[Result]\n")
+  
+  result <- table(df[["astro"]]) %>% addmargins() %>% as.data.frame()
+  
+  print(result)
+  return(df)
+  
+}      

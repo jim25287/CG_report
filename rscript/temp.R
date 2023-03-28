@@ -726,5 +726,16 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       )
         
     
-        
-    
+      
+
+# 星座 ----------------------------------------------------------------------
+
+      # a <- df01_profile %>% filter(org_name %in% c("topshow", "genesisclinic", "lumez")) %>% distinct(id, .keep_all = TRUE)  #Clinic
+      a <- df01_profile %>% distinct(id, .keep_all = TRUE)  #All
+      a <- lin_astrological_type(a, "btd")
+      a1 <- table(a$astro) %>% addmargins() %>% as.data.frame()
+      a1[with(a1, order(Freq, decreasing = TRUE)),]
+      
+      
+      
+      

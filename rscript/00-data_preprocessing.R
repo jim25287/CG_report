@@ -32,9 +32,9 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 df01_profile <- tmp_01
 
 
-#Q1-1. 初日開幕前的cofit初日班 => topshow
-df01_profile[dplyr::intersect(grep("初日班", df01_profile[["program_name"]]), which(df01_profile[["date_t0"]] < "2021-08-30")), "org_name"] <- "topshow"
-df01_profile[dplyr::intersect(grep("秀0|秀1", df01_profile[["name"]]), which(df01_profile[["date_t0"]] < "2021-08-30")), "org_name"] <- "topshow"
+#Q1-1. 初日開幕前的cofit初日班("2021-08-30"), 秀傳開幕後("2020-09-30") => topshow
+df01_profile[grepl("初日班", df01_profile[["program_name"]]) & (df01_profile[["date_t0"]] < "2021-08-30") & (df01_profile[["date_t0"]] > "2020-09-30"), "org_name"] <- "topshow"
+df01_profile[grepl("秀0|秀1", df01_profile[["name"]]) & (df01_profile[["date_t0"]] < "2021-08-30") & (df01_profile[["date_t0"]] > "2020-09-30"), "org_name"] <- "topshow"
 #Q1-2. "program_name"初日開幕後的cofit初日班 => genesisclinic
 df01_profile[Reduce(dplyr::intersect, list(grep("初日", df01_profile[["program_name"]]),
                                      which(df01_profile[["date_t0"]] >= "2021-08-30"),
@@ -51,8 +51,9 @@ df01_profile[(grepl("診所進階", df01_profile[["program_name"]])) & (grepl("c
 df01_profile[(grepl("診所進階", df01_profile[["program_name"]])) & (grepl("cofit", df01_profile[["org_name"]])) & (df01_profile[["date_t0"]] >= "2021-08-30"), "org_name"] <- "genesisclinic"
 
 #Q1-5. FLC班 => cofit
-df01_profile[(grepl("宋醫師進階", df01_profile[["program_name"]])) & (grepl("topshow|genesisclinic", df01_profile[["org_name"]])), "org_name"] <- "cofit"
-df01_profile[grep("FLC", df01_profile[["program_name"]]), "org_name"] <- "cofit"
+# df01_profile[(grepl("宋醫師進階", df01_profile[["program_name"]])) & (grepl("topshow|genesisclinic", df01_profile[["org_name"]])), "org_name"] <- "cofit" #wrong line: 早期秀傳/誤選都應該要記在診所=> "維持不動"
+df01_profile[grepl("FLC", df01_profile[["program_name"]]) & not(grepl("秀0|秀1", df01_profile[["name"]])), "org_name"] <- "cofit"
+
 
 #C1-1. class_freq by org_name
 df01_profile <- df01_profile %>% full_join(df01_profile %>% group_by(id, org_name) %>% summarise(class_freq = n()), by = c("id", "org_name"))

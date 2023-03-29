@@ -882,6 +882,8 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       a <- lin_mapping(a, delta_weight_p, id, b, delta_weight_p, id)
       a <- lin_mapping(a, homa_ir_baseline, id, b, homa_ir_baseline, id)
       a <- lin_mapping(a, "upload_day_%", id, b, "upload_day_%", id)
+      a <- lin_mapping(a, "light_G_%", id, b, "light_G_%", id)
+      a <- a %>% mutate(diet_obediance = (`"upload_day_%"` * `"light_G_%"` /100) %>% round(2))
       a <- a %>% filter(!is.na(delta_weight_p))
       # a <- df01_profile %>% distinct(id, .keep_all = TRUE)  #All
       a <- lin_astrological_type(a, "btd")
@@ -947,6 +949,22 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
                   label = TRUE, lab.nb.digits = 1, lab.pos = "out", lab.vjust = -2, lab.size = 2,
                   position = position_dodge(0.7), 
                   xlab = "", ylab = "飲食完成率(%)", title = paste0("飲食完成率", "x 星座"),
+                  legend = "right", legend.title = "Group", ggtheme = theme_light() ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+      a %>% 
+        filter(!is.na(astro)) %>% 
+        select(astro, gender, diet_obediance) %>% rename(value = diet_obediance) %>% 
+        mutate(value_adj = value %>% multiply_by(1)) %>% 
+        ggbarplot(x = "gender", y = "value_adj", fill = "astro", alpha = 0.5, width = 0.7,
+                  add = "mean", add.params = list(group = "astro"),
+                  label = TRUE, lab.nb.digits = 1, lab.pos = "out", lab.vjust = -2, lab.size = 2,
+                  position = position_dodge(0.7), 
+                  xlab = "", ylab = "飲食紀律分數", title = paste0("飲食紀律分數", "x 星座"),
                   legend = "right", legend.title = "Group", ggtheme = theme_light() ) +
         theme(
           plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 

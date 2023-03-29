@@ -636,7 +636,7 @@ for (i in c(unique(stat_tm[["id"]]))) {
   if (j == length(unique(stat_tm[["id"]]))) {
     cat("\n[執行時間]\n")
     print(proc.time() - ptm)
-    print("\n[Completed!]")
+    print("[Completed!]")
     rm(list = c("med_id_pool", "a0", "a1", "a2", "a1_b", "a1_e", "a2_b", "a2_e", "a3", "a4", "v_b", "v_e",
                 "cols_01_profile", "cols_02_inbody_baseline", "cols_03_inbody_endpoint", "cols_04_blood_baseline",
                 "cols_05_blood_endpoint", "cols_06_delta_inbody", "cols_07_delta_blood"))

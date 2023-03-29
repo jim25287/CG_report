@@ -8,17 +8,13 @@ plot_m <- lin_insulin_rsp_pattern(Q6_stat_table_1st, c("insulin_baseline", "insu
 
 
 
-
-Q6_stat_table_1st  <- lin_insulin_rsp_pattern(Q6_stat_table_1st, c("insulin_baseline", "insulin_pc_1hr_baseline", "insulin_pc_2hr_baseline"), pattern = 2)
-
-
 #baseline, ∆%
 Q6_stat_table_1st %>% 
-  filter(!is.na(I)) %>% 
-  select(I, gender, `∆weight%`, age_gp) %>% rename(value = `∆weight%`) %>% 
+  filter(!is.na(Pattern_major_baseline)) %>% 
+  select(Pattern_major_baseline, gender, `∆weight%`) %>% rename(value = `∆weight%`) %>% 
   mutate(value_adj = value %>% multiply_by(-1)) %>% 
-  ggbarplot(x = "gender", y = "value_adj", fill = "I", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
-            add = "mean_se", add.params = list(group = "I"),
+  ggbarplot(x = "gender", y = "value_adj", fill = "Pattern_major_baseline", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
+            add = "mean_se", add.params = list(group = "Pattern_major_baseline"),
             label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, lab.size = 3,
             position = position_dodge(0.5), 
             xlab = "", ylab = "∆Weight Loss(%)", title = "減重成效",
@@ -30,14 +26,14 @@ Q6_stat_table_1st %>%
   ) 
 
 Q6_stat_table_1st %>% 
-  filter(!is.na(I)) %>% 
-  select(I, gender, `weight_baseline`, age_gp) %>% rename(value = `weight_baseline`) %>% 
+  filter(!is.na(Pattern_major_baseline)) %>% 
+  select(Pattern_major_baseline, gender, `weight_baseline`) %>% rename(value = `weight_baseline`) %>% 
   mutate(value_adj = value %>% multiply_by(1)) %>% 
-  ggbarplot(x = "gender", y = "value_adj", fill = "I", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
-            add = "mean_se", add.params = list(group = "I"),
+  ggbarplot(x = "gender", y = "value_adj", fill = "Pattern_major_baseline", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
+            add = "mean_se", add.params = list(group = "Pattern_major_baseline"),
             label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, lab.size = 3,
             position = position_dodge(0.5), 
-            xlab = "", ylab = "∆Weight Loss(%)", title = "減重成效",
+            xlab = "", ylab = "Weight(Kg)", title = "減重成效",
             legend = "right", legend.title = "GIRC", ggtheme = theme_light() ) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
@@ -46,14 +42,14 @@ Q6_stat_table_1st %>%
   ) 
 
 Q6_stat_table_1st %>% 
-  filter(!is.na(I)) %>% 
-  select(I, gender, `pbf_baseline`, age_gp) %>% rename(value = `pbf_baseline`) %>% 
+  filter(!is.na(Pattern_major_baseline)) %>% 
+  select(Pattern_major_baseline, gender, `pbf_baseline`) %>% rename(value = `pbf_baseline`) %>% 
   mutate(value_adj = value %>% multiply_by(1)) %>% 
-  ggbarplot(x = "gender", y = "value_adj", fill = "I", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
-            add = "mean_se", add.params = list(group = "I"),
+  ggbarplot(x = "gender", y = "value_adj", fill = "Pattern_major_baseline", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
+            add = "mean_se", add.params = list(group = "Pattern_major_baseline"),
             label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, lab.size = 3,
             position = position_dodge(0.5), 
-            xlab = "", ylab = "∆Weight Loss(%)", title = "減重成效",
+            xlab = "", ylab = "PBF(%)", title = "減重成效",
             legend = "right", legend.title = "GIRC", ggtheme = theme_light() ) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
@@ -63,23 +59,27 @@ Q6_stat_table_1st %>%
 
 
 
-df05_biochem <- df05_biochem %>% lin_DM_diagnosis(c("hba1c", "glucose_ac", "glucose_pc_1hr","glucose_pc_2hr"))
-df05_biochem <- lin_insulin_rsp_pattern(df05_biochem, c("insulin", "insulin_pc_1hr", "insulin_pc_2hr"), pattern = 2)
-
-
-#[2DO]: 包含介入前/後資料, [Next: 篩選介入前data]!!
-table(df05_biochem$DM, df05_biochem$I, exclude = "Unclassified", useNA = "no") %>% addmargins()
-table(df05_biochem$DM, df05_biochem$I, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
+#篩選介入前data
+a <- df05_biochem %>% distinct(id, .keep_all = TRUE) %>% view()
+table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% addmargins()
+table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
 #DM View
-table(df05_biochem$DM, df05_biochem$I, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins() %>% round(2)
+table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins() %>% round(2)
 #Insulin Pattern  View
-table(df05_biochem$DM, df05_biochem$I, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins() %>% round(2)
+table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins() %>% round(2)
 
 
 Q6_stat_table_1st$DM_baseline <- Q6_stat_table_1st$DM_baseline %>% factor(levels = c("Normal", "Pre-DM", "DM"))
-#DM & GIRC Pattern Cross_table
-table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$I) %>% addmargins()
-table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$I) %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
-table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$I) %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins() %>% round(2)
+#DM & GIRC Pattern Cross_table in OB. program
+table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% addmargins()
+table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
+table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins() %>% round(2)
+table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins() %>% round(2)
 
+
+#GIRC improvement path?
+  ##Pool improvement - fragment alignment/mapping: ncol:3(id, origin, aftermath)
+df05_biochem
+
+##T0,T1,∆ plot
 

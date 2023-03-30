@@ -144,7 +144,7 @@ M_col_sua <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB
 
 
 # run corrplot plot
-corrplot(M1_sua,
+corrplot::corrplot(M1_sua,
          p.mat = M_test1_sua$p,
          type = "lower",
          insig = "label_sig",
@@ -186,7 +186,7 @@ M_col_sua <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB
 
 
 #run corrplot plot
-corrplot(M2_sua,
+corrplot::corrplot(M2_sua,
          p.mat = M_test2_sua$p,
          type = "lower",
          insig = "label_sig",

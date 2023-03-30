@@ -257,9 +257,8 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
   print(proc.time() - ptm)
   
   # [執行時間:03_FLC_self_report]
-  # 使用者    系統    流逝 
-  # 0.474   0.331 724.842 
-  # 2.531    1.356 1572.082
+  # 使用者     系統     流逝 
+  # 3.840    2.035 2762.575 
   ptm <- proc.time()
   tmp_03 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "03_FLC_self_report.sql")))
   cat("[執行時間:03_FLC_self_report]\n")
@@ -588,17 +587,24 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
     stat_table_1st_ob$age_gp <- cut(stat_table_1st_ob$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
     stat_table_1st_ob$org_name_gp <- "Med"
     #02.FLC (F)
-    df03_FLC_self_report$age_gp <- cut(df03_FLC_self_report$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
-    df03_FLC_self_report <- df03_FLC_self_report %>% rename("∆weight%" = "∆weight(%)")
+    # df03_FLC_self_report$age_gp <- cut(df03_FLC_self_report$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
+    # df03_FLC_self_report <- df03_FLC_self_report %>% rename("∆weight%" = "∆weight(%)")
+    # df03_FLC_self_report$org_name_gp <- "Diet"
+    
+    df03_FLC_self_report$age_gp <- cut(df03_FLC_self_report$年齡, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
+    df03_FLC_self_report <- df03_FLC_self_report %>% rename("∆weight%" = "體重 %")
+    df03_FLC_self_report <- df03_FLC_self_report %>% rename("∆weight" = "體重 △")
+    df03_FLC_self_report <- df03_FLC_self_report %>% rename("gender" = "性別")
     df03_FLC_self_report$org_name_gp <- "Diet"
+    
     # 03.non-FLC (NF) 
     df04_non_FLC_self_report$age_gp <- cut(df04_non_FLC_self_report$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
     df04_non_FLC_self_report$org_name_gp <- "Control"
     
     #merge Q_dr.lee_01_datasets  
-    Q_dr.lee_01_datasets <- Reduce(rbind, list(stat_table_1st_ob %>% select(`∆weight%`, age_gp, gender, org_name_gp), 
-                                               df03_FLC_self_report %>% select(`∆weight%`, age_gp, gender, org_name_gp) %>% lin_exclude_NA_col("∆weight%"),
-                                               df04_non_FLC_self_report %>% select(`∆weight%`, age_gp, gender, org_name_gp) %>% lin_exclude_NA_col("∆weight%")))
+    Q_dr.lee_01_datasets <- Reduce(rbind, list(stat_table_1st_ob %>% select(`∆weight`,`∆weight%`, age_gp, gender, org_name_gp), 
+                                               df03_FLC_self_report %>% select(`∆weight`,`∆weight%`, age_gp, gender, org_name_gp) %>% lin_exclude_NA_col("∆weight%"),
+                                               df04_non_FLC_self_report %>% select(`∆weight`,`∆weight%`, age_gp, gender, org_name_gp) %>% lin_exclude_NA_col("∆weight%")))
     Q_dr.lee_01_datasets$org_name_gp <-  Q_dr.lee_01_datasets$org_name_gp %>% factor(levels = c("Med", "Diet", "Control"))
 
       Q_dr.lee_01_datasets %>% 
@@ -615,11 +621,30 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
           plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
           axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
           axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
-        ) 
+        ) +
+        scale_y_continuous(expand = expansion(mult = c(0.1, 0.1)))
         
+      Q_dr.lee_01_datasets %>% 
+        filter(age_gp == levels(Q_dr.lee_01_datasets$age_gp)[1]) %>% 
+        select(org_name_gp, gender, `∆weight`, age_gp) %>% rename(value = "∆weight") %>% 
+        mutate(value_adj = value %>% multiply_by(-1)) %>% 
+        ggbarplot(x = "gender", y = "value_adj", fill = "org_name_gp", alpha = 0.5, width = 0.5,
+                  add = "mean", add.params = list(group = "org_name_gp"),
+                  label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, 
+                  position = position_dodge(0.5), 
+                  xlab = "", ylab = "∆Weight Loss(Kg)", title = paste0("減重成效", "(Age:", levels(Q_dr.lee_01_datasets$age_gp)[1], ")"),
+                  legend = "right", legend.title = "Program", ggtheme = theme_light() ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        scale_y_continuous(expand = expansion(mult = c(0.1, 0.1)))
     
     
-    
+      Q_dr.lee_01_datasets$org_name_gp %>% table() %>% addmargins()
+      
+      
     
     
 

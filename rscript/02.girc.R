@@ -78,8 +78,32 @@ table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, e
 
 
 #GIRC improvement path?
-  ##Pool improvement - fragment alignment/mapping: ncol:3(id, origin, aftermath)
-df05_biochem
+  ##Pool improvement - fragment alignment/mapping: ncol:3(id, origin, aftermath: DM/I)
+a <- df05_biochem %>% select(id, date_blood, Pattern_major, DM)
+a <- a %>% filter((Pattern_major %in% c(levels(a$Pattern_major)[-6]) & (DM %in% c(levels(a$DM)[-4]))))
+a <- a %>% filter(id %in% (janitor::get_dupes(a, id) %>% select(id) %>% pull))
+a <- a[with(a, order(id, date_blood)),]
+
+a$Pattern_major_after <- NA
+a$Pattern_major_after[1:nrow(a)-1] <- a[["Pattern_major"]][2:nrow(a)] %>% as.character()
+a$DM_after <- NA
+a$DM_after[1:nrow(a)-1] <- a[["DM"]][2:nrow(a)] %>% as.character()
+
+
+library(dplyr)
+a <- a %>% group_by(id) %>% slice(1:(n()-1))
+names(a) <- c("id", "date", "I_before", "DM_before", "I_after",  "DM_after")
+
+
+# df05_biochem %>% select(id, date_blood, Pattern_major, DM) %>% view()
+a <- a[a$DM_before != "DM" & a$DM_after != "DM",]
+table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% addmargins(margin = 2) %>% round(2)
+table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2)
+
 
 ##T0,T1,∆ plot
+
+
+
+
 

@@ -48,8 +48,8 @@ options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 # source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
 
 # #Does source() rscript need to move to the same project dir??
-  lin_connect_db("connect")
-  path_sql <- "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/sql/"
+  # lin_connect_db("connect")
+  # path_sql <- "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/sql/"
 
   # tmp_01 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "01_profile.sql")))
   # tmp_02 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "02_inbody.sql")))

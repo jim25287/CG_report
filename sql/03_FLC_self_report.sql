@@ -29,7 +29,7 @@ WITH
     INNER JOIN clients ON group_class_orders.client_id = clients.id
     INNER JOIN group_classes_of_flc_program_join_users ON group_class_orders.group_class_id = group_classes_of_flc_program_join_users.group_class_id
     --    Temp
-     WHERE group_class_orders.client_id = 456064
+    --  WHERE group_class_orders.client_id = 456064
   ),
   notes_of_flc_courses AS (
     SELECT notes.*, group_classes_of_flc_program_join_users_and_clients.class_id

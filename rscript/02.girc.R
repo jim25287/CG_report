@@ -9,72 +9,157 @@ plot_m <- lin_insulin_rsp_pattern(Q6_stat_table_1st, c("insulin_baseline", "insu
 
 
 #baseline, ∆%
-Q6_stat_table_1st %>% 
-  filter(!is.na(Pattern_major_baseline)) %>% 
-  select(Pattern_major_baseline, gender, `∆weight%`) %>% rename(value = `∆weight%`) %>% 
-  mutate(value_adj = value %>% multiply_by(-1)) %>% 
-  ggbarplot(x = "gender", y = "value_adj", fill = "Pattern_major_baseline", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
-            add = "mean_se", add.params = list(group = "Pattern_major_baseline"),
-            label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, lab.size = 3,
-            position = position_dodge(0.5), 
-            xlab = "", ylab = "∆Weight Loss(%)", title = "減重成效",
-            legend = "right", legend.title = "GIRC", ggtheme = theme_light() ) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
-    axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
-    axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
-  ) 
+# Q6_stat_table_1st %>% 
+#   filter(!is.na(Pattern_major_baseline)) %>% 
+#   select(Pattern_major_baseline, gender, `∆weight%`) %>% rename(value = `∆weight%`) %>% 
+#   mutate(value_adj = value %>% multiply_by(-1)) %>% 
+#   ggbarplot(x = "gender", y = "value_adj", fill = "Pattern_major_baseline", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
+#             add = "mean_se", add.params = list(group = "Pattern_major_baseline"),
+#             label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, lab.size = 3,
+#             position = position_dodge(0.5), 
+#             xlab = "", ylab = "∆Weight Loss(%)", title = "減重成效",
+#             legend = "right", legend.title = "GIRC", ggtheme = theme_light() ) +
+#   theme(
+#     plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+#     axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+#     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+#   ) 
 
-Q6_stat_table_1st %>% 
-  filter(!is.na(Pattern_major_baseline)) %>% 
-  select(Pattern_major_baseline, gender, `weight_baseline`) %>% rename(value = `weight_baseline`) %>% 
-  mutate(value_adj = value %>% multiply_by(1)) %>% 
-  ggbarplot(x = "gender", y = "value_adj", fill = "Pattern_major_baseline", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
-            add = "mean_se", add.params = list(group = "Pattern_major_baseline"),
-            label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, lab.size = 3,
-            position = position_dodge(0.5), 
-            xlab = "", ylab = "Weight(Kg)", title = "減重成效",
-            legend = "right", legend.title = "GIRC", ggtheme = theme_light() ) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
-    axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
-    axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
-  ) 
+# Q6_stat_table_1st %>% 
+#   filter(!is.na(Pattern_major_baseline)) %>% 
+#   select(Pattern_major_baseline, gender, `weight_baseline`) %>% rename(value = `weight_baseline`) %>% 
+#   mutate(value_adj = value %>% multiply_by(1)) %>% 
+#   ggbarplot(x = "gender", y = "value_adj", fill = "Pattern_major_baseline", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
+#             add = "mean_se", add.params = list(group = "Pattern_major_baseline"),
+#             label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, lab.size = 3,
+#             position = position_dodge(0.5), 
+#             xlab = "", ylab = "Weight(Kg)", title = "減重成效",
+#             legend = "right", legend.title = "GIRC", ggtheme = theme_light() ) +
+#   theme(
+#     plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+#     axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+#     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+#   ) 
 
-Q6_stat_table_1st %>% 
-  filter(!is.na(Pattern_major_baseline)) %>% 
-  select(Pattern_major_baseline, gender, `pbf_baseline`) %>% rename(value = `pbf_baseline`) %>% 
-  mutate(value_adj = value %>% multiply_by(1)) %>% 
-  ggbarplot(x = "gender", y = "value_adj", fill = "Pattern_major_baseline", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
-            add = "mean_se", add.params = list(group = "Pattern_major_baseline"),
-            label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, lab.size = 3,
-            position = position_dodge(0.5), 
-            xlab = "", ylab = "PBF(%)", title = "減重成效",
-            legend = "right", legend.title = "GIRC", ggtheme = theme_light() ) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
-    axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
-    axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
-  ) 
+# Q6_stat_table_1st %>% 
+#   filter(!is.na(Pattern_major_baseline)) %>% 
+#   select(Pattern_major_baseline, gender, `pbf_baseline`) %>% rename(value = `pbf_baseline`) %>% 
+#   mutate(value_adj = value %>% multiply_by(1)) %>% 
+#   ggbarplot(x = "gender", y = "value_adj", fill = "Pattern_major_baseline", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0, width = 0.5,
+#             add = "mean_se", add.params = list(group = "Pattern_major_baseline"),
+#             label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, lab.size = 3,
+#             position = position_dodge(0.5), 
+#             xlab = "", ylab = "PBF(%)", title = "減重成效",
+#             legend = "right", legend.title = "GIRC", ggtheme = theme_light() ) +
+#   theme(
+#     plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+#     axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+#     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+#   ) 
 
 
 
 #篩選介入前data
-a <- df05_biochem %>% distinct(id, .keep_all = TRUE) %>% view()
-table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% addmargins()
-table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
+a <- df05_biochem %>% distinct(id, .keep_all = TRUE)
+# table_freq_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% addmargins()
+table_freq_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% addmargins() %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
+
+
+# table_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
+#[need] % 
+table_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2) %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
+
+
 #DM View
-table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins() %>% round(2)
+table_DM_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins() %>% round(2)%>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
 #Insulin Pattern  View
-table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins() %>% round(2)
+table_Insulin_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins() %>% round(2)%>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
 
 
 Q6_stat_table_1st$DM_baseline <- Q6_stat_table_1st$DM_baseline %>% factor(levels = c("Normal", "Pre-DM", "DM"))
 #DM & GIRC Pattern Cross_table in OB. program
-table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% addmargins()
-table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
-table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins() %>% round(2)
-table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins() %>% round(2)
+table_freq_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% addmargins() %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
+
+table_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2) %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
+
+#DM View
+table_DM_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2) %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
+
+#Insulin Pattern  View
+table_Insulin_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins(margin = 1) %>% round(2) %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
+
 
 
 #GIRC improvement path?
@@ -97,8 +182,28 @@ names(a) <- c("id", "date", "I_before", "DM_before", "I_after",  "DM_after")
 
 # df05_biochem %>% select(id, date_blood, Pattern_major, DM) %>% view()
 a <- a[a$DM_before != "DM" & a$DM_after != "DM",]
-table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% addmargins(margin = 2) %>% round(2)
-table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2)
+table_improvement_freq_girc <- table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% addmargins(margin = 2) %>% round(2) %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
+
+table_improvement_p_girc <- table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2) %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
+
 
 
 ##T0,T1,∆ plot
@@ -266,7 +371,8 @@ summary_table_girc <-
 summary_table_girc <- summary_table_girc %>% as.data.frame() %>% select(-c("gender", "gp")) %>% t()
 
 # names(summary_table_sua) <- c(rep(levels((datasets_target_issue$gp)), 2), "顯著差異")
-colnames(summary_table_girc) <- c(rep(levels((datasets_target_issue$gp)), 2))
+# colnames(summary_table_girc) <- c(rep(levels((datasets_target_issue$gp)), 2))
+colnames(summary_table_girc) <- c(levels(datasets_target_issue$gp)[1:5], levels((datasets_target_issue$gp))[1:4])
 rownames(summary_table_girc) <- myplot_table$vars_ch
 
 #[customized part!!!]
@@ -275,7 +381,7 @@ table_02_girc <-
   kbl(format = "html", caption = "<b>Statistics:</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  add_header_above(c(" " = 1, "Female" = length(levels(datasets_target_issue$gp)), "Male" = length(levels(datasets_target_issue$gp)))) %>% 
+  add_header_above(c(" " = 1, "Female" = length(levels(datasets_target_issue$gp)[1:5]), "Male" = length(levels(datasets_target_issue$gp)[1:4]))) %>% 
   footnote(general_title = c("Significance:"), general = "\n ",
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 

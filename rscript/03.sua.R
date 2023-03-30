@@ -1,8 +1,21 @@
-# cutoffs_sua
+# cutoffs_sua = 5.5
 
 stat_table_1st_ob <- stat_table_1st_ob %>% mutate(delta_sua_gp = paste(sua_gp_baseline, sua_gp_endpoint, sep = ">")) 
 
-table(stat_table_1st_ob$delta_sua_gp)
+a <- stat_table_1st_ob %>% filter(!is.na(sua_gp_baseline))
+
+
+table_freq_sua_ob <- table(a$gender, a$delta_sua_gp) %>% addmargins() %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
+
 
 
 stat.test <- 
@@ -38,8 +51,7 @@ plot_SUA_03 <-
 
 
 
-table(stat_table_1st_ob$sua_gp_baseline, stat_table_1st_ob$sua_gp_endpoint)
-
+# table(stat_table_1st_ob$sua_gp_baseline, stat_table_1st_ob$sua_gp_endpoint)
 
 plot_SUA_01 <- 
   stat_table_1st_ob %>% 
@@ -47,7 +59,7 @@ plot_SUA_01 <-
             color = "black",
             fill = "red",
             shape = 21,
-            size = 1,
+            size = 1, 
             add = "reg.line",  # Add regressin line
             add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
             conf.int = TRUE, # Add confidence interval
@@ -92,7 +104,7 @@ plot_SUA_02 <-
   stat_cor(method = "pearson", size = 5, label.x = 7, label.y = 45) # Add correlation coefficient)
 
 
-
+plot_SUA_04 <- 
 ggarrange(
   ggarrange(plot_SUA_01, plot_SUA_02, ncol = 2, labels = c("A", "B")),
   ggarrange(plot_SUA_03, labels = "C"),
@@ -187,63 +199,88 @@ corrplot(M2_sua,
          mar = c(0,0,1,0))
 
 
+for (i in c(1:length(colnames(M2_sua)))) {
+  if (i == 1) {
+    M2_value <- M2_sua %>% round(2) 
+    M2_sign <- M_test2_sua$p %>% stats::symnum(corr = FALSE, na = FALSE, cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", "**", "*", ".", "ns")) %>% as.data.frame.matrix()
+    M2_df <- M1_value
+    M2_df[,] <- NA
+  }
+  
+  M2_df[,i] <- paste0(M2_value[,i], " (", M2_sign[,i], ")")
+  
+  if (i ==  length(colnames(M2_sua))) {
+    rm(list = c("M1_value", "M1_sign"))
+    M2_df <- M2_df %>% as.data.frame()
+    M2_df <- M2_df %>% add_column(vars = rownames(M2_df), .before = names(M2_df)[1])
+    M2_df <- M2_df %>% add_column("#" = seq(1, nrow(M2_df)), .before = names(M2_df)[1])
+  }
+  
+} 
+
+cor_table_02_sua <- M2_df %>% gvisTable(options=list(frozenColumns = 2,
+                                                     height=300))
+
+
+
+
 # stat_table_1st_ob$`protein_E%`
-stat_table_1st_ob %>% rename(delta_uric_acid = `∆uric_acid`) %>% rename(fat = `fat_E%`) %>% 
-  ggscatter(x = "delta_uric_acid", y = "fat",
-            color = "black",
-            fill = "red",
-            shape = 21,
-            size = 1,
-            add = "reg.line",  # Add regressin line
-            add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
-            conf.int = TRUE, # Add confidence interval
-            title = "Correlation(Weight x SUA):Diet",
-            xlab = "∆uric_acid(mg/dL)",
-            ylab = "Intake:Protein(E%)",
-            # xlim = c(0, 13),
-            # ylim = c(0, 180),
-  ) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
-    axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
-    axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
-  ) +
-  stat_cor(method = "pearson", size = 5, label.x = 0, label.y = 45) # Add correlation coefficient)
+# stat_table_1st_ob %>% rename(delta_uric_acid = `∆uric_acid`) %>% rename(fat = `fat_E%`) %>% 
+#   ggscatter(x = "delta_uric_acid", y = "fat",
+#             color = "black",
+#             fill = "red",
+#             shape = 21,
+#             size = 1,
+#             add = "reg.line",  # Add regressin line
+#             add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+#             conf.int = TRUE, # Add confidence interval
+#             title = "Correlation(Weight x SUA):Diet",
+#             xlab = "∆uric_acid(mg/dL)",
+#             ylab = "Intake:Protein(E%)",
+#             # xlim = c(0, 13),
+#             # ylim = c(0, 180),
+#   ) +
+#   theme(
+#     plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+#     axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+#     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+#   ) +
+#   stat_cor(method = "pearson", size = 5, label.x = 0, label.y = 45) # Add correlation coefficient)
 
 
 
 #
-stat_table_1st_ob$meat_bean
-
-stat.test <- 
-  stat_table_1st_ob %>% 
-  filter(!is.na(sua_gp_baseline)) %>% 
-  select(delta_sua_gp, gender, `fat_E%`) %>% rename(value = "fat_E%") %>% 
-  mutate(value_adj = value %>% multiply_by(1)) %>% 
-  group_by(gender) %>% 
-  rstatix::t_test(value_adj ~ delta_sua_gp) %>%
-  rstatix::add_xy_position(x = "gender", fun = "mean_sd", dodge = 0.5)
-
-stat_table_1st_ob %>% 
-  filter(!is.na(sua_gp_baseline)) %>% 
-  select(delta_sua_gp, gender, `fat_E%`) %>% rename(value = "fat_E%") %>% 
-  mutate(value_adj = value %>% multiply_by(1)) %>% 
-  ggbarplot(x = "gender", y = "value_adj", fill = "delta_sua_gp", alpha = 0.5, width = 0.5,
-            add = "mean_se", add.params = list(group = "delta_sua_gp"),
-            label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, 
-            position = position_dodge(0.5), 
-            xlab = "", ylab = "Intake: fat(E%)", title = paste0("Diet", " x 尿酸"),
-            legend = "right", legend.title = "SUA Group", ggtheme = theme_light() ) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
-    axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
-    axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
-  ) +
-  stat_pvalue_manual(
-    stat.test, label = "p.adj.signif", tip.length = 0.01,
-    bracket.nudge.y = 1, step.increase = 0.05, hide.ns = TRUE
-  ) +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+# stat_table_1st_ob$meat_bean
+# 
+# stat.test <- 
+#   stat_table_1st_ob %>% 
+#   filter(!is.na(sua_gp_baseline)) %>% 
+#   select(delta_sua_gp, gender, `fat_E%`) %>% rename(value = "fat_E%") %>% 
+#   mutate(value_adj = value %>% multiply_by(1)) %>% 
+#   group_by(gender) %>% 
+#   rstatix::t_test(value_adj ~ delta_sua_gp) %>%
+#   rstatix::add_xy_position(x = "gender", fun = "mean_sd", dodge = 0.5)
+# 
+# stat_table_1st_ob %>% 
+#   filter(!is.na(sua_gp_baseline)) %>% 
+#   select(delta_sua_gp, gender, `fat_E%`) %>% rename(value = "fat_E%") %>% 
+#   mutate(value_adj = value %>% multiply_by(1)) %>% 
+#   ggbarplot(x = "gender", y = "value_adj", fill = "delta_sua_gp", alpha = 0.5, width = 0.5,
+#             add = "mean_se", add.params = list(group = "delta_sua_gp"),
+#             label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, 
+#             position = position_dodge(0.5), 
+#             xlab = "", ylab = "Intake: fat(E%)", title = paste0("Diet", " x 尿酸"),
+#             legend = "right", legend.title = "SUA Group", ggtheme = theme_light() ) +
+#   theme(
+#     plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+#     axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+#     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+#   ) +
+#   stat_pvalue_manual(
+#     stat.test, label = "p.adj.signif", tip.length = 0.01,
+#     bracket.nudge.y = 1, step.increase = 0.05, hide.ns = TRUE
+#   ) +
+#   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
 
 
 

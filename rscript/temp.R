@@ -900,7 +900,11 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       
 
 # 星座 ----------------------------------------------------------------------
-
+      # 生肖
+      # seq(1899 + 1, 2100, by = 12)
+      # as.Date(df[[variables]]) %>% format("%Y") %in% seq(1899 + 9, 2100, by = 12)
+      
+      
       a <- df01_profile %>% filter(org_name %in% c("topshow", "genesisclinic", "lumez")) %>% distinct(id, .keep_all = TRUE)  #Clinic
       b <- stat_table %>% rename(delta_weight_p = `∆weight%`)
       a <- lin_mapping(a, bmi_baseline, id, b, bmi_baseline, id)

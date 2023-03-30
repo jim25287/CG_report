@@ -1,4 +1,5 @@
--- EXPLAIN ANALYZE
+
+--EXPLAIN
 WITH
   group_classes_of_flc_program_join_users AS (
     SELECT
@@ -15,7 +16,7 @@ WITH
       AND group_classes.id NOT IN (8, 24, 28, 34)
 --       AND group_classes.name NOT LIKE '%初日%' AND group_classes.name NOT LIKE '%宋醫師進階%' AND group_classes.name NOT LIKE '%診所進階%'
 --    Temp
---      AND group_classes.created_at BETWEEN '2022-12-01' AND '2023-04-01'
+      AND group_classes.created_at BETWEEN '2023-01-01' AND '2023-04-01'
   ),
   group_classes_of_flc_program_join_users_and_clients AS (
     SELECT 
@@ -29,7 +30,8 @@ WITH
     INNER JOIN clients ON group_class_orders.client_id = clients.id
     INNER JOIN group_classes_of_flc_program_join_users ON group_class_orders.group_class_id = group_classes_of_flc_program_join_users.group_class_id
     --    Temp
-    --  WHERE group_class_orders.client_id = 456064
+--     WHERE group_class_orders.client_id = 456064
+
   ),
   notes_of_flc_courses AS (
     SELECT notes.*, group_classes_of_flc_program_join_users_and_clients.class_id
@@ -60,7 +62,6 @@ WITH
       SUM((notes.data->>'fat')::NUMERIC) AS fat,
       COUNT(notes.date) OVER(PARTITION BY notes.client_id, notes.date) AS notes_count,
       notes.date,
---      MAX(notes.date) OVER(PARTITION BY notes.client_id) AS max_notes_date,
       COUNT(notes.client_id) AS note_assets_count,
       COUNT(notes.client_id) FILTER (WHERE light = 'green') AS note_assets_g_light_count,
       COUNT(notes.client_id) FILTER (WHERE light = 'yellow') AS note_assets_y_light_count,
@@ -68,8 +69,15 @@ WITH
     FROM notes_of_flc_courses AS notes
     LEFT JOIN note_assets_of_flc_courses AS note_assets ON note_assets.note_id = notes.id
     GROUP BY notes.client_id, notes.date, notes.class_id
+  ),
+  consulting_client_summaries_of_flc_courses AS (
+    SELECT ccs.* FROM consulting_client_summaries ccs
+    INNER JOIN group_classes_of_flc_program_join_users_and_clients
+    ON group_classes_of_flc_program_join_users_and_clients.client_id = ccs.client_id
   )
-SELECT DISTINCT ON (group_classes_of_flc_program_join_users_and_clients.class_id, group_classes_of_flc_program_join_users_and_clients.client_id)
+
+SELECT
+  DISTINCT ON (group_classes_of_flc_program_join_users_and_clients.class_id, group_classes_of_flc_program_join_users_and_clients.client_id)
   group_classes_of_flc_program_join_users_and_clients.class_id,
   group_classes_of_flc_program_join_users_and_clients.class_name AS class_name,
   group_classes_of_flc_program_join_users_and_clients.program_name AS program,
@@ -77,8 +85,7 @@ SELECT DISTINCT ON (group_classes_of_flc_program_join_users_and_clients.class_id
   group_classes_of_flc_program_join_users_and_clients.finished_at AS date_flc_T1,
   group_classes_of_flc_program_join_users_and_clients.user_name AS nutritionist_online,
   group_classes_of_flc_program_join_users_and_clients.client_id,
---  MAX(notes_aggregation_of_flc_courses.max_notes_date AS date_latest_update,
---  MAX(notes_aggregation_of_flc_courses) OVER (PARTITION BY group_classes_of_flc_program_join_users_and_clients.client_id, group_classes_of_flc_program_join_users_and_clients.class_id) AS date_latest_update,
+  MAX(notes_aggregation_of_flc_courses.date) OVER (PARTITION BY group_classes_of_flc_program_join_users_and_clients.client_id, group_classes_of_flc_program_join_users_and_clients.class_id) AS date_latest_update,
   group_classes_of_flc_program_join_users_and_clients.birthday AS btd,
   AGE(CURRENT_DATE, group_classes_of_flc_program_join_users_and_clients.birthday),
 --  (CURRENT_DATE - group_classes_of_flc_program_join_users_and_clients.birthday) / 365 AS age,
@@ -115,21 +122,29 @@ FROM group_classes_of_flc_program_join_users_and_clients
 LEFT JOIN notes_aggregation_of_flc_courses
   ON notes_aggregation_of_flc_courses.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
   AND  notes_aggregation_of_flc_courses.class_id = group_classes_of_flc_program_join_users_and_clients.class_id
---  AND notes_aggregation_of_flc_courses.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_atd_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
+  AND notes_aggregation_of_flc_courses.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
 LEFT JOIN LATERAL (
-    SELECT DISTINCT ON (consulting_client_summaries.client_id, consulting_client_summaries.date) consulting_client_summaries.*
-    FROM consulting_client_summaries
-    ORDER BY consulting_client_summaries.client_id ASC, consulting_client_summaries.date DESC
+    SELECT ccsflc.*
+    FROM consulting_client_summaries_of_flc_courses AS ccsflc
+    WHERE ccsflc.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
+      AND ccsflc.date < group_classes_of_flc_program_join_users_and_clients.started_at
+    ORDER BY ccsflc.date DESC
+    LIMIT 1
   ) AS consulting_client_summaries_before
-  ON consulting_client_summaries_before.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
-  AND consulting_client_summaries_before.date < group_classes_of_flc_program_join_users_and_clients.started_at
+  ON TRUE
+--  ON consulting_client_summaries_before.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
+--  AND consulting_client_summaries_before.date < group_classes_of_flc_program_join_users_and_clients.started_at
 LEFT JOIN LATERAL (
-  SELECT DISTINCT ON (consulting_client_summaries.client_id, consulting_client_summaries.date) consulting_client_summaries.*
-  FROM consulting_client_summaries
-  ORDER BY consulting_client_summaries.client_id ASC, consulting_client_summaries.date ASC
+  SELECT ccsflc.*
+  FROM consulting_client_summaries_of_flc_courses AS ccsflc
+  WHERE ccsflc.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
+    AND ccsflc.date > group_classes_of_flc_program_join_users_and_clients.finished_at
+  ORDER BY ccsflc.date ASC
+  LIMIT 1
 ) AS consulting_client_summaries_after
-  ON group_classes_of_flc_program_join_users_and_clients.client_id = consulting_client_summaries_after.client_id
-  AND consulting_client_summaries_after.date > group_classes_of_flc_program_join_users_and_clients.finished_at
+  ON TRUE
+--  ON group_classes_of_flc_program_join_users_and_clients.client_id = consulting_client_summaries_after.client_id
+--  AND consulting_client_summaries_after.date > group_classes_of_flc_program_join_users_and_clients.finished_at
 GROUP BY
   group_classes_of_flc_program_join_users_and_clients.class_id,
   group_classes_of_flc_program_join_users_and_clients.class_name,
@@ -138,7 +153,7 @@ GROUP BY
   group_classes_of_flc_program_join_users_and_clients.finished_at,
   group_classes_of_flc_program_join_users_and_clients.user_name,
   group_classes_of_flc_program_join_users_and_clients.client_id,
---  notes_aggregation_of_flc_courses.max_notes_date,
+  notes_aggregation_of_flc_courses.date,
   group_classes_of_flc_program_join_users_and_clients.birthday,
   group_classes_of_flc_program_join_users_and_clients.gender,
   group_classes_of_flc_program_join_users_and_clients.current->>'height',
@@ -152,4 +167,8 @@ GROUP BY
   consulting_client_summaries_after.waist_circumference,
   consulting_client_summaries_before.date,
   consulting_client_summaries_after.date
+--HAVING consulting_client_summaries_before.date < group_classes_of_flc_program_join_users_and_clients.started_at
+--  AND consulting_client_summaries_after.date > group_classes_of_flc_program_join_users_and_clients.finished_at
 ORDER BY class_id, client_id, measurement_before_program_date DESC, measurement_after_program_date ASC
+
+--select count(*) from consulting_client_summaries ccs ;

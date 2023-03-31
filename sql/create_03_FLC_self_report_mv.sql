@@ -1,4 +1,4 @@
---SELECT * FROM "03_FLC_self_report";
+SELECT * FROM "03_FLC_self_report";
 
 --DROP MATERIALIZED VIEW "03_FLC_self_report";
 
@@ -33,7 +33,6 @@ CREATE MATERIALIZED VIEW "03_FLC_self_report" AS (
       INNER JOIN clients ON group_class_orders.client_id = clients.id
       INNER JOIN group_classes_of_flc_program_join_users ON group_class_orders.group_class_id = group_classes_of_flc_program_join_users.group_class_id
       --    Temp
---       WHERE group_class_orders.client_id = 456064
     ),
     notes_of_flc_courses AS (
       SELECT notes.*, group_classes_of_flc_program_join_users_and_clients.class_id
@@ -73,29 +72,22 @@ CREATE MATERIALIZED VIEW "03_FLC_self_report" AS (
       LEFT JOIN note_assets_of_flc_courses AS note_assets ON note_assets.note_id = notes.id
       GROUP BY notes.client_id, notes.date, notes.class_id
     ),
---    consulting_client_summaries_of_flc_courses AS (
---      SELECT ccs.* FROM consulting_client_summaries ccs
---      INNER JOIN group_classes_of_flc_program_join_users_and_clients
---      ON group_classes_of_flc_program_join_users_and_clients.client_id = ccs.client_id
---      AND ccs.date NOT BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
---    )
-    consulting_client_summaries_before_flc_courses AS (
-      SELECT DISTINCT ON (ccs.client_id, group_classes_of_flc_program_join_users_and_clients.class_id)
-        ccs.*,
-        group_classes_of_flc_program_join_users_and_clients.class_id FROM consulting_client_summaries ccs
+    consulting_client_summaries_of_flc_courses AS (
+      SELECT ccs.*, group_classes_of_flc_program_join_users_and_clients.class_id
+      FROM consulting_client_summaries ccs
       INNER JOIN group_classes_of_flc_program_join_users_and_clients
       ON group_classes_of_flc_program_join_users_and_clients.client_id = ccs.client_id
-      AND ccs.date < group_classes_of_flc_program_join_users_and_clients.started_at
-      ORDER BY ccs.client_id, group_classes_of_flc_program_join_users_and_clients.class_id, ccs.date DESC
+      AND ccs.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at - 7 AND group_classes_of_flc_program_join_users_and_clients.finished_at + 7
+    ),
+    consulting_client_summaries_before_flc_courses AS (
+      SELECT DISTINCT ON (ccsflc.client_id, ccsflc.class_id) ccsflc.*
+      FROM  consulting_client_summaries_of_flc_courses AS ccsflc
+      ORDER BY ccsflc.client_id, ccsflc.class_id, ccsflc.date ASC
     ),
     consulting_client_summaries_after_flc_courses AS (
-      SELECT DISTINCT ON (ccs.client_id, group_classes_of_flc_program_join_users_and_clients.class_id)
-        ccs.*,
-        group_classes_of_flc_program_join_users_and_clients.class_id FROM consulting_client_summaries ccs
-      INNER JOIN group_classes_of_flc_program_join_users_and_clients
-      ON group_classes_of_flc_program_join_users_and_clients.client_id = ccs.client_id
-      AND ccs.date > group_classes_of_flc_program_join_users_and_clients.finished_at
-      ORDER BY ccs.client_id, group_classes_of_flc_program_join_users_and_clients.class_id, ccs.date ASC
+      SELECT DISTINCT ON (ccsflc.client_id, ccsflc.class_id) ccsflc.*
+      FROM  consulting_client_summaries_of_flc_courses AS ccsflc
+      ORDER BY ccsflc.client_id, ccsflc.class_id, ccsflc.date DESC
     )
   
   SELECT
@@ -145,24 +137,6 @@ CREATE MATERIALIZED VIEW "03_FLC_self_report" AS (
     ON notes_aggregation_of_flc_courses.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
     AND  notes_aggregation_of_flc_courses.class_id = group_classes_of_flc_program_join_users_and_clients.class_id
     AND notes_aggregation_of_flc_courses.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
---  LEFT JOIN LATERAL (
---      SELECT ccsflc.*
---      FROM consulting_client_summaries_of_flc_courses AS ccsflc
---      WHERE ccsflc.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
---        AND ccsflc.date < group_classes_of_flc_program_join_users_and_clients.started_at
---      ORDER BY ccsflc.date DESC
---      LIMIT 1
---    ) AS consulting_client_summaries_before
---    ON TRUE
---  LEFT JOIN LATERAL (
---    SELECT ccsflc.*
---    FROM consulting_client_summaries_of_flc_courses AS ccsflc
---    WHERE ccsflc.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
---      AND ccsflc.date > group_classes_of_flc_program_join_users_and_clients.finished_at
---    ORDER BY ccsflc.date ASC
---    LIMIT 1
---  ) AS consulting_client_summaries_after
---    ON TRUE
   LEFT JOIN consulting_client_summaries_before_flc_courses AS consulting_client_summaries_before
     ON consulting_client_summaries_before.client_id = group_classes_of_flc_program_join_users_and_clients.client_id
     AND consulting_client_summaries_before.class_id = group_classes_of_flc_program_join_users_and_clients.class_id
@@ -190,5 +164,4 @@ CREATE MATERIALIZED VIEW "03_FLC_self_report" AS (
     consulting_client_summaries_after.waist_circumference,
     consulting_client_summaries_before.date,
     consulting_client_summaries_after.date
---  ORDER BY class_id, client_id, measurement_before_program_date DESC, measurement_after_program_date ASC
 )

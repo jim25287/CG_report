@@ -255,7 +255,7 @@ plot_grid(plotlist = myplots[94:105], ncol = 2, labels = paste0(LETTERS[9], seq(
 table_02
 ```
 
-## 分層分析-2: 男性:睪固酮(Testosterone) {#strat_1_test}
+## 分層分析-2: 男性:睪固酮(Testosterone) {#strat_1_testosterone}
 
 **依據睪固酮(Testosterone)初始狀態進行分層分析，分成二個組別：**
 
@@ -268,7 +268,7 @@ table_02
 googleVis::gvisMerge(pie_testosterone_01, pie_testosterone_02) %>% plot()
 ```
 
-### 相關分析(Correlation Analysis) {#cor_test_test .unnumbered}
+### 相關分析(Correlation Analysis) {#cor_test_testosterone .unnumbered}
 
 **睪固酮(Testosterone) x 初始狀態(Baseline)**
 
@@ -296,7 +296,7 @@ knitr::kable(
 ) 
 ```
 
-### 初始狀態(Baseline) {#baseline_test .unnumbered}
+### 初始狀態(Baseline) {#baseline_testosterone .unnumbered}
 
 #### **Inbody**
 
@@ -311,7 +311,7 @@ plot_grid(plotlist = myplots_plot_testosterone[1:10], ncol = 2, labels = paste0(
 plot_grid(plotlist = myplots_plot_testosterone[11:20], ncol = 2, labels = paste0(LETTERS[2], seq(1,50)))
 ```
 
-### 介入後狀態(Endpoint) {#endpoint_test .unnumbered}
+### 介入後狀態(Endpoint) {#endpoint_testosterone .unnumbered}
 
 #### **Inbody**
 
@@ -325,7 +325,7 @@ plot_grid(plotlist = myplots_plot_testosterone[21:30], ncol = 2, labels = paste0
 plot_grid(plotlist = myplots_plot_testosterone[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1,50)))
 ```
 
-### 飲食(Diet) {#diet_test .unnumbered}
+### 飲食(Diet) {#diet_testosterone .unnumbered}
 
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
@@ -333,7 +333,7 @@ plot_grid(plotlist = myplots_plot_testosterone[31:40], ncol = 2, labels = paste0
 plot_grid(plotlist = myplots_plot_testosterone[41:57], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
 ```
 
-### 成效(Effectiveness) {#effectiveness_test .unnumbered}
+### 成效(Effectiveness) {#effectiveness_testosterone .unnumbered}
 
 #### **成效(∆)-Inbody**
 
@@ -383,9 +383,6 @@ plot_SUA_02
 plot_SUA_03
 ```
 
-```{r, results='asis', fig.align='left', paged.print=TRUE}
-plot_SUA_04
-```
 
 ```{r, results='asis', fig.align='left', paged.print=TRUE}
 corrplot::corrplot(M1_sua,

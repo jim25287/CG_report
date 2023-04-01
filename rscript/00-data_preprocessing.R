@@ -329,6 +329,7 @@ df05_biochem[c("glucose_ac","glucose_pc_1hr","glucose_pc_2hr","insulin","insulin
          "wbc","rbc","hb","esr","mcv","mch","mchc","platelet","rdw_sd","rdw_cv","neutrophils","lymphocytes","monocytes","eosinophils","basophils","monocytes_percent","eosinophils_percent","basophils_percent","alt_gpt","ast_got","amylase","lipase","apoli_a1","apoli_b","apolib_ai_ratio")] %<>% 
   lapply(as.numeric)
 
+df05_biochem <- lin_mapping(df05_biochem, gender, client_id, df01_profile, gender, id) #men
 
 #C2. colname
 names(df05_biochem) <- df05_biochem %>% names() %>% lin_ch_en_format(format = "en", origin = "raw_en")
@@ -350,9 +351,12 @@ df05_biochem <- df05_biochem %>% mutate(OGIRIndex = lin_AUC_calc(df05_biochem, d
 
 df05_biochem <- df05_biochem %>% lin_DM_diagnosis(c("hba1c", "glucose_ac", "glucose_pc_1hr","glucose_pc_2hr"))
 
-#uric acid
-cutoffs_sua <- 5.5
-df05_biochem$sua_gp <- df05_biochem$uric_acid %>% cut(c(-Inf, cutoffs_sua, Inf), c("Normal", "High"))
+#uric acid: men: ≥7.0 (mg/dL); women: 6.0(mg/dL)
+cutoffs_sua = 6.0 #women
+df05_biochem$sua_gp <- df05_biochem$uric_acid %>% cut(c(-Inf, cutoffs_sua, Inf), c("Normal", "High"), right = FALSE)
+df05_biochem[(df05_biochem[["uric_acid"]] < 7) & (df05_biochem[["gender"]] == "male"), "sua_gp"] <- "Normal"
+
+
 
 
 # 02.6 - [Data Preprocessing] 07_Diet_meal --------------------------------------------------
@@ -631,7 +635,6 @@ for (i in c(unique(stat_tm[["id"]]))) {
   
   
   progress(j, length(unique(stat_tm[["id"]])))
-  j = j + 1
   
   if (j == length(unique(stat_tm[["id"]]))) {
     cat("\n[執行時間]\n")
@@ -640,9 +643,8 @@ for (i in c(unique(stat_tm[["id"]]))) {
     rm(list = c("med_id_pool", "a0", "a1", "a2", "a1_b", "a1_e", "a2_b", "a2_e", "a3", "a4", "v_b", "v_e",
                 "cols_01_profile", "cols_02_inbody_baseline", "cols_03_inbody_endpoint", "cols_04_blood_baseline",
                 "cols_05_blood_endpoint", "cols_06_delta_inbody", "cols_07_delta_blood"))
-    
   }
-  
+  j = j + 1
 }
 
 

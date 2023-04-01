@@ -189,7 +189,7 @@ plot_grid(plotlist = myplots[1:10], ncol = 2, labels = paste0(LETTERS[1], seq(1,
 
 #### **Blood**
 
-```{r, results='asis', fig.width= 10, fig.height=20}
+```{r, results='asis', fig.width= 10, fig.height=22}
 plot_grid(plotlist = myplots[11:22], ncol = 2, labels = paste0(LETTERS[2], seq(1,10)))
 ```
 
@@ -365,7 +365,7 @@ table_02_testosterone
 
 ## 分層分析-3: 尿酸(Serum Uric Acid) {#strat_2_sua}
 
-### New result {#new_sua .unnumbered}
+### 相關分析(Correlation Analysis) {#cor_sua .unnumbered}
 
 ```{r, results='asis', fig.align='left', paged.print=TRUE}
 table_freq_sua_ob
@@ -379,12 +379,8 @@ plot_SUA_01
 plot_SUA_02
 ```
 
-```{r, results='asis', fig.align='left', paged.print=TRUE}
-plot_SUA_03
-```
 
-
-```{r, results='asis', fig.align='left', paged.print=TRUE}
+```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
 corrplot::corrplot(M1_sua,
          p.mat = M_test1_sua$p,
          type = "lower",
@@ -407,7 +403,7 @@ knitr::kable(
 
 ```
 
-```{r, results='asis', fig.align='left', paged.print=TRUE}
+```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
 corrplot::corrplot(M2_sua,
          p.mat = M_test2_sua$p,
          type = "lower",
@@ -437,14 +433,14 @@ knitr::kable(
 
 #### **Inbody**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
+```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots_sua[1:10], ncol = 2, labels = paste0(LETTERS[1], seq(1,50)))
 
 ```
 
 #### **Blood**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
+```{r, results='asis', fig.width= 10, fig.height=22}
 plot_grid(plotlist = myplots_sua[11:22], ncol = 2, labels = paste0(LETTERS[2], seq(1,50)))
 ```
 
@@ -452,13 +448,13 @@ plot_grid(plotlist = myplots_sua[11:22], ncol = 2, labels = paste0(LETTERS[2], s
 
 #### **Inbody**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
+```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots_sua[23:32], ncol = 2, labels = paste0(LETTERS[3], seq(1,50)))
 ```
 
 #### **Blood**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
+```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots_sua[33:44], ncol = 2, labels = paste0(LETTERS[4], seq(1,50)))
 ```
 
@@ -466,7 +462,7 @@ plot_grid(plotlist = myplots_sua[33:44], ncol = 2, labels = paste0(LETTERS[4], s
 
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
-```{r, results='asis', fig.width= 5, fig.height=44}
+```{r, results='asis', fig.width= 10, fig.height=44}
 plot_grid(plotlist = myplots_sua[45:61], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
 ```
 
@@ -474,25 +470,25 @@ plot_grid(plotlist = myplots_sua[45:61], ncol = 2, labels = paste0(LETTERS[5], s
 
 #### **成效(∆)-Inbody**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
+```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots_sua[62:71], ncol = 2, labels = paste0(LETTERS[6], seq(1,50)))
 ```
 
 #### **成效(∆)-Blood**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
+```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots_sua[72:83], ncol = 2, labels = paste0(LETTERS[7], seq(1,50)))
 ```
 
 #### **成效(%)-Inbody**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
+```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots_sua[84:93], ncol = 2, labels = paste0(LETTERS[8], seq(1,50)))
 ```
 
 #### **成效(%)-Blood**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
+```{r, results='asis', fig.width= 10, fig.height=20}
 plot_grid(plotlist = myplots_sua[94:105], ncol = 2, labels = paste0(LETTERS[9], seq(1,50)))
 ```
 

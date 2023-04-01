@@ -18,36 +18,36 @@ table_freq_sua_ob <- table(a$gender, a$delta_sua_gp) %>% addmargins() %>%
 
 
 
-stat.test <- 
-  stat_table_1st_ob %>% 
-  filter(!is.na(sua_gp_baseline)) %>% 
-  select(delta_sua_gp, gender, `∆weight%`) %>% rename(value = "∆weight%") %>% 
-  mutate(value_adj = value %>% multiply_by(-1)) %>% 
-  group_by(gender) %>% 
-  rstatix::t_test(value_adj ~ delta_sua_gp) %>%
-  rstatix::add_xy_position(x = "gender", fun = "mean_sd", dodge = 0.5)
-
-plot_SUA_03 <- 
-  stat_table_1st_ob %>% 
-  filter(!is.na(sua_gp_baseline)) %>% 
-  select(delta_sua_gp, gender, `∆weight%`) %>% rename(value = "∆weight%") %>% 
-  mutate(value_adj = value %>% multiply_by(-1)) %>% 
-  ggbarplot(x = "gender", y = "value_adj", fill = "delta_sua_gp", alpha = 0.5, width = 0.5,
-            add = "mean_se", add.params = list(group = "delta_sua_gp"),
-            label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, 
-            position = position_dodge(0.5), 
-            xlab = "", ylab = "∆Weight Loss(%)", title = paste0("減重成效", " x 尿酸", (" (cutoff = 5.5)")),
-            legend = "right", legend.title = "SUA Group", ggtheme = theme_light() ) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
-    axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
-    axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
-  ) +
-  stat_pvalue_manual(
-    stat.test, label = "p.adj.signif", tip.length = 0.01,
-    bracket.nudge.y = -2, hide.ns = TRUE
-  ) +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+# stat.test <- 
+#   stat_table_1st_ob %>% 
+#   filter(!is.na(sua_gp_baseline)) %>% 
+#   select(delta_sua_gp, gender, `∆weight%`) %>% rename(value = "∆weight%") %>% 
+#   mutate(value_adj = value %>% multiply_by(-1)) %>% 
+#   group_by(gender) %>% 
+#   rstatix::t_test(value_adj ~ delta_sua_gp) %>%
+#   rstatix::add_xy_position(x = "gender", fun = "mean_sd", dodge = 0.5)
+# 
+# plot_SUA_03 <- 
+#   stat_table_1st_ob %>% 
+#   filter(!is.na(sua_gp_baseline)) %>% 
+#   select(delta_sua_gp, gender, `∆weight%`) %>% rename(value = "∆weight%") %>% 
+#   mutate(value_adj = value %>% multiply_by(-1)) %>% 
+#   ggbarplot(x = "gender", y = "value_adj", fill = "delta_sua_gp", alpha = 0.5, width = 0.5,
+#             add = "mean_se", add.params = list(group = "delta_sua_gp"),
+#             label = TRUE, lab.nb.digits = 2, lab.pos = "out", lab.vjust = -1, 
+#             position = position_dodge(0.5), 
+#             xlab = "", ylab = "∆Weight Loss(%)", title = paste0("減重成效", " x 尿酸"),
+#             legend = "right", legend.title = "SUA Group", ggtheme = theme_light() ) +
+#   theme(
+#     plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+#     axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+#     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+#   ) +
+#   stat_pvalue_manual(
+#     stat.test, label = "p.adj.signif", tip.length = 0.01,
+#     bracket.nudge.y = -2, hide.ns = TRUE
+#   ) +
+#   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
 
 
 
@@ -76,7 +76,7 @@ plot_SUA_01 <-
   ) +
   geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
   annotate("text", x=5.3, y=155, label="Cutoff = 5.5 mg/dL", angle=90) +
-  stat_cor(method = "pearson", size = 5, label.x = 10, label.y = 45) # Add correlation coefficient)
+  stat_cor(method = "pearson", size = 5, label.x = 7, label.y = 45) # Add correlation coefficient)
 
 plot_SUA_02 <- 
   stat_table_1st_ob %>% 

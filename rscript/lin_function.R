@@ -796,9 +796,12 @@ lin_insulin_rsp_pattern <- function(df, variables, pattern = 1, plot = NULL, tab
     I := "Pattern IV (III-alike)"]
   
   setDT(df)[
-    (eval(parse(text = variables[1])) <= 30) &
+    ((eval(parse(text = variables[1])) <= 30) &
       (eval(parse(text = variables[2])) <= 30) &
-      (eval(parse(text = variables[3])) <= 30),
+      (eval(parse(text = variables[3])) <= 30)) |
+      ((eval(parse(text = variables[1])) <= 30) &
+         (eval(parse(text = variables[2])) - eval(parse(text = variables[1])) <= 30) &
+         (eval(parse(text = variables[3])) <= 30)),
     I := "Pattern V (Late DM)"]
   
   setDT(df)[

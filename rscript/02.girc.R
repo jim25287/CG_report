@@ -57,6 +57,9 @@ plot_m <- lin_insulin_rsp_pattern(Q6_stat_table_1st, c("insulin_baseline", "insu
 #     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
 #   ) 
 
+table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% addmargins() %>% sapply(as.character) %>% as.matrix()
+table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% round(2) %>% paste0("%")
+
 
 
 #篩選介入前data
@@ -72,7 +75,7 @@ table_freq_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA 
   gsub("font-size: initial !important;", 
        "font-size: 15pt !important;", 
        .)
-
+paste0(tbl_perc, "%")
 
 # table_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
 #[need] % 

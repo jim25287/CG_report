@@ -64,7 +64,7 @@ options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 
   # lin_connect_db("exit")
   # rm(path_sql)
-  
+  # 
   
 ```
 

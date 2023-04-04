@@ -40,7 +40,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 library(googleVis)
-knitr::opts_chunk$set(echo = FALSE, comment = NA, results = 'asis', warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, comment = NA, results = 'asis', warning = FALSE, error = FALSE, message = FALSE, fig.align = `center`)
 options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 ```
 

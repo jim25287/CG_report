@@ -1,8 +1,8 @@
 # Glucose Insulin Response Curve(GIRC)
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/02.girc.R")
+# source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
+# source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/02.girc.R")
 
 ```
 

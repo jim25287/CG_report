@@ -41,10 +41,12 @@ p.flushright {
   text-align: right;
 }
 
-body .book .book-body .body-inner {
-  max-width: 1000px; /* Change this value to adjust the maximum width of the content area */
+
+.book .book-body .page-wrapper .page-inner {
+  max-width: 90%; /* Change this value to adjust the maximum width of the content area */
   margin-left: auto;
   margin-right: auto;
+  
 }
 
 blockquote > p:first-child {

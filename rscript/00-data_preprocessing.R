@@ -420,6 +420,7 @@ for (i in c(id_diet)) {
   if (i == c(id_diet) %>% tail(1)) {
     cat("\n[Completed!]\n")
     cat("\n[執行時間]\n")
+    # (115279/115279) 09:08:45
     print(proc.time() - ptm)
     rm(id_diet)
   }

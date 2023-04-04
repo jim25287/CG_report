@@ -1,4 +1,3 @@
-# cutoffs_sua = 5.5
 
 stat_table_1st_ob <- stat_table_1st_ob %>% mutate(delta_sua_gp = paste(sua_gp_baseline, sua_gp_endpoint, sep = ">")) 
 
@@ -104,12 +103,12 @@ plot_SUA_02 <-
   stat_cor(method = "pearson", size = 5, label.x = 7, label.y = 45) # Add correlation coefficient)
 
 
-plot_SUA_04 <- 
-ggarrange(
-  ggarrange(plot_SUA_01, plot_SUA_02, ncol = 2, labels = c("A", "B")),
-  ggarrange(plot_SUA_03, labels = "C"),
-  nrow = 2
-)
+# plot_SUA_04 <- 
+# ggarrange(
+#   ggarrange(plot_SUA_01, plot_SUA_02, ncol = 2, labels = c("A", "B")),
+#   ggarrange(plot_SUA_03, labels = "C"),
+#   nrow = 2
+# )
 
 
 #corr

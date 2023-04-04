@@ -1,9 +1,8 @@
 tab:unnamed-chunk-12
 tab:unnamed-chunk-14
 tab:unnamed-chunk-28
+tab:unnamed-chunk-43
 tab:unnamed-chunk-45
-tab:unnamed-chunk-47
-tab:unnamed-chunk-57
 減重成效---單次療程
 vens_grap_ob
 porfile_ob
@@ -18,7 +17,7 @@ blood-1
 成效-blood
 成效-inbody-1
 成效-blood-1
-strat_1_test
+strat_1_testosterone
 inbody-2
 blood-2
 inbody-3
@@ -43,3 +42,14 @@ pattern-ii
 pattern-iii
 pattern-iv
 pattern-v
+girc分析
+dm-x-girc分佈
+girc分層分析
+inbody-6
+blood-6
+inbody-7
+blood-7
+成效-inbody-6
+成效-blood-6
+成效-inbody-7
+成效-blood-7

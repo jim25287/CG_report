@@ -26,13 +26,6 @@
 ## build OB/DM note_col
 #Establish category
 clinical_stat_category <- factor(levels = (c("Total", "OB", "OB(~)", "DM", "DM(~)")))
-#Establish dashboard df
-accum_client_df <- data.frame(date = rep(seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month"), each = levels(clinical_stat_category) %>% length()), 
-                              category = rep(levels(clinical_stat_category), seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length()),
-                              value = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())),
-                              anno_title = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())),
-                              anno_text = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())))
-
 
 #秀傳開幕後("2020-09-30") 開始計算
 main_pagedf <- df01_profile %>% filter((date_t0 >= "2020-09-30") & (org_name %in% c("genesisclinic","topshow","lumez")))
@@ -84,6 +77,16 @@ client_stat_df$class_buy_cumsum_sub <- c(rbind(client_stat_df %>% filter(client_
 client_stat_df$class_finish_cumsum_sub <- c(rbind(client_stat_df %>% filter(client_type == 1) %>% select(class_finish) %>% pull() %>% cumsum(), 
                                                   client_stat_df %>% filter(client_type == 2) %>% select(class_finish) %>% pull() %>% cumsum()))
 client_stat_df <- client_stat_df %>% mutate(class_ongoing_sub = class_buy_cumsum_sub - class_finish_cumsum_sub)
+
+
+#Establish dashboard df
+accum_client_df <- data.frame(date = rep(seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month"), each = levels(clinical_stat_category) %>% length()), 
+                              category = rep(levels(clinical_stat_category), seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length()),
+                              value = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())),
+                              anno_title = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())),
+                              anno_text = rep(NA, (seq(as.Date(main_pagedf$date_cate %>% unique() %>% min()), as.Date(main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(clinical_stat_category) %>% length())))
+
+
 
 
 #fill in accum_client_df

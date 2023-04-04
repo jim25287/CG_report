@@ -57,8 +57,6 @@ plot_m <- lin_insulin_rsp_pattern(Q6_stat_table_1st, c("insulin_baseline", "insu
 #     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
 #   ) 
 
-table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% addmargins() %>% sapply(as.character) %>% as.matrix()
-table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% round(2) %>% paste0("%")
 
 
 
@@ -75,7 +73,6 @@ table_freq_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA 
   gsub("font-size: initial !important;", 
        "font-size: 15pt !important;", 
        .)
-paste0(tbl_perc, "%")
 
 # table_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
 #[need] % 
@@ -211,7 +208,7 @@ table_improvement_p_girc <- table(Origin = a$I_before, Change = a$I_after, exclu
 
 ##T0,T1,∆ plot
 
-datasets_target_issue <- Q6_stat_table_1st %>% rename(gp = Pattern_major_baseline)
+datasets_target_issue <- Q6_stat_table_1st %>% dplyr::rename(gp = Pattern_major_baseline)
 datasets_target_issue <- datasets_target_issue %>% filter(gp %in% levels(datasets_target_issue$gp))
 
 
@@ -265,7 +262,8 @@ datasets_target_issue <- Reduce(cbind,list(datasets_target_issue_a, datasets_tar
 datasets_target_issue <- datasets_target_issue %>% select(vars_en)
 
 #change colname to run plot
-datasets_target_issue_for_plot <- datasets_target_issue
+#**[exlude gender gp = 1, which is male & pattern V]
+datasets_target_issue_for_plot <- datasets_target_issue %>% filter(!((gender == "male") & (gp == "Pattern V")))
 
 names(datasets_target_issue_for_plot) <- gsub("∆", "delta_", names(datasets_target_issue_for_plot))
 names(datasets_target_issue_for_plot) <- gsub("%", "_percent", names(datasets_target_issue_for_plot))
@@ -349,7 +347,7 @@ table_01_girc <-
   kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c("Cutoff:  5.5 mg/dL"), general = c(rbind("\n", c(""))),
+  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
@@ -384,7 +382,7 @@ table_02_girc <-
   kbl(format = "html", caption = "<b>Statistics:</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  add_header_above(c(" " = 1, "Female" = length(levels(datasets_target_issue$gp)[1:5]), "Male" = length(levels(datasets_target_issue$gp)[1:4]))) %>% 
+  add_header_above(c(" " = 1, "Female" = length(levels(datasets_target_issue$gp)[1:5]), "Male" = length(levels(datasets_target_issue$gp)[1:5]))) %>% 
   footnote(general_title = c("Significance:"), general = "\n ",
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 

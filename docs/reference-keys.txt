@@ -44,11 +44,6 @@ pattern-iv
 pattern-v
 girc分析
 dm-x-girc分佈
-all-datafreq
-all-data
-populationob.
-insdmob.
-dminsob.
 girc分層分析
 inbody-6
 blood-6

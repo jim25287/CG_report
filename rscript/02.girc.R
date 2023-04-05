@@ -64,7 +64,7 @@ plot_m <- lin_insulin_rsp_pattern(Q6_stat_table_1st, c("insulin_baseline", "insu
 a <- df05_biochem %>% distinct(id, .keep_all = TRUE)
 # table_freq_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% addmargins()
 table_freq_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% addmargins() %>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kable(format = "html", caption = "<b>Table: All Data(freq)</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
   footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention"))),
@@ -77,7 +77,7 @@ table_freq_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA 
 # table_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
 #[need] % 
 table_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2) %>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kable(format = "html", caption = "<b>Table: All Data(%)</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
   footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention"))),
@@ -138,7 +138,7 @@ table_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Patter
 
 #DM View
 table_DM_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2) %>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kable(format = "html", caption = "<b>Table: Ins/DM(OB.)</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
   footnote(general_title = c("Note:"), general = c(rbind("", c(" Obesity Program & Before intervention in \"DM view\""))),
@@ -150,7 +150,7 @@ table_DM_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pat
 
 #Insulin Pattern  View
 table_Insulin_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins(margin = 1) %>% round(2) %>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kable(format = "html", caption = "<b>Table: DM/Ins(OB.)</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
   footnote(general_title = c("Note:"), general = c(rbind("", c(" Obesity Program & Before intervention in \"Insulin Pattern view\""))),
@@ -344,7 +344,7 @@ rm(list = c("datasets_target_issue_a", "datasets_target_issue_b", "datasets_targ
 #[customized part!!!]
 table_01_girc <- 
   table(datasets_target_issue$gender, datasets_target_issue$gp) %>% addmargins() %>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kable(format = "html", caption = "<b>Table: Population(OB.)</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
   footnote(general_title = c("Note:"), general = c(rbind("", c(" Obesity Program & Before intervention"))),

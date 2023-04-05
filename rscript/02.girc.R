@@ -67,7 +67,7 @@ table_freq_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA 
   kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention"))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
@@ -80,7 +80,7 @@ table_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "
   kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention"))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
@@ -129,7 +129,7 @@ table_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Patter
   kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" Obesity Program & Before intervention"))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
@@ -141,7 +141,7 @@ table_DM_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pat
   kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" Obesity Program & Before intervention in \"DM view\""))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
@@ -153,7 +153,7 @@ table_Insulin_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1s
   kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" Obesity Program & Before intervention in \"Insulin Pattern view\""))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
@@ -347,7 +347,7 @@ table_01_girc <-
   kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" Obesity Program & Before intervention"))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
@@ -373,7 +373,7 @@ summary_table_girc <- summary_table_girc %>% as.data.frame() %>% select(-c("gend
 
 # names(summary_table_sua) <- c(rep(levels((datasets_target_issue$gp)), 2), "顯著差異")
 # colnames(summary_table_girc) <- c(rep(levels((datasets_target_issue$gp)), 2))
-colnames(summary_table_girc) <- c(levels(datasets_target_issue$gp)[1:5], levels((datasets_target_issue$gp))[1:4])
+colnames(summary_table_girc) <- c(levels(datasets_target_issue$gp)[1:5], levels((datasets_target_issue$gp))[1:5])
 rownames(summary_table_girc) <- myplot_table$vars_ch
 
 #[customized part!!!]

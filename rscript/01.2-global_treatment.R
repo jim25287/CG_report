@@ -11,7 +11,7 @@ stat_table_1st_ob %>% group_by(age_gp) %>% summarise(n = n()) %>% gvisPieChart(o
                                                                                            legend = "{position:'right'}",
                                                                                            pieHole = 0.5,
                                                                                            #slices = "{1:{offset:0.1}}",
-                                                                                           backgroundColor = "#edeff2",
+                                                                                           backgroundColor = "#f9fffb",
                                                                                            width = "600",
                                                                                            height = "400"))
 
@@ -21,7 +21,7 @@ stat_table_1st_ob %>% group_by(gender) %>% summarise(n = n()) %>% gvisPieChart(o
                                                                                            legend = "{position:'right'}",
                                                                                            pieHole = 0.5,
                                                                                            #slices = "{0:{offset:0.1}}",
-                                                                                           backgroundColor = "#edeff2",
+                                                                                           backgroundColor = "#f9fffb",
                                                                                            colors = "['#DC3912', '#3366CC']",
                                                                                            width = "600",
                                                                                            height = "400"))
@@ -37,7 +37,7 @@ stat_table_1st_ob %>% filter(gender == "male") %>% group_by(bmi_gp) %>% summaris
                                                                                                                         legend = "{position:'right'}",
                                                                                                                         pieHole = 0.5,
                                                                                                                         #slices = "{2:{offset:0.1}}",
-                                                                                                                        backgroundColor = "#edeff2",
+                                                                                                                        backgroundColor = "#f9fffb",
                                                                                                                         width = "600",
                                                                                                                         height = "400"))
 
@@ -46,7 +46,7 @@ stat_table_1st_ob %>% filter(gender == "female") %>% group_by(bmi_gp) %>% summar
                                                                                                                           legend = "{position:'right'}",
                                                                                                                           pieHole = 0.5,
                                                                                                                           #slices = "{1:{offset:0.1}}",
-                                                                                                                          backgroundColor = "#edeff2",
+                                                                                                                          backgroundColor = "#f9fffb",
                                                                                                                           width = "600",
                                                                                                                           height = "400"))
 
@@ -203,7 +203,7 @@ library(ggplot2)
                                    title = '控糖減重成效-身體組成(Female)',
                                    legend = "{position:'right'}",
                                    colors = col_color,
-                                   backgroundColor = "#edeff2",
+                                   backgroundColor = "#f9fffb",
                                    width = "600",
                                    height = "600"))
   
@@ -220,7 +220,7 @@ library(ggplot2)
                                    title = '控糖減重成效-身體組成(Male)',
                                    legend = "{position:'right'}",
                                    colors = col_color,
-                                   backgroundColor = "#edeff2",
+                                   backgroundColor = "#f9fffb",
                                    width = "600",
                                    height = "600"))
   
@@ -463,7 +463,8 @@ for (i in c(1:length(colnames(M1)))) {
 } 
 
 cor_table_01 <- M1_df %>% gvisTable(options=list(frozenColumns = 2,
-                                                 height=300))
+                                                 width="150%",height=300
+                                                 ))
 
 
 

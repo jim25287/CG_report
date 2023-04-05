@@ -34,8 +34,6 @@ output:
   bookdown::epub_book:
     dev: svglite
     stylesheet: css/style.css
-editor_options: 
-  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -89,9 +87,7 @@ load("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/WSpace_preproc.RDa
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
 
 library(pacman)
-pacman::p_load(magrittr, knitr, kableExtra, dplyr, readr, readxl, tibble, showtext, extraInserts,
-               ggvenn, ggplot2,knitr, kableExtra, openxlsx, lubridate, cowplot, ggpubr, webshot,
-               stringr)
+pacman::p_load(magrittr, knitr, kableExtra, dplyr, readr, readxl, tibble, showtext, extraInserts, ggvenn, ggplot2,knitr, kableExtra, openxlsx, lubridate, cowplot, ggpubr, webshot, stringr, googleVis)
 #font
 font_add(family = "berlin_default", regular = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/font/STHeiti Light.ttc")
 showtext_auto(enable = TRUE)
@@ -118,12 +114,10 @@ client_monthly_stat_report %>% plot()
 -   [**女性:**]{.underline}`r success_df_freq[success_df_freq$gender == "female", "success"]`人(成功率:[**`r success_df_pct[success_df_freq$gender == "female", "success"]`**]{.underline})。
 -   [**男性:**]{.underline}`r success_df_freq[success_df_freq$gender == "male", "success"]`人(成功率:[**`r success_df_pct[success_df_freq$gender == "male", "success"]`**]{.underline})。
 
-```{r, results='asis', fig.width = 4, fig.height= 4}
-plot_stack_col_female %>% plot()
-```
+```{r, results='asis'}
+gvisMerge(plot_stack_col_female,plot_stack_col_male, horizontal = TRUE,
+          tableOptions = "cellspacing=\"5\" bgcolor=\"#AABBCC\"") %>% plot()
 
-```{r, results='asis', fig.width = 4, fig.height= 4}
-plot_stack_col_male %>% plot()
 ```
 
 <!-- Introduction context...(editing) -->

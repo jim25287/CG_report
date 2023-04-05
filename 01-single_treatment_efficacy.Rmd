@@ -1,9 +1,3 @@
----
-output: html_document
-editor_options: 
-  chunk_output_type: inline
----
-
 # 減重成效 - (單次療程)
 
 本節主要分析與探討「首次減重方案：在初始狀態(baseline)和飲食紀律(diet discipline)下的成效」。
@@ -48,13 +42,15 @@ cat(" 總共:", stat_table[stat_table[["client_type"]] == 2, "id"] %>% unique() 
 **Subjects Distribution:** 年齡(Age) & 性別(Gender)分佈
 
 ```{r, results='asis'}
-gvisMerge(pie_01, pie_02, horizontal = FALSE) %>% plot()
+gvisMerge(pie_01, pie_02, horizontal = TRUE,
+          tableOptions = "cellspacing=\"5\" bgcolor=\"#AABBCC\"") %>% plot()
 ```
 
 **Subjects Distribution:** 身體質量指數(BMI)分佈
 
 ```{r, results='asis'}
-gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
+gvisMerge(pie_03, pie_04, horizontal = TRUE,
+          tableOptions = "cellspacing=\"5\" bgcolor=\"#AABBCC\"") %>% plot()
 
 ```
 
@@ -74,21 +70,15 @@ gvisMerge(pie_03, pie_04, horizontal = FALSE) %>% plot()
 
 在男性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近52％表現超乎預期(降幅\>15%)，29%表現優異(降幅\>8%)，11%表現良好(降幅4\~8%)。
 
-```{r, results='asis', fig.width = 4, fig.height= 4}
-plot_stack_col_female %>% plot()
+```{r, results='asis'}
+gvisMerge(plot_stack_col_female,plot_stack_col_male, horizontal = TRUE,
+          tableOptions = "cellspacing=\"5\" bgcolor=\"#AABBCC\"") %>% plot()
 ```
 
 -   Weight: 體重降幅(%)
 -   Fat: 脂肪降幅(%)
 -   Muscle: 肌肉降幅(%)
 
-```{r, results='asis', fig.width = 4, fig.height= 4}
-plot_stack_col_male %>% plot()
-```
-
--   Weight: 體重降幅(%)
--   Fat: 脂肪降幅(%)
--   Muscle: 肌肉降幅(%)
 
 **體組成及血生化值成效(%):**
 
@@ -172,7 +162,7 @@ knitr::kable(
 -   **「良好」: (減重介於 5 \~ 10%)**
 -   **「低於預期」: (減重\< 3%)**
 
-```{r fig.align='left', paged.print=TRUE}
+```{r  paged.print=TRUE}
 table_01
 ```
 
@@ -251,7 +241,7 @@ plot_grid(plotlist = myplots[94:105], ncol = 2, labels = paste0(LETTERS[9], seq(
 
 3.  減重「成效」與[**「飲食紀律」(Obedience)有關**]{.underline}(例如：飲食紀錄完成率、上傳照片數、綠燈率等)，且具有統計上顯著差異。
 
-```{r, results='asis', fig.align='left', paged.print=TRUE}
+```{r, results='asis',  paged.print=TRUE}
 table_02
 ```
 
@@ -265,7 +255,8 @@ table_02
 **男性睪固酮分組&年齡分佈**
 
 ```{r fig.align='left'}
-googleVis::gvisMerge(pie_testosterone_01, pie_testosterone_02) %>% plot()
+googleVis::gvisMerge(pie_testosterone_01, pie_testosterone_02, horizontal = TRUE,
+          tableOptions = "cellspacing=\"5\" bgcolor=\"#AABBCC\"") %>% plot()
 ```
 
 ### 相關分析(Correlation Analysis) {#cor_test_testosterone .unnumbered}
@@ -274,7 +265,7 @@ googleVis::gvisMerge(pie_testosterone_01, pie_testosterone_02) %>% plot()
 
 男性荷爾蒙「睪固酮」血中濃度與「體重」、「體脂」，以及「空腹血糖」、「空腹胰島素」和「胰島素抗性」(IR)具有顯著負相關。換句話說，相較於「睪固酮」濃度正常的人，[「睪固酮」低下]{.underline}者傾向有[較高的「體重」、「體脂」]{.underline}，[「空腹血糖」、「空腹胰島素」和「胰島素抗性」(IR)也較高]{.underline}。\
 
-```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
+```{r, results='asis', fig.width = 9, fig.height= 9.5, warning=FALSE}
   corrplot::corrplot(M_testosterone,
            p.mat = M_testosterone_test$p,
            type = "lower",
@@ -300,66 +291,66 @@ knitr::kable(
 
 #### **Inbody**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[1:10], ncol = 2, labels = paste0(LETTERS[1], seq(1,50)))
+```{r, results='asis', fig.width= 12, fig.height=8}
+plot_grid(plotlist = myplots_plot_testosterone[1:10], ncol = 5, labels = paste0(LETTERS[1], seq(1,50)))
 
 ```
 
 #### **Blood**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[11:20], ncol = 2, labels = paste0(LETTERS[2], seq(1,50)))
+```{r, results='asis', fig.width= 12, fig.height=8}
+plot_grid(plotlist = myplots_plot_testosterone[11:20], ncol = 5, labels = paste0(LETTERS[2], seq(1,50)))
 ```
 
 ### 介入後狀態(Endpoint) {#endpoint_testosterone .unnumbered}
 
 #### **Inbody**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[21:30], ncol = 2, labels = paste0(LETTERS[3], seq(1,50)))
+```{r, results='asis', fig.width= 12, fig.height=8}
+plot_grid(plotlist = myplots_plot_testosterone[21:30], ncol = 5, labels = paste0(LETTERS[3], seq(1,50)))
 ```
 
 #### **Blood**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[31:40], ncol = 2, labels = paste0(LETTERS[4], seq(1,50)))
+```{r, results='asis', fig.width= 12, fig.height=8}
+plot_grid(plotlist = myplots_plot_testosterone[31:40], ncol = 5, labels = paste0(LETTERS[4], seq(1,50)))
 ```
 
 ### 飲食(Diet) {#diet_testosterone .unnumbered}
 
 在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
-```{r, results='asis', fig.width= 5, fig.height=44}
-plot_grid(plotlist = myplots_plot_testosterone[41:57], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
+```{r, results='asis', fig.width= 12, fig.height=16}
+plot_grid(plotlist = myplots_plot_testosterone[41:57], ncol = 5, labels = paste0(LETTERS[5], seq(1,50)))
 ```
 
 ### 成效(Effectiveness) {#effectiveness_testosterone .unnumbered}
 
 #### **成效(∆)-Inbody**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[58:67], ncol = 2, labels = paste0(LETTERS[6], seq(1,50)))
+```{r, results='asis', fig.width= 12, fig.height=8}
+plot_grid(plotlist = myplots_plot_testosterone[58:67], ncol = 5, labels = paste0(LETTERS[6], seq(1,50)))
 ```
 
 #### **成效**(∆)-Blood
 
-```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[68:77], ncol = 2, labels = paste0(LETTERS[7], seq(1,50)))
+```{r, results='asis', fig.width= 12, fig.height=8}
+plot_grid(plotlist = myplots_plot_testosterone[68:77], ncol = 5, labels = paste0(LETTERS[7], seq(1,50)))
 ```
 
 #### **成效(%)-Inbody**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[78:87], ncol = 2, labels = paste0(LETTERS[8], seq(1,50)))
+```{r, results='asis', fig.width= 12, fig.height=8}
+plot_grid(plotlist = myplots_plot_testosterone[78:87], ncol = 5, labels = paste0(LETTERS[8], seq(1,50)))
 ```
 
 #### **成效(%)-Blood**
 
-```{r, results='asis', fig.width= 5, fig.height=20}
-plot_grid(plotlist = myplots_plot_testosterone[88:97], ncol = 2, labels = paste0(LETTERS[9], seq(1,50)))
+```{r, results='asis', fig.width= 12, fig.height=8}
+plot_grid(plotlist = myplots_plot_testosterone[88:97], ncol = 5, labels = paste0(LETTERS[9], seq(1,50)))
 ```
 
-```{r, results='asis', fig.align='left', paged.print=TRUE}
+```{r, results='asis', paged.print=TRUE}
 table_02_testosterone
 ```
 
@@ -367,20 +358,17 @@ table_02_testosterone
 
 ### 相關分析(Correlation Analysis) {#cor_sua .unnumbered}
 
-```{r, results='asis', fig.align='left', paged.print=TRUE}
+```{r, results='asis', paged.print=TRUE}
 table_freq_sua_ob
 ```
 
-```{r, results='asis', fig.align='left', paged.print=TRUE}
+```{r, results='asis',  paged.print=TRUE}
 plot_SUA_01
-```
-
-```{r, results='asis', fig.align='left', paged.print=TRUE}
 plot_SUA_02
 ```
 
 
-```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
+```{r, results='asis', fig.width = 12, fig.height= 8.5, warning=FALSE}
 corrplot::corrplot(M1_sua,
          p.mat = M_test1_sua$p,
          type = "lower",
@@ -403,7 +391,7 @@ knitr::kable(
 
 ```
 
-```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
+```{r, results='asis', fig.width = 12, fig.height= 8.5, warning=FALSE}
 corrplot::corrplot(M2_sua,
          p.mat = M_test2_sua$p,
          type = "lower",
@@ -492,7 +480,9 @@ plot_grid(plotlist = myplots_sua[84:93], ncol = 2, labels = paste0(LETTERS[8], s
 plot_grid(plotlist = myplots_sua[94:105], ncol = 2, labels = paste0(LETTERS[9], seq(1,50)))
 ```
 
-
+```{r, results='asis', paged.print=TRUE}
+table_02_sua
+```
 
 
 

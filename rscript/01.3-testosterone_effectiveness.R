@@ -51,7 +51,7 @@ pie_testosterone_01 <-
                                                                                                                                                                                       legend = "{position:'right'}",
                                                                                                                                                                                       pieHole = 0.5,
                                                                                                                                                                                       #slices = "{0:{offset:0.1}}",
-                                                                                                                                                                                      backgroundColor = "#edeff2",
+                                                                                                                                                                                      backgroundColor = "#f9fffb",
                                                                                                                                                                                       #colors = "['#DC3912', '#3366CC']",
                                                                                                                                                                                       width = "600",
                                                                                                                                                                                       height = "400"))
@@ -60,7 +60,7 @@ pie_testosterone_02 <-
                                                                                                                                                                                       legend = "{position:'right'}",
                                                                                                                                                                                       pieHole = 0.5,
                                                                                                                                                                                       #slices = "{0:{offset:0.1}}",
-                                                                                                                                                                                      backgroundColor = "#edeff2",
+                                                                                                                                                                                      backgroundColor = "#f9fffb",
                                                                                                                                                                                       #colors = "['#DC3912', '#3366CC']",
                                                                                                                                                                                       width = "600",
                                                                                                                                                                                       height = "400"))
@@ -184,8 +184,8 @@ for (i in c(1:length(colnames(M_testosterone)))) {
   }
   
 } 
-cor_table_testosterone <- M_testosterone_test_df %>% gvisTable(options=list(frozenColumns = 2,
-                                                                            height=300))
+cor_table_testosterone <- M_testosterone_test_df %>% gvisTable(options=list(frozenColumns = 2, 
+                                                                            width="150%",height=300))
 
 
 #>>>> Low T, High Weigt/Fat/Blood/Insulin/IR, IR improvement越差

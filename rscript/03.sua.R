@@ -174,8 +174,8 @@ for (i in c(1:length(colnames(M1_sua)))) {
   
 } 
 
-cor_table_01_sua <- M1_df %>% gvisTable(options=list(frozenColumns = 2,
-                                                     height=300))
+cor_table_01_sua <- M1_df %>% gvisTable(options=list(frozenColumns = 2, 
+                                                     width="150%",height=300))
 
 
 M2_sua <- cor(cbind(-profile_efficacy, profile_baseline), use = "pairwise.complete.obs")

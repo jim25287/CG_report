@@ -124,6 +124,7 @@
 <li class="chapter" data-level="2.2" data-path="girc分析.html"><a href="girc分析.html"><i class="fa fa-check"></i><b>2.2</b> GIRC分析</a>
 <ul>
 <li class="chapter" data-level="2.2.1" data-path="girc分析.html"><a href="girc分析.html#dm-x-girc分佈"><i class="fa fa-check"></i><b>2.2.1</b> DM x GIRC分佈</a></li>
+<li><a href="girc分析.html#section"></a></li>
 <li class="chapter" data-level="2.2.2" data-path="girc分析.html"><a href="girc分析.html#girc分層分析"><i class="fa fa-check"></i><b>2.2.2</b> GIRC分層分析</a></li>
 <li class="chapter" data-level="" data-path="girc分析.html"><a href="girc分析.html#baseline_girc"><i class="fa fa-check"></i>初始狀態(Baseline)</a></li>
 <li class="chapter" data-level="" data-path="girc分析.html"><a href="girc分析.html#endpoint_girc"><i class="fa fa-check"></i>介入後狀態(Endpoint)</a></li>
@@ -158,12 +159,12 @@
 <p>在女性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近27％表現超乎預期(降幅&gt;15%)，46%表現優異(降幅&gt;8%)，16%表現良好(降幅4~8%)。</p>
 <p>在男性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近52％表現超乎預期(降幅&gt;15%)，29%表現優異(降幅&gt;8%)，11%表現良好(降幅4~8%)。</p>
 <!-- ColumnChart generated in R 4.2.1 by googleVis 0.7.0 package -->
-<!-- Mon Apr  3 20:56:49 2023 -->
+<!-- Wed Apr  5 11:31:32 2023 -->
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataColumnChartIDc3bc593ed09c () {
+function gvisDataColumnChartID1ac61b8306b2 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -209,88 +210,10 @@ data.addColumn('number','<-15%');
 data.addRows(datajson);
 return(data);
 }
- 
-// jsDrawChart
-function drawChartColumnChartIDc3bc593ed09c() {
-var data = gvisDataColumnChartIDc3bc593ed09c();
-var options = {};
-options["allowHtml"] = true;
-options["isStacked"] = "percent";
-options["bar"] = {groupWidth:'50%'};
-options["title"] = "控糖減重成效-身體組成(Female)";
-options["legend"] = {position:'right'};
-options["colors"] = ['#4575B4','#74ADD1','#E0F3F8','#FEE090','#FDAE61','#F46D43','#D73027'];
-options["backgroundColor"] = "#edeff2";
-options["width"] = "600";
-options["height"] = "600";
 
-    var chart = new google.visualization.ColumnChart(
-    document.getElementById('ColumnChartIDc3bc593ed09c')
-    );
-    chart.draw(data,options);
-    
 
-}
-  
- 
-// jsDisplayChart
-(function() {
-var pkgs = window.__gvisPackages = window.__gvisPackages || [];
-var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
-var chartid = "corechart";
-  
-// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
-var i, newPackage = true;
-for (i = 0; newPackage && i < pkgs.length; i++) {
-if (pkgs[i] === chartid)
-newPackage = false;
-}
-if (newPackage)
-  pkgs.push(chartid);
-  
-// Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartColumnChartIDc3bc593ed09c);
-})();
-function displayChartColumnChartIDc3bc593ed09c() {
-  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
-  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
-  window.clearTimeout(window.__gvisLoad);
-  // The timeout is set to 100 because otherwise the container div we are
-  // targeting might not be part of the document yet
-  window.__gvisLoad = setTimeout(function() {
-  var pkgCount = pkgs.length;
-  google.load("visualization", "1", { packages:pkgs, callback: function() {
-  if (pkgCount != pkgs.length) {
-  // Race condition where another setTimeout call snuck in after us; if
-  // that call added a package, we must not shift its callback
-  return;
-}
-while (callbacks.length > 0)
-callbacks.shift()();
-} });
-}, 100);
-}
- 
-// jsFooter
-</script>
-<!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartColumnChartIDc3bc593ed09c"></script>
-<!-- divChart -->
-<div id="ColumnChartIDc3bc593ed09c" style="width: 600; height: 600;">
-
-</div>
-<ul>
-<li>Weight: 體重降幅(%)</li>
-<li>Fat: 脂肪降幅(%)</li>
-<li>Muscle: 肌肉降幅(%)</li>
-</ul>
-<!-- ColumnChart generated in R 4.2.1 by googleVis 0.7.0 package -->
-<!-- Mon Apr  3 20:56:49 2023 -->
-<!-- jsHeader -->
-<script type="text/javascript">
- 
 // jsData 
-function gvisDataColumnChartIDc3bc2af1df8a () {
+function gvisDataColumnChartID1ac6372c9e3a () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -338,8 +261,32 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartColumnChartIDc3bc2af1df8a() {
-var data = gvisDataColumnChartIDc3bc2af1df8a();
+function drawChartColumnChartID1ac61b8306b2() {
+var data = gvisDataColumnChartID1ac61b8306b2();
+var options = {};
+options["allowHtml"] = true;
+options["isStacked"] = "percent";
+options["bar"] = {groupWidth:'50%'};
+options["title"] = "控糖減重成效-身體組成(Female)";
+options["legend"] = {position:'right'};
+options["colors"] = ['#4575B4','#74ADD1','#E0F3F8','#FEE090','#FDAE61','#F46D43','#D73027'];
+options["backgroundColor"] = "#f9fffb";
+options["width"] = "600";
+options["height"] = "600";
+
+    var chart = new google.visualization.ColumnChart(
+    document.getElementById('ColumnChartID1ac61b8306b2')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+
+
+// jsDrawChart
+function drawChartColumnChartID1ac6372c9e3a() {
+var data = gvisDataColumnChartID1ac6372c9e3a();
 var options = {};
 options["allowHtml"] = true;
 options["isStacked"] = "percent";
@@ -347,12 +294,12 @@ options["bar"] = {groupWidth:'50%'};
 options["title"] = "控糖減重成效-身體組成(Male)";
 options["legend"] = {position:'right'};
 options["colors"] = ['#4575B4','#74ADD1','#E0F3F8','#FEE090','#FDAE61','#F46D43','#D73027'];
-options["backgroundColor"] = "#edeff2";
+options["backgroundColor"] = "#f9fffb";
 options["width"] = "600";
 options["height"] = "600";
 
     var chart = new google.visualization.ColumnChart(
-    document.getElementById('ColumnChartIDc3bc2af1df8a')
+    document.getElementById('ColumnChartID1ac6372c9e3a')
     );
     chart.draw(data,options);
     
@@ -376,9 +323,48 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartColumnChartIDc3bc2af1df8a);
+callbacks.push(drawChartColumnChartID1ac61b8306b2);
 })();
-function displayChartColumnChartIDc3bc2af1df8a() {
+function displayChartColumnChartID1ac61b8306b2() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+
+
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "corechart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartColumnChartID1ac6372c9e3a);
+})();
+function displayChartColumnChartID1ac6372c9e3a() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -401,18 +387,32 @@ callbacks.shift()();
 // jsFooter
 </script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartColumnChartIDc3bc2af1df8a"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartColumnChartID1ac61b8306b2"></script>
+<!-- jsChart -->
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartColumnChartID1ac6372c9e3a"></script>
+<table cellspacing="5" bgcolor="#AABBCC">
+<tr>
+<td>
 <!-- divChart -->
-<div id="ColumnChartIDc3bc2af1df8a" style="width: 600; height: 600;">
+<div id="ColumnChartID1ac61b8306b2" style="width: 600; height: 600;">
 
 </div>
+</td>
+<td>
+<!-- divChart -->
+<div id="ColumnChartID1ac6372c9e3a" style="width: 600; height: 600;">
+
+</div>
+</td>
+</tr>
+</table>
 <ul>
 <li>Weight: 體重降幅(%)</li>
 <li>Fat: 脂肪降幅(%)</li>
 <li>Muscle: 肌肉降幅(%)</li>
 </ul>
 <p><strong>體組成及血生化值成效(%):</strong></p>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-10-1.svg" width="576" style="display: block; margin: auto;" /></p>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-8-1.svg" width="576" style="display: block; margin: auto;" /></p>
 </div>
 <!-- table string rm (string_rm.js) -->
 <script>

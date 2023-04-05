@@ -150,8 +150,6 @@ plot_grid(plotlist = myplots_girc[33:44], ncol = 2, labels = paste0(LETTERS[4], 
 
 ### 飲食(Diet) {#diet_girc .unnumbered}
 
-在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
-
 ```{r, results='asis', fig.width= 10, fig.height=44}
 plot_grid(plotlist = myplots_girc[45:61], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
 ```

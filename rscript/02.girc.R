@@ -193,7 +193,10 @@ table_improvement_freq_girc <- table(Origin = a$I_before, Change = a$I_after, ex
        "font-size: 15pt !important;", 
        .)
 
-table_improvement_p_girc <- table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2) %>% 
+table_improvement_p_girc <- data.frame(matrix(data = paste0((table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% addmargins(margin = 2)) %>% t(), " (",
+                                                            (table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2)) %>% t(),
+                                                            "%)"), nrow = 5, ncol = 6, byrow = TRUE, dimnames = list(c(levels(a$I_before)[1:5]),c(levels(a$I_before)[1:5], "Sum")))) %>% 
+  rbind("Total" = table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% addmargins() %>% last() %>% as.numeric()) %>% 
   kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
@@ -203,6 +206,7 @@ table_improvement_p_girc <- table(Origin = a$I_before, Change = a$I_after, exclu
   gsub("font-size: initial !important;", 
        "font-size: 15pt !important;", 
        .)
+
 
 
 

@@ -146,23 +146,36 @@ df02_inbody <- df02_inbody[-which(df02_inbody$bmi >100),]
 df03_FLC_self_report <- tmp_03
 
 #tmp
-df03_FLC_self_report <- df03_FLC_self_report %>% select(-light_not_g_count)
+df03_FLC_self_report <- df03_FLC_self_report %>% select(-c(age, measurement_after_program_date, measurement_before_program_date))
 
 #C1. col_names
 names(df03_FLC_self_report) <- names(df03_FLC_self_report) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
-#C1-2. filter by 01.profile org_name == cofit
-# df03_FLC_self_report[which(unique(df01_profile[df01_profile[["org_name"]] == "cofit", "id"]) %in% df03_FLC_self_report[["id"]]),]
-df03_FLC_self_report <- df03_FLC_self_report[which((df03_FLC_self_report[["id"]]) %in% unique(df01_profile[df01_profile[["org_name"]] == "cofit", "id"])),] 
+#C1-2. filter by program not "^診所"
+df03_FLC_self_report <- df03_FLC_self_report[df03_FLC_self_report[["program"]] %>% grepl("^診所",.) %>% not(),]
 
-
-df03_FLC_self_report <- df03_FLC_self_report[with(df03_FLC_self_report, order(date_flc_T0)),]
+df03_FLC_self_report <- df03_FLC_self_report[with(df03_FLC_self_report, order(date_flc_T0, id)),]
 
 #C2. age: btd - date_t0 年齡(療程起始當天計算)
 df03_FLC_self_report$age <- (lubridate::ymd(df03_FLC_self_report$date_flc_T0) - lubridate::ymd(df03_FLC_self_report$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
-#C3. (1.) (%) *100  (2.) numeric %>% round(2)
-df03_FLC_self_report[,grep("%", names(df03_FLC_self_report))] %<>% multiply_by(100)
-df03_FLC_self_report[c("weight(T0)","weight(T1)","∆weight","∆weight(%)","BMI(T0)","BMI(T1)","∆BMI","∆BMI(%)","Fat(T0)","Fat(T1)","∆Fat","∆Fat(%)","wc(T0)","wc(T1)","∆wc","∆wc(%)")] %<>% round(2)
+#C2-2. carb/protein/fat E%:
+df03_FLC_self_report <- df03_FLC_self_report %>% mutate(carb_ep = (carbohydrate*4 / (carbohydrate*4 + protein*4 + fat*9) ))
+df03_FLC_self_report <- df03_FLC_self_report %>% mutate(protein_ep = (protein*4 / (carbohydrate*4 + protein*4 + fat*9) ))
+df03_FLC_self_report <- df03_FLC_self_report %>% mutate(fat_ep = (fat*9 / (carbohydrate*4 + protein*4 + fat*9) ))
+#C2-3. upload_day_%:
+df03_FLC_self_report <- df03_FLC_self_report %>% mutate(upload_day_p = (as.numeric(day_count) / as.numeric((lubridate::ymd(date_flc_T1) - (lubridate::ymd(date_flc_T0)) + 1))))
+names(df03_FLC_self_report) <- names(df03_FLC_self_report) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
 
+#C3. (1.) (%) *100  (2.) numeric %>% round(2)
+df03_FLC_self_report[,grep("%", names(df03_FLC_self_report))] <- df03_FLC_self_report[,grep("%", names(df03_FLC_self_report))] %>% multiply_by(100) %>% round(2)
+df03_FLC_self_report[c("weight(T0)","weight(T1)","∆weight","∆weight%","BMI(T0)","BMI(T1)","∆BMI","∆BMI%","Fat(T0)","Fat(T1)","∆Fat","∆Fat%","wc(T0)","wc(T1)","∆wc","∆wc%")] %<>% round(2)
+
+#C3-2. exclude vars
+df03_FLC_self_report <- df03_FLC_self_report %>% select(-c(light_G_count, carbohydrate, protein, fat))
+
+#C3-3. exclude missing value
+df03_FLC_self_report <- df03_FLC_self_report %>% lin_exclude_NA_col(c("light_G_%", "∆weight", "carb_E%"))
+#C3-4. exclude upload_day_p = 0
+df03_FLC_self_report <- df03_FLC_self_report %>% filter(`upload_day_%` != 0)
 
 #C4-1. class_freq by org_name
 df03_FLC_self_report <- df03_FLC_self_report %>% full_join(df03_FLC_self_report %>% group_by(id) %>% summarise(class_freq = n()), by = c("id"))

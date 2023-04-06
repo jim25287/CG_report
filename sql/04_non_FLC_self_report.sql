@@ -8,7 +8,7 @@ SELECT
   TIMEZONE('UTC', consulting_client_summaries.created_at) AT TIME ZONE 'Asia/Taipei' AS date_time,
   consulting_client_summaries.weight,
   consulting_client_summaries.bmi,
-  consulting_client_summaries.body_fat_mass AS fat,
+  consulting_client_summaries.body_fat_mass AS fat_mass,
   consulting_client_summaries.waist_circumference AS wc
 FROM consulting_client_summaries
 INNER JOIN clients ON clients.id = consulting_client_summaries.client_id

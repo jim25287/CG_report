@@ -3,12 +3,12 @@ stat_table_1st_ob <- stat_table_1st_ob %>% mutate(delta_sua_gp = paste(sua_gp_ba
 
 a <- stat_table_1st_ob %>% filter(!is.na(sua_gp_baseline))
 
-
+#uric acid: men: ≥7.0 (mg/dL); women: 6.0(mg/dL)
 table_freq_sua_ob <- table(a$gender, a$delta_sua_gp) %>% addmargins() %>% 
   kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+  footnote(general_title = c("Cutoffs:"), general = c(rbind("\n", c("Male: 7.0 (mg/dL)", "Female: 6.0(mg/dL)"))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
@@ -73,8 +73,8 @@ plot_SUA_01 <-
     axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
   ) +
-  geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
-  annotate("text", x=5.3, y=155, label="Cutoff = 5.5 mg/dL", angle=90) +
+  # geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
+  # annotate("text", x=5.3, y=155, label="Cutoff = 5.5 mg/dL", angle=90) +
   stat_cor(method = "pearson", size = 5, label.x = 7, label.y = 45) # Add correlation coefficient)
 
 plot_SUA_02 <- 
@@ -98,8 +98,8 @@ plot_SUA_02 <-
     axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
   ) +
-  geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
-  annotate("text", x=5.3, y=150, label="Cutoff = 5.5 mg/dL", angle=90) +
+  # geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
+  # annotate("text", x=5.3, y=150, label="Cutoff = 5.5 mg/dL", angle=90) +
   stat_cor(method = "pearson", size = 5, label.x = 7, label.y = 45) # Add correlation coefficient)
 
 
@@ -202,14 +202,14 @@ for (i in c(1:length(colnames(M2_sua)))) {
   if (i == 1) {
     M2_value <- M2_sua %>% round(2) 
     M2_sign <- M_test2_sua$p %>% stats::symnum(corr = FALSE, na = FALSE, cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", "**", "*", ".", "ns")) %>% as.data.frame.matrix()
-    M2_df <- M1_value
+    M2_df <- M2_value
     M2_df[,] <- NA
   }
   
   M2_df[,i] <- paste0(M2_value[,i], " (", M2_sign[,i], ")")
   
   if (i ==  length(colnames(M2_sua))) {
-    rm(list = c("M1_value", "M1_sign"))
+    rm(list = c("M2_value", "M2_sign"))
     M2_df <- M2_df %>% as.data.frame()
     M2_df <- M2_df %>% add_column(vars = rownames(M2_df), .before = names(M2_df)[1])
     M2_df <- M2_df %>% add_column("#" = seq(1, nrow(M2_df)), .before = names(M2_df)[1])

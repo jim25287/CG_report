@@ -587,14 +587,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
     stat_table_1st_ob$age_gp <- cut(stat_table_1st_ob$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
     stat_table_1st_ob$org_name_gp <- "Med"
     #02.FLC (F)
-    # df03_FLC_self_report$age_gp <- cut(df03_FLC_self_report$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
-    # df03_FLC_self_report <- df03_FLC_self_report %>% rename("∆weight%" = "∆weight(%)")
-    # df03_FLC_self_report$org_name_gp <- "Diet"
-    
-    df03_FLC_self_report$age_gp <- cut(df03_FLC_self_report$年齡, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
-    df03_FLC_self_report <- df03_FLC_self_report %>% rename("∆weight%" = "體重 %")
-    df03_FLC_self_report <- df03_FLC_self_report %>% rename("∆weight" = "體重 △")
-    df03_FLC_self_report <- df03_FLC_self_report %>% rename("gender" = "性別")
+    df03_FLC_self_report$age_gp <- cut(df03_FLC_self_report$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
     df03_FLC_self_report$org_name_gp <- "Diet"
     
     # 03.non-FLC (NF) 

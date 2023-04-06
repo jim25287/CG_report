@@ -42,9 +42,7 @@ pattern-ii
 pattern-iii
 pattern-iv
 pattern-v
-girc分析
-dm-x-girc分佈
-girc分層分析
+girc_analysis_
 inbody-6
 blood-6
 inbody-7

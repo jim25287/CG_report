@@ -62,9 +62,16 @@ plot_m <- lin_insulin_rsp_pattern(Q6_stat_table_1st, c("insulin_baseline", "insu
 
 #篩選介入前data
 a <- df05_biochem %>% distinct(id, .keep_all = TRUE)
-# table_freq_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% addmargins()
-table_freq_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% addmargins() %>% 
-  kable(format = "html", caption = "<b>Table: All Data(freq)</b>", align = "c") %>%
+
+#[input] table, rbind RowSum
+t <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no")
+t1 <- t %>% addmargins()
+t2 <- t %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
+
+table_girc_all <- data.frame(matrix(data = paste0((t1) %>% t(), " (", (t2) %>% t(), "%)"),
+                                    nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE,
+                                    dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+  kable(format = "html", caption = "<b>Table: Pooled Data with Blood Test</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
   footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention"))),
@@ -74,91 +81,119 @@ table_freq_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA 
        "font-size: 15pt !important;", 
        .)
 
-# table_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
-#[need] % 
-table_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2) %>% 
-  kable(format = "html", caption = "<b>Table: All Data(%)</b>", align = "c") %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                            full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention"))),
-           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
-  )%>% 
-  gsub("font-size: initial !important;", 
-       "font-size: 15pt !important;", 
-       .)
+rm(list = c("t","t1", "t2"))
 
 
 #DM View
-table_DM_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins() %>% round(2)%>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+#[input] table, all: addmargins(), row:addmargins(t1:2;t2:1,2),rbind RowSum
+t <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no")
+t1 <- t %>% addmargins(margin = 2)
+t2 <- t %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2)
+
+table_DM_girc_all <- data.frame(matrix(data = paste0(t1 %>% t(), " (", t2 %>% t(), "%)"), 
+                                       nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
+                                       dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+  rbind("Total" = t1 %>% addmargins(margin = 1) %>% last() %>% as.numeric()) %>% 
+  kable(format = "html", caption = "<b>Table: Pooled Data with Blood Test(DM View)</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention"))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
        "font-size: 15pt !important;", 
        .)
+rm(list = c("t","t1", "t2"))
+
+
 #Insulin Pattern  View
-table_Insulin_p_girc <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins() %>% round(2)%>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+#[input] table, all: addmargins(), row:addmargins(t1:2;t2:1,2),rbind RowSum
+t <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no")
+t1 <- t %>% addmargins(margin = 1)
+t2 <- t %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins(margin = 1) %>% round(2)
+
+table_Insulin_girc_all <- data.frame(matrix(data = paste0(t1 %>% t(), " (", t2 %>% t(), "%)"), 
+                                       nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
+                                       dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+  cbind("Total" = t1 %>% addmargins(margin = 2) %>% t() %>% last() %>% as.numeric()) %>% 
+  kable(format = "html", caption = "<b>Table: Pooled Data with Blood Test(IR View)</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention", c("\n", "*IR = The \"insulin response\" during an OGTT.")))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
        "font-size: 15pt !important;", 
        .)
+rm(list = c("t","t1", "t2"))
 
 
-Q6_stat_table_1st$DM_baseline <- Q6_stat_table_1st$DM_baseline %>% factor(levels = c("Normal", "Pre-DM", "DM"))
+#In obesity program
 #DM & GIRC Pattern Cross_table in OB. program
-table_freq_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% addmargins() %>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                            full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
-           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
-  )%>% 
-  gsub("font-size: initial !important;", 
-       "font-size: 15pt !important;", 
-       .)
+Q6_stat_table_1st$DM_baseline <- Q6_stat_table_1st$DM_baseline %>% factor(levels = c("Normal", "Pre-DM", "DM"))
 
-table_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2) %>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+#[input] table, all: addmargins(), row:addmargins(t1:2;t2:1,2),rbind RowSum
+t <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no")
+t1 <- t %>% addmargins()
+t2 <- t %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
+
+table_girc_ob <- data.frame(matrix(data = paste0(t1 %>% t(), " (", t2 %>% t(), "%)"), 
+                                   nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
+                                   dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group - Obesity Program</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c("Note:"), general = c(rbind("", c(" Obesity Program & Before intervention"))),
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention"))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
        "font-size: 15pt !important;", 
        .)
+rm(list = c("t","t1", "t2"))
 
 #DM View
-table_DM_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2) %>% 
-  kable(format = "html", caption = "<b>Table: Ins/DM(OB.)</b>", align = "c") %>%
+#[input] table, all: addmargins(), row:addmargins(t1:2;t2:1,2),rbind RowSum
+t <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no")
+t1 <- t %>% addmargins(margin = 2)
+t2 <- t %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2)
+
+table_DM_girc_ob <- data.frame(matrix(data = paste0(t1 %>% t(), " (", t2 %>% t(), "%)"), 
+                                      nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
+                                      dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+  rbind("Total" = t1 %>% addmargins(margin = 1) %>% last() %>% as.numeric()) %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group - Obesity Program(DM View)</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c("Note:"), general = c(rbind("", c(" Obesity Program & Before intervention in \"DM view\""))),
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention"))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
        "font-size: 15pt !important;", 
        .)
+rm(list = c("t","t1", "t2"))
+
 
 #Insulin Pattern  View
-table_Insulin_p_girc_ob <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no") %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins(margin = 1) %>% round(2) %>% 
-  kable(format = "html", caption = "<b>Table: DM/Ins(OB.)</b>", align = "c") %>%
+#[input] table, all: addmargins(), row:addmargins(t1:2;t2:1,2),rbind RowSum
+t <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no")
+t1 <- t %>% addmargins(margin = 1)
+t2 <- t %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins(margin = 1) %>% round(2)
+
+table_Insulin_girc_ob <- data.frame(matrix(data = paste0(t1 %>% t(), " (", t2 %>% t(), "%)"), 
+                                           nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
+                                           dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+  cbind("Total" = t1 %>% addmargins(margin = 2) %>% t() %>% last() %>% as.numeric()) %>% 
+  kable(format = "html", caption = "<b>Table: Stuty Group - Obesity Program(IR View)</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c("Note:"), general = c(rbind("", c(" Obesity Program & Before intervention in \"Insulin Pattern view\""))),
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention", c("\n", "*IR = The \"insulin response\" during an OGTT.")))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
        "font-size: 15pt !important;", 
        .)
+rm(list = c("t","t1", "t2"))
+
 
 
 
@@ -182,30 +217,26 @@ names(a) <- c("id", "date", "I_before", "DM_before", "I_after",  "DM_after")
 
 # df05_biochem %>% select(id, date_blood, Pattern_major, DM) %>% view()
 a <- a[a$DM_before != "DM" & a$DM_after != "DM",]
-table_improvement_freq_girc <- table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% addmargins(margin = 2) %>% round(2) %>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                            full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
-           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
-  )%>% 
-  gsub("font-size: initial !important;", 
-       "font-size: 15pt !important;", 
-       .)
 
-table_improvement_p_girc <- data.frame(matrix(data = paste0((table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% addmargins(margin = 2)) %>% t(), " (",
-                                                            (table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2)) %>% t(),
-                                                            "%)"), nrow = 5, ncol = 6, byrow = TRUE, dimnames = list(c(levels(a$I_before)[1:5]),c(levels(a$I_before)[1:5], "Sum")))) %>% 
-  rbind("Total" = table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% addmargins() %>% last() %>% as.numeric()) %>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+#[input] table, all: addmargins(), row:addmargins(t1:2;t2:1,2),rbind RowSum
+t <- table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified")
+t1 <- t %>% addmargins(margin = 2)
+t2 <- t %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2)
+
+table_improvement_girc_all <- data.frame(matrix(data = paste0(t1 %>% t(), " (", t2 %>% t(), "%)"), 
+                                              nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
+                                              dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+  rbind("Total" = t1 %>% addmargins(margin = 1) %>% last() %>% as.numeric()) %>% 
+  kable(format = "html", caption = "<b>Table: Improvemnt of Insulin Response Pattern in OGTT</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c(""), general = c(rbind("\n", c(""))),
+  footnote(general_title = c("Note:"), general = c(rbind("\n", c("· Row= Pre-intervention Insulin Response Pattern during an OGTT.", "· Column= Post-intervention Insulin Response Pattern during an OGTT."))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
        "font-size: 15pt !important;", 
        .)
+rm(list = c("t","t1", "t2"))
 
 
 

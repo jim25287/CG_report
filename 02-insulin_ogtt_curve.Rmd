@@ -8,7 +8,7 @@
 
 **診斷標準：**
 
-![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1500"}
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1200"}
 
 **Pattern分佈：**
 
@@ -26,7 +26,7 @@ plot_m[[2]]
 
 ### Pattern I
 
-![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1500"}
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1200"}
 
 ```{r, out.width = "300px",fig.align='default', fig.nol=4}
 url <- c("https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/1.jpg",
@@ -40,7 +40,7 @@ knitr::include_graphics(url)
 
 ### Pattern II
 
-![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1500"}
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1200"}
 
 ```{r, out.width = "300px",fig.align='default', fig.nol=4}
 url <- c("https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/5.jpg",
@@ -54,7 +54,7 @@ knitr::include_graphics(url)
 
 ### Pattern III
 
-![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1500"}
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1200"}
 
 ```{r, out.width = "300px",fig.align='default', fig.nol=4}
 url <- c("https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/9.jpg",
@@ -68,7 +68,7 @@ knitr::include_graphics(url)
 
 ### Pattern IV
 
-![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1500"}
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1200"}
 
 ```{r, out.width = "300px",fig.align='default', fig.nol=5}
 url <- c("https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/13.jpg",
@@ -83,7 +83,7 @@ knitr::include_graphics(url)
 
 ### Pattern V
 
-![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1500"}
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1200"}
 
 ```{r, out.width = "300px",fig.align='default', fig.nol=2}
 url <- c("https://raw.githubusercontent.com/jim25287/CG_report/main/image/00.auto_scale/18.jpg",
@@ -93,31 +93,25 @@ knitr::include_graphics(url)
 
 ```
 
-## GIRC分析
+## GIRC分析 {#girc_analysis_}
 
-### DM x GIRC分佈 
- 
-```{r}
-table_freq_girc
-```
+### DM x GIRC分佈 {#girc_table_all .unnumbered}
 
 ```{r}
-table_p_girc
+table_girc_all
+table_DM_girc_all
+table_Insulin_girc_all
 ```
+
+### DM x GIRC分佈(Obesity Program) {#girc_table_ob .unnumbered}
 
 ```{r}
-table_01_girc
+table_girc_ob
+table_DM_girc_ob
+table_Insulin_girc_ob
 ```
 
-```{r}
-table_DM_p_girc_ob
-```
-
-```{r}
-table_Insulin_p_girc_ob
-```
-
-### GIRC分層分析
+### GIRC分層分析 {.unnumbered}
 
 ### 初始狀態(Baseline) {#baseline_girc .unnumbered}
 
@@ -182,4 +176,10 @@ plot_grid(plotlist = myplots_girc[94:105], ncol = 2, labels = paste0(LETTERS[9],
 
 ```{r, results='asis', paged.print=TRUE}
 table_02_girc
+```
+
+### Pattern改善分析 {#girc_improvemnt_path .unnumbered}
+
+```{r}
+table_improvement_girc_all
 ```

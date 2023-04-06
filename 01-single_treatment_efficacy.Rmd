@@ -82,7 +82,7 @@ gvisMerge(plot_stack_col_female,plot_stack_col_male, horizontal = TRUE,
 
 **體組成及血生化值成效(%):**
 
-```{r, results='asis', fig.width = 6, fig.height= 6.2}
+```{r, results='asis', fig.width = 7, fig.height= 7.5}
 line_plot
 ```
 

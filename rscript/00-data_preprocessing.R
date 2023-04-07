@@ -356,6 +356,15 @@ df04_non_FLC_self_report <- df04_non_FLC_self_report[df04_non_FLC_self_report[["
 df04_non_FLC_self_report$id %>% unique() %>% length()
 
 
+#align names with df03_FLC_self_report
+names(df04_non_FLC_self_report) <- c("client_id","date_free_t0","date_free_t1", "gender", 
+                                     "btd", "weight_before", "bmi_before", "fat_before", 
+                                     "wc_before", "weight_after", "bmi_after", "fat_after", 
+                                     "wc_after", "weight_delta", "bmi_delta", "fat_delta", 
+                                     "wc_delta", "weight_delta_p", "bmi_delta_p", "fat_delta_p", 
+                                     "wc_delta_p","age", "note_count", "upload_day_p")
+names(df04_non_FLC_self_report) <- names(df04_non_FLC_self_report) %>% lin_ch_en_format(format = "en", origin = "raw_en")
+
 
 #df04_non_FLC_self_report %>% summary()
 

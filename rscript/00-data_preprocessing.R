@@ -164,6 +164,15 @@ df03_FLC_self_report <- df03_FLC_self_report %>% mutate(fat_ep = (fat*9 / (carbo
 #C2-3. upload_day_%:
 df03_FLC_self_report <- df03_FLC_self_report %>% mutate(upload_day_p = (as.numeric(day_count) / as.numeric((lubridate::ymd(date_flc_T1) - (lubridate::ymd(date_flc_T0)) + 1))))
 names(df03_FLC_self_report) <- names(df03_FLC_self_report) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+#C2-3. BMI
+df03_FLC_self_report$height <- df03_FLC_self_report$height %>% as.numeric()
+df03_FLC_self_report$`BMI(T0)` <- (df03_FLC_self_report$`weight(T0)`/ (df03_FLC_self_report$height/100)^2) %>% round(1)
+df03_FLC_self_report$`BMI(T1)` <- (df03_FLC_self_report$`weight(T1)`/ (df03_FLC_self_report$height/100)^2) %>% round(1)
+df03_FLC_self_report$`∆BMI` <- (df03_FLC_self_report$`BMI(T1)` - df03_FLC_self_report$`BMI(T0)`)
+df03_FLC_self_report$`∆BMI%` <- (df03_FLC_self_report$`BMI(T1)` - df03_FLC_self_report$`BMI(T0)`)/df03_FLC_self_report$`BMI(T0)`
+#C2-4. calorie
+df03_FLC_self_report <- df03_FLC_self_report %>% mutate(calorie_day = ((carbohydrate*4 + protein*4 + fat*9) / day_count ))
+
 
 #C3. (1.) (%) *100  (2.) numeric %>% round(2)
 df03_FLC_self_report[,grep("%", names(df03_FLC_self_report))] <- df03_FLC_self_report[,grep("%", names(df03_FLC_self_report))] %>% multiply_by(100) %>% round(2)
@@ -193,6 +202,18 @@ for (i in unique(df03_FLC_self_report$id)) {
     print("[Completed!]")
   }
 }
+
+
+#C5. rm outliers
+df03_FLC_self_report[["∆weight%"]] <- ifelse((df03_FLC_self_report[["∆weight%"]] < quantile(df03_FLC_self_report[["∆weight%"]], 0.01, na.rm = TRUE)) | (df03_FLC_self_report[["∆weight%"]] > quantile(df03_FLC_self_report[["∆weight%"]], 0.95, na.rm = TRUE)),
+                                             df03_FLC_self_report[["∆weight%"]] %>% mean(),
+                                             df03_FLC_self_report[["∆weight%"]])
+# df03_FLC_self_report[["∆weight%"]] <- ifelse((df03_FLC_self_report[["∆weight%"]] < quantile(df03_FLC_self_report[["∆weight%"]], 0.01, na.rm = TRUE)) | (df03_FLC_self_report[["∆weight%"]] > quantile(df03_FLC_self_report[["∆weight%"]], 0.95, na.rm = TRUE)),
+#                                              NA,
+#                                              df03_FLC_self_report[["∆weight%"]])
+
+
+df03_FLC_self_report <- df03_FLC_self_report %>% mutate(diet_compliance = (`upload_day_%` * `light_G_%` / 100) %>% round(2))
 
 
 # 02.4 - [Data Preprocessing] 04_non_FLC_self_report --------------------------------------------------
@@ -238,6 +259,21 @@ second_rows <- df04_non_FLC_self_report %>%
   inner_join(second_dates, by = "id") %>%
   filter((date_free_version >= second_date) & (date_free_version <= second_date + 14)) %>% 
   distinct(id, .keep_all = TRUE)
+second_rows$second_date <- second_rows$date_free_version
+
+second_dates <- second_rows %>% select(id, earliest_date, second_date)
+
+#period upload_counts[fixed: multi-upload in one day!]
+df04_non_FLC_self_report_tmp0 <- df04_non_FLC_self_report %>%
+  inner_join(second_dates, by = "id") %>%
+  filter((date_free_version >= earliest_date) & (date_free_version <= second_date)) %>%
+  select(-dupe_count) %>% 
+  group_by(id, date_free_version) %>% 
+  summarise(
+    n = n()
+  ) %>% janitor::get_dupes(id) %>%
+  distinct(id, .keep_all = TRUE)
+
 
 second_rows$weight <- ifelse(second_rows$weight <= 30, NA, second_rows$weight)
 second_rows$weight <- ifelse(second_rows$weight > 200, NA, second_rows$weight)
@@ -296,6 +332,13 @@ df04_non_FLC_self_report <- df04_non_FLC_self_report %>% rename(gender = gender_
 
 #C5. age: b%<>% %<>% td - date_t0 年齡(療程起始當天計算)
 df04_non_FLC_self_report$age <- (lubridate::ymd(df04_non_FLC_self_report$date_baseline) - lubridate::ymd(df04_non_FLC_self_report$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
+
+#C6. upload_count & upload_day%
+df04_non_FLC_self_report <- lin_mapping(df04_non_FLC_self_report, note_counts, id, df04_non_FLC_self_report_tmp0, dupe_count, id)
+rm(df04_non_FLC_self_report_tmp0)
+df04_non_FLC_self_report <- df04_non_FLC_self_report %>% mutate(upload_day_p = (as.numeric(note_counts)*100 / as.numeric((lubridate::ymd(date_endpoint) - (lubridate::ymd(date_baseline)) + 1))) %>% round(2))
+
+
 
 #rm outliers
 df04_non_FLC_self_report <- df04_non_FLC_self_report %>% lin_exclude_NA_col(grep("weight",names(.), value = TRUE))

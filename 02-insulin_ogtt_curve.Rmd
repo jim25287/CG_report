@@ -95,7 +95,7 @@ knitr::include_graphics(url)
 
 ## GIRC分析 {#girc_analysis_}
 
-### DM x GIRC分佈(OB.+DM.) {#girc_table_all .unnumbered}
+### DM x GIRC分佈(All) {#girc_table_all .unnumbered}
 
 ```{r}
 table_girc_all

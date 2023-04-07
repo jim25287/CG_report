@@ -1,0 +1,347 @@
+# pie_chart:age, gender, bmi (by gender)
+# correlation matrix
+# description table.1
+# Strate_01: Effectiveness
+# Effectiveness table.2
+
+
+#Age
+df03_FLC_self_report$age_gp <- cut(df03_FLC_self_report$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
+pie_flc_01 <- 
+  df03_FLC_self_report %>% group_by(age_gp) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Age',
+                                                                                                legend = "{position:'right'}",
+                                                                                                pieHole = 0.5,
+                                                                                                #slices = "{1:{offset:0.1}}",
+                                                                                                backgroundColor = "#f9fffb",
+                                                                                                width = "600",
+                                                                                                height = "400"))
+
+#Gender
+pie_flc_02 <- 
+  df03_FLC_self_report %>% group_by(gender) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Gender',
+                                                                                                legend = "{position:'right'}",
+                                                                                                pieHole = 0.5,
+                                                                                                #slices = "{0:{offset:0.1}}",
+                                                                                                backgroundColor = "#f9fffb",
+                                                                                                colors = "['#DC3912', '#3366CC']",
+                                                                                                width = "600",
+                                                                                                height = "400"))
+
+
+
+#BMI x Obesity
+
+df03_FLC_self_report$bmi_gp <- cut(df03_FLC_self_report$`BMI(T0)`, c(0,18.5,24,27,100), c("underweight", "normal", "overweight", "obesity"))
+
+pie_flc_03 <- 
+  df03_FLC_self_report %>% filter(!is.na(bmi_gp)) %>% filter(gender == "male") %>% group_by(bmi_gp) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Male',
+                                                                                                                             legend = "{position:'right'}",
+                                                                                                                             pieHole = 0.5,
+                                                                                                                             #slices = "{2:{offset:0.1}}",
+                                                                                                                             backgroundColor = "#f9fffb",
+                                                                                                                             width = "600",
+                                                                                                                             height = "400"))
+
+pie_flc_04 <- 
+  df03_FLC_self_report %>% filter(!is.na(bmi_gp)) %>% filter(gender == "female") %>% group_by(bmi_gp) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Female',
+                                                                                                                               legend = "{position:'right'}",
+                                                                                                                               pieHole = 0.5,
+                                                                                                                               #slices = "{1:{offset:0.1}}",
+                                                                                                                               backgroundColor = "#f9fffb",
+                                                                                                                               width = "600",
+                                                                                                                               height = "400"))
+
+
+
+
+
+
+#[Create profile]  Efficacy, Baseline, Diet table
+profile_efficacy <- df03_FLC_self_report %>% 
+  select(c("∆weight","∆weight%","∆BMI","∆BMI%","∆Fat","∆Fat%","∆wc","∆wc%"))
+
+names(profile_efficacy) <- names(profile_efficacy) %>% lin_ch_en_format(format = "ch", origin = "en")
+# 
+# profile_baseline <- df03_FLC_self_report %>% 
+#   select(c("age", "weight(T0)","weight(T1)","BMI(T0)","BMI(T1)","Fat(T0)","Fat(T1)","wc(T0)","wc(T1)"))
+# 
+# names(profile_baseline) <- names(profile_baseline) %>% lin_ch_en_format(format = "ch", origin = "en")
+
+profile_diet <- df03_FLC_self_report %>%
+  select(c("age", "weight(T0)","weight(T1)","BMI(T0)","BMI(T1)","Fat(T0)","Fat(T1)","wc(T0)","wc(T1)","upload_day_%", "pic_count","calorie_day","carb_E%","protein_E%","fat_E%","light_G_%","light_Y_%","light_R_%"))
+
+names(profile_diet) <- names(profile_diet) %>% lin_ch_en_format(format = "ch", origin = "en")
+
+
+library(corrplot)
+#[Correlation r] Efficacy x Diet
+M1_flc <- cor(cbind(-profile_efficacy, profile_diet), use = "pairwise.complete.obs")
+#[2Do]change row,col names into chinese
+M_test1_flc <- cor.mtest(cbind(-profile_efficacy, profile_diet) , conf.level = .95)
+M_col_flc <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+
+
+#run corrplot plot
+corrplot(M1_flc,
+         p.mat = M_test1_flc$p,
+         type = "lower",
+         insig = "label_sig",
+         sig.level = c(.001, .01, .05), pch.cex = .8, pch.col = "black",
+         tl.col = "black", tl.srt = 35, tl.cex = 1.0,
+         cl.ratio = 0.1,
+         col = M_col_flc(200),
+         title = "[Correlation] Efficacy x Diet",
+         #c(bottom, left, top, right)
+         mar = c(0,0,1,0))
+
+for (i in c(1:length(colnames(M1_flc)))) {
+  if (i == 1) {
+    M1_flc_value <- M1_flc %>% round(2) 
+    M1_flc_sign <- M_test1_flc$p %>% stats::symnum(corr = FALSE, na = FALSE, cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", "**", "*", ".", "ns")) %>% as.data.frame.matrix()
+    M1_flc_df <- M1_flc_value
+    M1_flc_df[,] <- NA
+  }
+  
+  M1_flc_df[,i] <- paste0(M1_flc_value[,i], " (", M1_flc_sign[,i], ")")
+  
+  if (i ==  length(colnames(M1_flc))) {
+    rm(list = c("M1_flc_value", "M1_flc_sign"))
+    M1_flc_df <- M1_flc_df %>% as.data.frame()
+    M1_flc_df <- M1_flc_df %>% add_column(vars = rownames(M1_flc_df), .before = names(M1_flc_df)[1])
+    M1_flc_df <- M1_flc_df %>% add_column("#" = seq(1, nrow(M1_flc_df)), .before = names(M1_flc_df)[1])
+  }
+} 
+
+cor_table_flc_01 <- M1_flc_df %>% gvisTable(options=list(frozenColumns = 2,
+                                                 width="150%",height=300
+))
+
+
+
+
+
+
+
+
+
+
+
+
+##T0,T1,∆ plot
+
+df03_FLC_self_report$`∆weight%` %>% summary()
+
+# Method 1: 按照data散佈百分比. e.g., Q1~Q4
+df03_FLC_self_report$gp <- df03_FLC_self_report$`∆weight%` %>% cut(breaks = 3, labels = c("Good","Medium","Poor"))
+# Method 2: makes n groups with (approximately) equal numbers of observations;
+# df03_FLC_self_report$gp <- df03_FLC_self_report$`∆weight%` %>% cut_number(3, labels = c("Good","Medium","Poor"))
+df03_FLC_self_report$gp %>% table()
+
+datasets_target_issue <- df03_FLC_self_report %>% dplyr::rename(gp = gp)
+datasets_target_issue <- datasets_target_issue %>% filter(gp %in% levels(datasets_target_issue$gp))
+
+
+#profile
+vars_en <- c("id","age","gender","date_flc_T0","date_flc_T1",
+             #inbody - baseline
+             "weight(T0)","BMI(T0)","Fat(T0)","wc(T0)",
+             #inbody - endpoint
+             "weight(T1)","BMI(T1)","Fat(T1)","wc(T1)",
+             #diet
+             "upload_day_%","pic_count","carb_E%","protein_E%","fat_E%","calorie_day","light_G_%","light_Y_%","light_R_%",
+             #others
+             "gp",
+             #inbody - ∆
+             "∆weight","∆BMI","∆Fat","∆wc",
+             #inbody - ∆%
+             "∆weight%","∆BMI%","∆Fat%","∆wc%"
+)
+
+datasets_target_issue <- datasets_target_issue %>% select(vars_en)
+
+vars_en <- lin_ch_en_format(x = vars_en, format = "en", origin = "raw_en")
+names(datasets_target_issue) <- lin_ch_en_format(x = names(datasets_target_issue), format = "en", origin = "raw_en")
+
+
+
+##Improvement: positive
+datasets_target_issue_a <- datasets_target_issue %>% select(-grep("∆", names(datasets_target_issue))) 
+##Improvement: negative (減少越多，越往上長)
+datasets_target_issue_b <- datasets_target_issue %>% select(grep("∆", names(datasets_target_issue), value = TRUE)) %>% multiply_by(-1)
+
+datasets_target_issue <- Reduce(cbind,list(datasets_target_issue_a, datasets_target_issue_b), accumulate =FALSE) 
+
+#order again!!
+datasets_target_issue <- datasets_target_issue %>% select(vars_en)
+
+#change colname to run plot
+datasets_target_issue_for_plot <- datasets_target_issue
+
+names(datasets_target_issue_for_plot) <- gsub("∆", "delta_", names(datasets_target_issue_for_plot))
+names(datasets_target_issue_for_plot) <- gsub("%", "_percent", names(datasets_target_issue_for_plot))
+names(datasets_target_issue_for_plot) <- gsub("\\(", "_", names(datasets_target_issue_for_plot))
+names(datasets_target_issue_for_plot) <- gsub("\\)", "_", names(datasets_target_issue_for_plot))
+
+#set output plot order
+var_vector <- c(vars_en %>% grep("T0)$", .),
+                vars_en %>% grep("T1)", .),
+                vars_en %>% grep("T0)|T1)|[∆]|id|gender|gp|date", ., invert = TRUE),
+                setdiff(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .)),
+                intersect(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .))
+)
+
+
+#Establish vars_table for visualization
+myplot_table <- data.frame(num = seq(1, length(vars_en)),
+                           vars_ch = lin_ch_en_format(x = vars_en, format = "ch", origin = "en"))
+myplot_table <- lin_mapping(myplot_table, vars_en, vars_ch, vars_table, en, ch)
+myplot_table <- lin_mapping(myplot_table, field, vars_ch, vars_table, field, ch)
+
+myplot_table <- myplot_table[var_vector,]
+myplot_table$num <- seq(1, length(myplot_table$num))
+
+#[customized part!!!]
+myplots_flc <- vector('list', length(var_vector))
+
+for (i in c(var_vector)) {
+  j <- match(i, var_vector)
+  if (j == 1) {
+    vector_pvalue <- c()
+    start_time <- Sys.time()
+  }
+  
+  a <- datasets_target_issue_for_plot %>% colnames() %>% head(i) %>% tail(1)
+  a_title <- myplot_table[myplot_table$num == j, "vars_ch"]
+  
+  
+  #p.sign?
+  stat.test <- 
+    datasets_target_issue_for_plot %>%
+    group_by(gender) %>%
+    #[customized part!!!]
+    rstatix::t_test(as.formula(paste(a, "gp", sep = " ~ "))) 
+  stat.test <- stat.test %>% rstatix::add_xy_position(x = "gender", fun = "mean_se", dodge = 0.8)
+  
+  #for customed summary table - part 1/4 [p value]
+  vector_pvalue <- append(vector_pvalue, 
+                          stat.test %>% select(p.adj.signif) %>% pull() %>% head(2) %>% tail(1)
+  )
+  
+  #plot
+  plot <- 
+    datasets_target_issue_for_plot %>% 
+    ggbarplot(x = "gender", y = a, fill = "gp", palette = c("#dce5f6","#fdf7d6","#ffe6cd","#ffdac9","#ffd8d8"), alpha = 1.0,
+              add = "mean_se", add.params = list(group = "gp"),
+              position = position_dodge(0.8), legend = "right", legend.title = "") +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+    labs(x = "", y = "Mean ± SE", title = a_title) +
+    theme(
+      plot.title = element_text(face = "bold", hjust = 0.5, size = 15)
+    ) +
+    stat_pvalue_manual(
+      stat.test, label = "p.adj.signif", tip.length = 0.0,
+      bracket.nudge.y = 1, step.increase = 0.01, hide.ns = TRUE 
+    )
+  
+  #[customized part!!!]
+  myplots_flc[[j]] <- plot
+  
+  progress(j, max = length(var_vector))
+  if (j == length(var_vector)) {
+    cat("-----[Completed!!]-----", rep("\n", 3))
+  }
+}
+
+rm(list = c("datasets_target_issue_a", "datasets_target_issue_b"))
+
+#(2.)gender x Group table
+#[customized part!!!]
+table_01_flc <- 
+  table(datasets_target_issue$gender, datasets_target_issue$gp) %>% addmargins() %>% 
+  kable(format = "html", caption = "<b>Table: Population</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  footnote(general_title = c("Note:"), general = c(rbind("", c(" FLC Program"))),
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .)
+
+
+#(3.)output statistics table
+#for customed summary table [summary table]
+#[customized part!!!]
+summary_table_flc <- 
+  datasets_target_issue %>% 
+  group_by(gender, gp) %>% 
+  summarize_at(vars_en[var_vector],
+               function(x) paste(mean(x, na.rm = TRUE) %>% round(2), (sd(x, na.rm = TRUE)/sqrt(n())) %>% round(2), sep = " ± ")
+  )
+
+
+
+#rbind: summary_table, p.adj.sign, dif, improvement
+summary_table_flc <- cbind(summary_table_flc %>% as.data.frame() %>% select(-c("gender", "gp")) %>% t(), as.data.frame(vector_pvalue))
+
+names(summary_table_flc) <- c(rep(levels((datasets_target_issue$gp)), 2), "顯著差異")
+rownames(summary_table_flc) <- myplot_table$vars_ch
+
+#[customized part!!!]
+table_02_flc <- 
+  summary_table_flc %>% 
+  kbl(format = "html", caption = "<b>Statistics:</b>", align = "c") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                            full_width = FALSE, font_size = 15) %>% 
+  add_header_above(c(" " = 1, "Female" = length(levels(datasets_target_issue$gp)), "Male" = length(levels(datasets_target_issue$gp))," " = 1)) %>% 
+  footnote(general_title = c("Significance:"), general = "\n Comparison: Good vs. Poor in female population.",
+           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+  )%>% 
+  gsub("font-size: initial !important;", 
+       "font-size: 15pt !important;", 
+       .) %>% 
+  scroll_box(height = "500px", width = "100%")
+
+
+
+
+df03_FLC_self_report <- df03_FLC_self_report %>% filter((diet_compliance >= 0) & (diet_compliance <= 100))
+# df03_FLC_self_report$gp_diet_compliance <- df03_FLC_self_report$diet_compliance %>% cut(breaks = 3, c("Low", "Medium", "High"))
+df03_FLC_self_report$gp_diet_compliance <- df03_FLC_self_report$`light_G_%` %>% cut(breaks = 3, c("Low", "Medium", "High"))
+# df03_FLC_self_report$gp_diet_compliance <- df03_FLC_self_report$`upload_day_%` %>% cut(breaks = 3, c("Low", "Medium", "High"))
+# df03_FLC_self_report$gp_diet_compliance <- df03_FLC_self_report$`carb_E%` %>% cut(breaks = 3, c("Low", "Medium", "High"))
+# df03_FLC_self_report$gp_diet_compliance <- df03_FLC_self_report$`protein_E%` %>% cut(breaks = 3, c("Low", "Medium", "High"))
+# df03_FLC_self_report$gp_diet_compliance <- df03_FLC_self_report$`fat_E%` %>% cut(breaks = 3, c("Low", "Medium", "High"))
+
+df03_FLC_self_report %>% 
+  group_by(gp_diet_compliance) %>% 
+  summarise(
+    weight = paste(mean(`∆weight%`, na.rm = TRUE) %>% round(1), (sd(`∆weight%`, na.rm = TRUE)/sqrt(n())) %>% round(1), sep = " ± "),
+    n = n()
+  )
+
+ 
+
+f03_FLC_self_report %>% mutate(delta_weight_p = `∆weight%` %>% multiply_by(-1)) %>%
+  ggscatter(x = "light_G_p", y = "delta_weight_p",
+            color = "black",
+            fill = "red",
+            shape = 21,
+            size = 1, 
+            add = "reg.line",  # Add regressin line
+            add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+            conf.int = TRUE, # Add confidence interval
+            title = "Correlation(Weight x Compliance)",
+            xlab = "Diet Compliance Score",
+            ylab = "Weight(%)",
+            # xlim = c(0, 13),
+            # ylim = c(0, 180),
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+    axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+    axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+  ) +
+  # geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
+  # annotate("text", x=5.3, y=155, label="Cutoff = 5.5 mg/dL", angle=90) +
+  stat_cor(method = "pearson", size = 5, label.x = 0, label.y = 10) # Add correlation coefficient)

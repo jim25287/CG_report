@@ -7,6 +7,7 @@
 
 #Age
 df03_FLC_self_report$age_gp <- cut(df03_FLC_self_report$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
+df03_FLC_self_report <- df03_FLC_self_report %>% filter(!is.na(age_gp))
 pie_flc_01 <- 
   df03_FLC_self_report %>% group_by(age_gp) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Age',
                                                                                                 legend = "{position:'right'}",
@@ -200,7 +201,7 @@ myplot_table <- lin_mapping(myplot_table, field, vars_ch, vars_table, field, ch)
 myplot_table <- myplot_table[var_vector,]
 myplot_table$num <- seq(1, length(myplot_table$num))
 
-#[customized part!!!]
+#[customized part!!!]å
 myplots_flc <- vector('list', length(var_vector))
 
 for (i in c(var_vector)) {
@@ -323,7 +324,7 @@ df03_FLC_self_report %>%
   )
 
 
-df04_non_FLC_self_report$gp_diet_compliance <- df04_non_FLC_self_report$upload_day_p %>% cut_number(n = 3, c("Low", "Medium", "High"))
+df04_non_FLC_self_report$gp_diet_compliance <- df04_non_FLC_self_report$`upload_day_%` %>% cut_number(n = 3, c("Low", "Medium", "High"))
 df04_non_FLC_self_report %>% 
   group_by(gp_diet_compliance) %>% 
   summarise(
@@ -341,23 +342,7 @@ rbind(df03_FLC_self_report %>% select(c("id","gender","weight(T0)","BMI(T0)","Fa
       )
 a$gp_diet_compliance <- a$`upload_day_%` %>% cut_number(n = 3, c("Low", "Medium", "High"))
 a$gp_diet_compliance <- a$`upload_day_%` %>% cut_number(n = 3, )
-a %>% 
-  group_by(gp, gp_diet_compliance) %>% 
-  summarise(
-    weight = paste(mean(`∆weight%`, na.rm = TRUE) %>% round(1), (sd(`∆weight%`, na.rm = TRUE)/sqrt(n())) %>% round(2), sep = " ± "),
-    n = n()
-  )  %>% t() %>% 
-  kbl(format = "html", caption = "<b>Statistics:</b>", align = "c") %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                            full_width = FALSE, font_size = 15) %>% 
-  add_header_above(c(" " = 1, "Female" = length(levels(datasets_target_issue$gp)[1:5]), "Male" = length(levels(datasets_target_issue$gp)[1:5]))) %>% 
-  footnote(general_title = c("Significance:"), general = "\n ",
-           footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
-  )%>% 
-  gsub("font-size: initial !important;", 
-       "font-size: 15pt !important;", 
-       .) %>% 
-  scroll_box(height = "500px", width = "100%") 
+# a$gp_diet_compliance <- a$`upload_day_%` %>% cut_number(n = 3, )
 
 b <- 
 a %>% 
@@ -390,7 +375,7 @@ stat.test <- stat.test %>% rstatix::add_xy_position(x = "gp", fun = "mean_se", d
 
 #plot
 a %>% mutate(x = `∆weight%` %>% multiply_by(-1)) %>% 
-  ggbarplot(x = "gp", y = "x", fill = "gp_diet_compliance", alpha = .7,
+  ggbarplot(x = "gp", y = "x", fill = "gp_diet_compliance", alpha = .5,
             add = "mean_se", add.params = list(group = "gp_diet_compliance"),
             position = position_dodge(0.8), legend = "right", legend.title = "Diet Compliance",
             label = TRUE, lab.nb.digits = 2, lab.vjust = -1.5
@@ -411,7 +396,9 @@ rm(list = c("a", "b"))
 
  
 
-df03_FLC_self_report %>% mutate(delta_weight_p = `∆weight%` %>% multiply_by(-1)) %>%
+df03_FLC_self_report %>% 
+  mutate(delta_weight_p = `∆weight%` %>% multiply_by(-1)) %>%
+  mutate(light_G_p = `light_G_%` %>% multiply_by(1)) %>%
   ggscatter(x = "light_G_p", y = "delta_weight_p",
             color = "black",
             fill = "red",

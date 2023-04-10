@@ -416,10 +416,13 @@ df05_biochem <- df05_biochem %>% mutate(OGIRIndex = lin_AUC_calc(df05_biochem, d
 
 df05_biochem <- df05_biochem %>% lin_DM_diagnosis(c("hba1c", "glucose_ac", "glucose_pc_1hr","glucose_pc_2hr"))
 
-#uric acid: men: ≥7.0 (mg/dL); women: 6.0(mg/dL)
-cutoffs_sua = 6.0 #women
+#uric acid: : ≥5.5 (mg/dL)
+cutoffs_sua_0 = 5.5 #women
+df05_biochem$sua_gp_0 <- df05_biochem$uric_acid %>% cut(c(-Inf, cutoffs_sua_0, Inf), c("Normal", "High"), right = FALSE)
+#uric acid: men: ≥7.6 (mg/dL); women: 6.6(mg/dL)
+cutoffs_sua = 6.6 #women
 df05_biochem$sua_gp <- df05_biochem$uric_acid %>% cut(c(-Inf, cutoffs_sua, Inf), c("Normal", "High"), right = FALSE)
-df05_biochem[(df05_biochem[["uric_acid"]] < 7) & (df05_biochem[["gender"]] == "male"), "sua_gp"] <- "Normal"
+df05_biochem[(df05_biochem[["uric_acid"]] < 7.6) & (df05_biochem[["gender"]] == "male"), "sua_gp"] <- "Normal"
 
 
 

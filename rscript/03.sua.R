@@ -1,14 +1,28 @@
 
 stat_table_1st_ob <- stat_table_1st_ob %>% mutate(delta_sua_gp = paste(sua_gp_baseline, sua_gp_endpoint, sep = ">")) 
 
+
+# sua增加±5% Normal(no change, increase, decrease), normal -> high, high -> normal 共5組
+stat_table_1st_ob <- 
+stat_table_1st_ob %>% 
+  mutate(delta_sua_gp = case_when(
+    delta_sua_gp == "Normal>Normal" & abs((uric_acid_endpoint - uric_acid_baseline)/uric_acid_baseline) <= 0.05 ~ "No change",
+    delta_sua_gp == "Normal>Normal" & (uric_acid_endpoint - uric_acid_baseline)/uric_acid_baseline > 0.05 ~ "Increase",
+    delta_sua_gp == "Normal>Normal" & (uric_acid_endpoint - uric_acid_baseline)/uric_acid_baseline < -0.05 ~ "Decrease",
+    TRUE ~ delta_sua_gp
+  ))
+stat_table_1st_ob$delta_sua_gp <- stat_table_1st_ob$delta_sua_gp %>% factor(levels = c("No change","Decrease","Increase","Normal>High","High>Normal","High>High"))
+
 a <- stat_table_1st_ob %>% filter(!is.na(sua_gp_baseline))
+
+a$delta_sua_gp %>% table()
 
 #uric acid: men: ≥7.0 (mg/dL); women: 6.0(mg/dL)
 table_freq_sua_ob <- table(a$gender, a$delta_sua_gp) %>% addmargins() %>% 
   kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c("Cutoffs:"), general = c(rbind("\n", c("Male: 7.0 (mg/dL)", "Female: 6.0(mg/dL)"))),
+  footnote(general_title = c("Cutoffs:"), general = c(rbind("\n", c("Male: 7.6 (mg/dL)", "Female: 6.6(mg/dL)"))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 
@@ -288,7 +302,6 @@ cor_table_02_sua <- M2_df %>% gvisTable(options=list(frozenColumns = 2,
 stat_table_1st_ob$delta_sua_gp
 
 datasets_target_issue <- stat_table_1st_ob %>% rename(gp = delta_sua_gp)
-datasets_target_issue$gp <- datasets_target_issue$gp %>% factor(levels = c("Normal>Normal", "Normal>High", "High>Normal", "High>High"))
 datasets_target_issue <- datasets_target_issue %>% filter(gp %in% levels(datasets_target_issue$gp))
 
 #profile
@@ -422,7 +435,7 @@ table_01_sua <-
   kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
-  footnote(general_title = c("Cutoff:  5.5 mg/dL"), general = c(rbind("\n", c(""))),
+  footnote(general_title = c("Cutoffs:"), general = c(rbind("\n", c("Male: 7.6 (mg/dL)", "Female: 6.6(mg/dL)"))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
   )%>% 
   gsub("font-size: initial !important;", 

@@ -79,7 +79,6 @@ gvisMerge(plot_stack_col_female,plot_stack_col_male, horizontal = TRUE,
 -   Fat: 脂肪降幅(%)
 -   Muscle: 肌肉降幅(%)
 
-
 **體組成及血生化值成效(%):**
 
 ```{r, results='asis', fig.width = 7, fig.height= 7.5}
@@ -367,7 +366,6 @@ plot_SUA_01
 plot_SUA_02
 ```
 
-
 ```{r, results='asis', fig.width = 12, fig.height= 8.5, warning=FALSE}
 corrplot::corrplot(M1_sua,
          p.mat = M_test1_sua$p,
@@ -381,7 +379,6 @@ corrplot::corrplot(M1_sua,
          #c(bottom, left, top, right)
          mar = c(0,0,1,0))
 ```
-
 
 ```{r, results='asis', warning=FALSE}
 knitr::kable(
@@ -406,7 +403,6 @@ corrplot::corrplot(M2_sua,
 
 ```
 
-
 ```{r, results='asis', warning=FALSE}
 knitr::kable(
   cor_table_02_sua %>% plot(), caption = 'Correlation: Diet and Effectiveness',
@@ -415,7 +411,7 @@ knitr::kable(
 
 ```
 
-
+### Cutoff-1 (♂7.6/♀6.6) {#cutoff_sua_2}
 
 ### 初始狀態(Baseline) {#baseline_sua .unnumbered}
 
@@ -447,8 +443,6 @@ plot_grid(plotlist = myplots_sua[33:44], ncol = 2, labels = paste0(LETTERS[4], s
 ```
 
 ### 飲食(Diet) {#diet_sua .unnumbered}
-
-在分層分析中顯示，減重表現優異者在飲食紀錄完成度、綠燈率、三大營養素攝取比例、六大類食物攝取量等均優於減重表現低於預期者，具統計上顯著差異。
 
 ```{r, results='asis', fig.width= 10, fig.height=44}
 plot_grid(plotlist = myplots_sua[45:61], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
@@ -484,7 +478,69 @@ plot_grid(plotlist = myplots_sua[94:105], ncol = 2, labels = paste0(LETTERS[9], 
 table_02_sua
 ```
 
+### Cutoff-2 (5.5) {#cutoff_sua_0}
 
+### 初始狀態(Baseline) {#baseline_sua0 .unnumbered}
 
+#### **Inbody**
 
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots_sua0[1:10], ncol = 2, labels = paste0(LETTERS[1], seq(1,50)))
 
+```
+
+#### **Blood**
+
+```{r, results='asis', fig.width= 10, fig.height=22}
+plot_grid(plotlist = myplots_sua0[11:22], ncol = 2, labels = paste0(LETTERS[2], seq(1,50)))
+```
+
+### 介入後狀態(Endpoint) {#endpoint_sua0 .unnumbered}
+
+#### **Inbody**
+
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots_sua0[23:32], ncol = 2, labels = paste0(LETTERS[3], seq(1,50)))
+```
+
+#### **Blood**
+
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots_sua0[33:44], ncol = 2, labels = paste0(LETTERS[4], seq(1,50)))
+```
+
+### 飲食(Diet) {#diet_sua0 .unnumbered}
+
+```{r, results='asis', fig.width= 10, fig.height=44}
+plot_grid(plotlist = myplots_sua0[45:61], ncol = 2, labels = paste0(LETTERS[5], seq(1,50)))
+```
+
+### 成效(Effectiveness) {#effectiveness_sua0 .unnumbered}
+
+#### **成效(∆)-Inbody**
+
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots_sua0[62:71], ncol = 2, labels = paste0(LETTERS[6], seq(1,50)))
+```
+
+#### **成效(∆)-Blood**
+
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots_sua0[72:83], ncol = 2, labels = paste0(LETTERS[7], seq(1,50)))
+```
+
+#### **成效(%)-Inbody**
+
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots_sua0[84:93], ncol = 2, labels = paste0(LETTERS[8], seq(1,50)))
+```
+
+#### **成效(%)-Blood**
+
+```{r, results='asis', fig.width= 10, fig.height=20}
+plot_grid(plotlist = myplots_sua0[94:105], ncol = 2, labels = paste0(LETTERS[9], seq(1,50)))
+```
+
+```{r, results='asis', paged.print=TRUE}
+table_02_sua0
+```

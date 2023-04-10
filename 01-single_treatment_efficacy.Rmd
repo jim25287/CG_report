@@ -355,11 +355,8 @@ table_02_testosterone
 
 ## 分層分析-3: 尿酸(Serum Uric Acid) {#strat_2_sua}
 
-### 相關分析(Correlation Analysis) {#cor_sua .unnumbered}
+### 相關分析(Correlation Analysis) {#cor_sua}
 
-```{r, results='asis', paged.print=TRUE}
-table_freq_sua_ob
-```
 
 ```{r, results='asis',  paged.print=TRUE}
 plot_SUA_01
@@ -412,6 +409,9 @@ knitr::kable(
 ```
 
 ### Cutoff-1 (♂7.6/♀6.6) {#cutoff_sua_2}
+```{r, results='asis', paged.print=TRUE}
+table_freq_sua_ob
+```
 
 ### 初始狀態(Baseline) {#baseline_sua .unnumbered}
 
@@ -479,7 +479,9 @@ table_02_sua
 ```
 
 ### Cutoff-2 (5.5) {#cutoff_sua_0}
-
+```{r, results='asis', paged.print=TRUE}
+table_freq_sua0_ob
+```
 ### 初始狀態(Baseline) {#baseline_sua0 .unnumbered}
 
 #### **Inbody**

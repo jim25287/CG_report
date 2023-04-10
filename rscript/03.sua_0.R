@@ -92,7 +92,7 @@ datasets_target_issue <- Reduce(cbind,list(datasets_target_issue_a, datasets_tar
 datasets_target_issue <- datasets_target_issue %>% select(vars_en)
 
 #change colname to run plot
-datasets_target_issue_for_plot <- datasets_target_issue
+datasets_target_issue_for_plot <- datasets_target_issue %>% filter(!((gender == "male") & (gp == "Increase")))
 
 names(datasets_target_issue_for_plot) <- gsub("∆", "delta_", names(datasets_target_issue_for_plot))
 names(datasets_target_issue_for_plot) <- gsub("%", "_percent", names(datasets_target_issue_for_plot))

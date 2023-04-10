@@ -104,11 +104,17 @@
 </ul></li>
 <li class="chapter" data-level="1.7" data-path="strat_2_sua.html"><a href="strat_2_sua.html"><i class="fa fa-check"></i><b>1.7</b> 分層分析-3: 尿酸(Serum Uric Acid)</a>
 <ul>
-<li class="chapter" data-level="" data-path="strat_2_sua.html"><a href="strat_2_sua.html#cor_sua"><i class="fa fa-check"></i>相關分析(Correlation Analysis)</a></li>
+<li class="chapter" data-level="1.7.1" data-path="strat_2_sua.html"><a href="strat_2_sua.html#cor_sua"><i class="fa fa-check"></i><b>1.7.1</b> 相關分析(Correlation Analysis)</a></li>
+<li class="chapter" data-level="1.7.2" data-path="strat_2_sua.html"><a href="strat_2_sua.html#cutoff_sua_2"><i class="fa fa-check"></i><b>1.7.2</b> Cutoff-1 (♂7.6/♀6.6)</a></li>
 <li class="chapter" data-level="" data-path="strat_2_sua.html"><a href="strat_2_sua.html#baseline_sua"><i class="fa fa-check"></i>初始狀態(Baseline)</a></li>
 <li class="chapter" data-level="" data-path="strat_2_sua.html"><a href="strat_2_sua.html#endpoint_sua"><i class="fa fa-check"></i>介入後狀態(Endpoint)</a></li>
 <li class="chapter" data-level="" data-path="strat_2_sua.html"><a href="strat_2_sua.html#diet_sua"><i class="fa fa-check"></i>飲食(Diet)</a></li>
 <li class="chapter" data-level="" data-path="strat_2_sua.html"><a href="strat_2_sua.html#effectiveness_sua"><i class="fa fa-check"></i>成效(Effectiveness)</a></li>
+<li class="chapter" data-level="1.7.3" data-path="strat_2_sua.html"><a href="strat_2_sua.html#cutoff_sua_0"><i class="fa fa-check"></i><b>1.7.3</b> Cutoff-2 (5.5)</a></li>
+<li class="chapter" data-level="" data-path="strat_2_sua.html"><a href="strat_2_sua.html#baseline_sua0"><i class="fa fa-check"></i>初始狀態(Baseline)</a></li>
+<li class="chapter" data-level="" data-path="strat_2_sua.html"><a href="strat_2_sua.html#endpoint_sua0"><i class="fa fa-check"></i>介入後狀態(Endpoint)</a></li>
+<li class="chapter" data-level="" data-path="strat_2_sua.html"><a href="strat_2_sua.html#diet_sua0"><i class="fa fa-check"></i>飲食(Diet)</a></li>
+<li class="chapter" data-level="" data-path="strat_2_sua.html"><a href="strat_2_sua.html#effectiveness_sua0"><i class="fa fa-check"></i>成效(Effectiveness)</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="glucose-insulin-response-curvegirc.html"><a href="glucose-insulin-response-curvegirc.html"><i class="fa fa-check"></i><b>2</b> Glucose Insulin Response Curve(GIRC)</a>
@@ -123,7 +129,7 @@
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="girc_analysis_.html"><a href="girc_analysis_.html"><i class="fa fa-check"></i><b>2.2</b> GIRC分析</a>
 <ul>
-<li class="chapter" data-level="" data-path="girc_analysis_.html"><a href="girc_analysis_.html#girc_table_all"><i class="fa fa-check"></i>DM x GIRC分佈</a></li>
+<li class="chapter" data-level="" data-path="girc_analysis_.html"><a href="girc_analysis_.html#girc_table_all"><i class="fa fa-check"></i>DM x GIRC分佈(All)</a></li>
 <li class="chapter" data-level="" data-path="girc_analysis_.html"><a href="girc_analysis_.html#girc_table_ob"><i class="fa fa-check"></i>DM x GIRC分佈(Obesity Program)</a></li>
 <li class="chapter" data-level="" data-path="girc_analysis_.html"><a href="girc_analysis_.html#girc分層分析"><i class="fa fa-check"></i>GIRC分層分析</a></li>
 <li class="chapter" data-level="" data-path="girc_analysis_.html"><a href="girc_analysis_.html#baseline_girc"><i class="fa fa-check"></i>初始狀態(Baseline)</a></li>
@@ -153,29 +159,33 @@
 <div id="girc_analysis_" class="section level2 hasAnchor" number="2.2">
 <h2><span class="header-section-number">2.2</span> GIRC分析<a href="girc_analysis_.html#girc_analysis_" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="girc_table_all" class="section level3 unnumbered hasAnchor">
-<h3>DM x GIRC分佈<a href="girc_analysis_.html#girc_table_all" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<h3>DM x GIRC分佈(All)<a href="girc_analysis_.html#girc_table_all" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption style="font-size: 15pt !important;">
 <b>Table: Pooled Data with Blood Test</b>
 </caption>
 <thead>
 <tr>
-<th style="text-align:left;">
+<th style="text-align:center;">
+gender
 </th>
 <th style="text-align:center;">
-Pattern.I
+.
 </th>
 <th style="text-align:center;">
-Pattern.II
+Pattern I
 </th>
 <th style="text-align:center;">
-Pattern.III
+Pattern II
 </th>
 <th style="text-align:center;">
-Pattern.IV
+Pattern III
 </th>
 <th style="text-align:center;">
-Pattern.V
+Pattern IV
+</th>
+<th style="text-align:center;">
+Pattern V
 </th>
 <th style="text-align:center;">
 Sum
@@ -184,7 +194,212 @@ Sum
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:center;">
+female
+</td>
+<td style="text-align:center;">
+Normal
+</td>
+<td style="text-align:center;">
+166 (7.92%)
+</td>
+<td style="text-align:center;">
+507 (24.2%)
+</td>
+<td style="text-align:center;">
+280 (13.37%)
+</td>
+<td style="text-align:center;">
+34 (1.62%)
+</td>
+<td style="text-align:center;">
+26 (1.24%)
+</td>
+<td style="text-align:center;">
+1013 (48.35%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Pre-DM
+</td>
+<td style="text-align:center;">
+33 (1.58%)
+</td>
+<td style="text-align:center;">
+152 (7.26%)
+</td>
+<td style="text-align:center;">
+281 (13.41%)
+</td>
+<td style="text-align:center;">
+47 (2.24%)
+</td>
+<td style="text-align:center;">
+10 (0.48%)
+</td>
+<td style="text-align:center;">
+523 (24.96%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+DM
+</td>
+<td style="text-align:center;">
+12 (0.57%)
+</td>
+<td style="text-align:center;">
+32 (1.53%)
+</td>
+<td style="text-align:center;">
+134 (6.4%)
+</td>
+<td style="text-align:center;">
+37 (1.77%)
+</td>
+<td style="text-align:center;">
+79 (3.77%)
+</td>
+<td style="text-align:center;">
+294 (14.03%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Sum
+</td>
+<td style="text-align:center;">
+211 (10.07%)
+</td>
+<td style="text-align:center;">
+691 (32.98%)
+</td>
+<td style="text-align:center;">
+695 (33.17%)
+</td>
+<td style="text-align:center;">
+118 (5.63%)
+</td>
+<td style="text-align:center;">
+115 (5.49%)
+</td>
+<td style="text-align:center;">
+1830 (87.35%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+male
+</td>
+<td style="text-align:center;">
+Normal
+</td>
+<td style="text-align:center;">
+14 (0.67%)
+</td>
+<td style="text-align:center;">
+48 (2.29%)
+</td>
+<td style="text-align:center;">
+15 (0.72%)
+</td>
+<td style="text-align:center;">
+8 (0.38%)
+</td>
+<td style="text-align:center;">
+1 (0.05%)
+</td>
+<td style="text-align:center;">
+86 (4.11%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Pre-DM
+</td>
+<td style="text-align:center;">
+3 (0.14%)
+</td>
+<td style="text-align:center;">
+50 (2.39%)
+</td>
+<td style="text-align:center;">
+21 (1%)
+</td>
+<td style="text-align:center;">
+22 (1.05%)
+</td>
+<td style="text-align:center;">
+1 (0.05%)
+</td>
+<td style="text-align:center;">
+97 (4.63%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+DM
+</td>
+<td style="text-align:center;">
+6 (0.29%)
+</td>
+<td style="text-align:center;">
+16 (0.76%)
+</td>
+<td style="text-align:center;">
+28 (1.34%)
+</td>
+<td style="text-align:center;">
+10 (0.48%)
+</td>
+<td style="text-align:center;">
+22 (1.05%)
+</td>
+<td style="text-align:center;">
+82 (3.91%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Sum
+</td>
+<td style="text-align:center;">
+23 (1.1%)
+</td>
+<td style="text-align:center;">
+114 (5.44%)
+</td>
+<td style="text-align:center;">
+64 (3.05%)
+</td>
+<td style="text-align:center;">
+40 (1.91%)
+</td>
+<td style="text-align:center;">
+24 (1.15%)
+</td>
+<td style="text-align:center;">
+265 (12.65%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Sum
+</td>
+<td style="text-align:center;">
 Normal
 </td>
 <td style="text-align:center;">
@@ -207,7 +422,9 @@ Normal
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
 Pre-DM
 </td>
 <td style="text-align:center;">
@@ -230,7 +447,9 @@ Pre-DM
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
 DM
 </td>
 <td style="text-align:center;">
@@ -253,7 +472,9 @@ DM
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
 Sum
 </td>
 <td style="text-align:center;">
@@ -553,22 +774,26 @@ Sum
 </caption>
 <thead>
 <tr>
-<th style="text-align:left;">
+<th style="text-align:center;">
+gender
 </th>
 <th style="text-align:center;">
-Pattern.I
+.
 </th>
 <th style="text-align:center;">
-Pattern.II
+Pattern I
 </th>
 <th style="text-align:center;">
-Pattern.III
+Pattern II
 </th>
 <th style="text-align:center;">
-Pattern.IV
+Pattern III
 </th>
 <th style="text-align:center;">
-Pattern.V
+Pattern IV
+</th>
+<th style="text-align:center;">
+Pattern V
 </th>
 <th style="text-align:center;">
 Sum
@@ -577,7 +802,212 @@ Sum
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:center;">
+female
+</td>
+<td style="text-align:center;">
+Normal
+</td>
+<td style="text-align:center;">
+50 (7.22%)
+</td>
+<td style="text-align:center;">
+192 (27.71%)
+</td>
+<td style="text-align:center;">
+95 (13.71%)
+</td>
+<td style="text-align:center;">
+16 (2.31%)
+</td>
+<td style="text-align:center;">
+9 (1.3%)
+</td>
+<td style="text-align:center;">
+362 (52.24%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Pre-DM
+</td>
+<td style="text-align:center;">
+9 (1.3%)
+</td>
+<td style="text-align:center;">
+55 (7.94%)
+</td>
+<td style="text-align:center;">
+102 (14.72%)
+</td>
+<td style="text-align:center;">
+19 (2.74%)
+</td>
+<td style="text-align:center;">
+3 (0.43%)
+</td>
+<td style="text-align:center;">
+188 (27.13%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+DM
+</td>
+<td style="text-align:center;">
+2 (0.29%)
+</td>
+<td style="text-align:center;">
+6 (0.87%)
+</td>
+<td style="text-align:center;">
+26 (3.75%)
+</td>
+<td style="text-align:center;">
+7 (1.01%)
+</td>
+<td style="text-align:center;">
+1 (0.14%)
+</td>
+<td style="text-align:center;">
+42 (6.06%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Sum
+</td>
+<td style="text-align:center;">
+61 (8.8%)
+</td>
+<td style="text-align:center;">
+253 (36.51%)
+</td>
+<td style="text-align:center;">
+223 (32.18%)
+</td>
+<td style="text-align:center;">
+42 (6.06%)
+</td>
+<td style="text-align:center;">
+13 (1.88%)
+</td>
+<td style="text-align:center;">
+592 (85.43%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+male
+</td>
+<td style="text-align:center;">
+Normal
+</td>
+<td style="text-align:center;">
+5 (0.72%)
+</td>
+<td style="text-align:center;">
+20 (2.89%)
+</td>
+<td style="text-align:center;">
+9 (1.3%)
+</td>
+<td style="text-align:center;">
+3 (0.43%)
+</td>
+<td style="text-align:center;">
+0 (0%)
+</td>
+<td style="text-align:center;">
+37 (5.34%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Pre-DM
+</td>
+<td style="text-align:center;">
+1 (0.14%)
+</td>
+<td style="text-align:center;">
+25 (3.61%)
+</td>
+<td style="text-align:center;">
+9 (1.3%)
+</td>
+<td style="text-align:center;">
+15 (2.16%)
+</td>
+<td style="text-align:center;">
+0 (0%)
+</td>
+<td style="text-align:center;">
+50 (7.22%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+DM
+</td>
+<td style="text-align:center;">
+0 (0%)
+</td>
+<td style="text-align:center;">
+1 (0.14%)
+</td>
+<td style="text-align:center;">
+7 (1.01%)
+</td>
+<td style="text-align:center;">
+5 (0.72%)
+</td>
+<td style="text-align:center;">
+1 (0.14%)
+</td>
+<td style="text-align:center;">
+14 (2.02%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Sum
+</td>
+<td style="text-align:center;">
+6 (0.87%)
+</td>
+<td style="text-align:center;">
+46 (6.64%)
+</td>
+<td style="text-align:center;">
+25 (3.61%)
+</td>
+<td style="text-align:center;">
+23 (3.32%)
+</td>
+<td style="text-align:center;">
+1 (0.14%)
+</td>
+<td style="text-align:center;">
+101 (14.57%)
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Sum
+</td>
+<td style="text-align:center;">
 Normal
 </td>
 <td style="text-align:center;">
@@ -600,7 +1030,9 @@ Normal
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
 Pre-DM
 </td>
 <td style="text-align:center;">
@@ -623,7 +1055,9 @@ Pre-DM
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
 DM
 </td>
 <td style="text-align:center;">
@@ -646,7 +1080,9 @@ DM
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
 Sum
 </td>
 <td style="text-align:center;">
@@ -943,47 +1379,47 @@ Sum
 </div>
 <div id="baseline_girc" class="section level3 unnumbered hasAnchor">
 <h3>初始狀態(Baseline)<a href="girc_analysis_.html#baseline_girc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="inbody-6" class="section level4 hasAnchor" number="2.2.0.1">
-<h4><span class="header-section-number">2.2.0.1</span> <strong>Inbody</strong><a href="girc_analysis_.html#inbody-6" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-63-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="inbody-8" class="section level4 hasAnchor" number="2.2.0.1">
+<h4><span class="header-section-number">2.2.0.1</span> <strong>Inbody</strong><a href="girc_analysis_.html#inbody-8" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-74-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
-<div id="blood-6" class="section level4 hasAnchor" number="2.2.0.2">
-<h4><span class="header-section-number">2.2.0.2</span> <strong>Blood</strong><a href="girc_analysis_.html#blood-6" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-64-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="blood-8" class="section level4 hasAnchor" number="2.2.0.2">
+<h4><span class="header-section-number">2.2.0.2</span> <strong>Blood</strong><a href="girc_analysis_.html#blood-8" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-75-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="endpoint_girc" class="section level3 unnumbered hasAnchor">
 <h3>介入後狀態(Endpoint)<a href="girc_analysis_.html#endpoint_girc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="inbody-7" class="section level4 hasAnchor" number="2.2.0.3">
-<h4><span class="header-section-number">2.2.0.3</span> <strong>Inbody</strong><a href="girc_analysis_.html#inbody-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-65-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="inbody-9" class="section level4 hasAnchor" number="2.2.0.3">
+<h4><span class="header-section-number">2.2.0.3</span> <strong>Inbody</strong><a href="girc_analysis_.html#inbody-9" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-76-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
-<div id="blood-7" class="section level4 hasAnchor" number="2.2.0.4">
-<h4><span class="header-section-number">2.2.0.4</span> <strong>Blood</strong><a href="girc_analysis_.html#blood-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-66-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="blood-9" class="section level4 hasAnchor" number="2.2.0.4">
+<h4><span class="header-section-number">2.2.0.4</span> <strong>Blood</strong><a href="girc_analysis_.html#blood-9" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-77-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="diet_girc" class="section level3 unnumbered hasAnchor">
 <h3>飲食(Diet)<a href="girc_analysis_.html#diet_girc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-67-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-78-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
 <div id="effectiveness_girc" class="section level3 unnumbered hasAnchor">
 <h3>成效(Effectiveness)<a href="girc_analysis_.html#effectiveness_girc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="成效-inbody-6" class="section level4 hasAnchor" number="2.2.0.5">
-<h4><span class="header-section-number">2.2.0.5</span> <strong>成效(∆)-Inbody</strong><a href="girc_analysis_.html#成效-inbody-6" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-68-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="成效-inbody-8" class="section level4 hasAnchor" number="2.2.0.5">
+<h4><span class="header-section-number">2.2.0.5</span> <strong>成效(∆)-Inbody</strong><a href="girc_analysis_.html#成效-inbody-8" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-79-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
-<div id="成效-blood-6" class="section level4 hasAnchor" number="2.2.0.6">
-<h4><span class="header-section-number">2.2.0.6</span> <strong>成效(∆)-Blood</strong><a href="girc_analysis_.html#成效-blood-6" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-69-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="成效-blood-8" class="section level4 hasAnchor" number="2.2.0.6">
+<h4><span class="header-section-number">2.2.0.6</span> <strong>成效(∆)-Blood</strong><a href="girc_analysis_.html#成效-blood-8" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-80-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
-<div id="成效-inbody-7" class="section level4 hasAnchor" number="2.2.0.7">
-<h4><span class="header-section-number">2.2.0.7</span> <strong>成效(%)-Inbody</strong><a href="girc_analysis_.html#成效-inbody-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-70-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="成效-inbody-9" class="section level4 hasAnchor" number="2.2.0.7">
+<h4><span class="header-section-number">2.2.0.7</span> <strong>成效(%)-Inbody</strong><a href="girc_analysis_.html#成效-inbody-9" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-81-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
-<div id="成效-blood-7" class="section level4 hasAnchor" number="2.2.0.8">
-<h4><span class="header-section-number">2.2.0.8</span> <strong>成效(%)-Blood</strong><a href="girc_analysis_.html#成效-blood-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-71-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="成效-blood-9" class="section level4 hasAnchor" number="2.2.0.8">
+<h4><span class="header-section-number">2.2.0.8</span> <strong>成效(%)-Blood</strong><a href="girc_analysis_.html#成效-blood-9" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-82-1.svg" width="960" style="display: block; margin: auto;" /></p>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption style="font-size: 15pt !important;">

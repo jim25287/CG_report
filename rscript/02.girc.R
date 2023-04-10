@@ -1,3 +1,15 @@
+# #self-produced GIRC curve value, based on DATABASE avg.!
+# df05_biochem %>%
+#   group_by(Pattern_minor, .drop = FALSE) %>% 
+#   summarise(
+#     insulin_0hr = mean(insulin, rm.na = TRUE) %>% round(2),
+#     insulin_1hr = mean(insulin_pc_1hr, rm.na = TRUE) %>% round(2),
+#     insulin_2hr = mean(insulin_pc_2hr, rm.na = TRUE) %>% round(2)
+#     
+#   ) %>% view()
+
+
+
 
 # Q6_stat_table_1st <- stat_table_1st %>% filter(client_type != 1) %>% filter(!is.na(insulin_baseline) & !is.na(insulin_pc_1hr_baseline) & !is.na(insulin_pc_2hr_baseline))
 Q6_stat_table_1st <- stat_table_1st_ob %>% filter(!is.na(insulin_baseline) & !is.na(insulin_pc_1hr_baseline) & !is.na(insulin_pc_2hr_baseline)) 
@@ -63,14 +75,47 @@ plot_m <- lin_insulin_rsp_pattern(Q6_stat_table_1st, c("insulin_baseline", "insu
 #篩選介入前data
 a <- df05_biochem %>% distinct(id, .keep_all = TRUE)
 
-#[input] table, rbind RowSum
-t <- table(a$DM, a$Pattern_major, exclude = "Unclassified", useNA = "no")
-t1 <- t %>% addmargins()
-t2 <- t %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
+#Presume: NA -> "female"
+a[is.na(a$gender), "gender"] <- "female"
 
-table_girc_all <- data.frame(matrix(data = paste0((t1) %>% t(), " (", (t2) %>% t(), "%)"),
-                                    nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE,
-                                    dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+
+#[input] table, rbind RowSum
+# t <- table(a$DM, a$Pattern_major,exclude = "Unclassified", useNA = "no")
+# t1 <- t %>% addmargins()
+# t2 <- t %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
+# 
+# 
+# table_girc_all <- data.frame(matrix(data = paste0((t1) %>% t(), " (", (t2) %>% t(), "%)"),
+#                                     nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE,
+#                                     dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+#   kable(format = "html", caption = "<b>Table: Pooled Data with Blood Test</b>", align = "c") %>%
+#   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+#                             full_width = FALSE, font_size = 15) %>% 
+#   footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention"))),
+#            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+#   )%>% 
+#   gsub("font-size: initial !important;", 
+#        "font-size: 15pt !important;", 
+#        .)
+# 
+# rm(list = c("t","t1", "t2"))
+
+t <- table(a$gender,a$DM, a$Pattern_major,exclude = "Unclassified", useNA = "no")
+t1 <- t %>% addmargins() %>% stats::ftable()
+t2 <- t %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2) %>% stats::ftable()
+
+t3 <- 
+  data.frame(matrix(data = paste0((t1) %>% t(), " (", (t2) %>% t(), "%)"),
+                    nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE,
+  ))
+names(t3) <- attr(t1,"col.vars") %>% unlist()
+t3$gender  <-  c(rbind(attr(t1,"row.vars")[1] %>% unlist(), "", "",""))
+t3 <- t3 %>% dplyr::relocate(gender, .before = 'Pattern I')
+t3$.  <-  attr(t1,"row.vars")[2] %>% unlist() %>% rep(times= length(attr(t1,"row.vars")[1] %>% unlist()))
+t3 <- t3 %>% dplyr::relocate('.', .before = 'Pattern I')
+
+table_girc_all <- 
+  t3 %>% 
   kable(format = "html", caption = "<b>Table: Pooled Data with Blood Test</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
@@ -81,7 +126,8 @@ table_girc_all <- data.frame(matrix(data = paste0((t1) %>% t(), " (", (t2) %>% t
        "font-size: 15pt !important;", 
        .)
 
-rm(list = c("t","t1", "t2"))
+rm(list = c("t","t1", "t2", "t3"))
+
 
 
 #DM View
@@ -133,13 +179,40 @@ rm(list = c("t","t1", "t2"))
 Q6_stat_table_1st$DM_baseline <- Q6_stat_table_1st$DM_baseline %>% factor(levels = c("Normal", "Pre-DM", "DM"))
 
 #[input] table, all: addmargins(), row:addmargins(t1:2;t2:1,2),rbind RowSum
-t <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no")
-t1 <- t %>% addmargins()
-t2 <- t %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
+# t <- table(Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no")
+# t1 <- t %>% addmargins()
+# t2 <- t %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2)
+# 
+# table_girc_ob <- data.frame(matrix(data = paste0(t1 %>% t(), " (", t2 %>% t(), "%)"), 
+#                                    nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
+#                                    dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+#   kable(format = "html", caption = "<b>Table: Stuty Group - Obesity Program</b>", align = "c") %>%
+#   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+#                             full_width = FALSE, font_size = 15) %>% 
+#   footnote(general_title = c("Note:"), general = c(rbind("", c(" Before intervention"))),
+#            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+#   )%>% 
+#   gsub("font-size: initial !important;", 
+#        "font-size: 15pt !important;", 
+#        .)
+# rm(list = c("t","t1", "t2"))
 
-table_girc_ob <- data.frame(matrix(data = paste0(t1 %>% t(), " (", t2 %>% t(), "%)"), 
-                                   nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
-                                   dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+t <- table(Q6_stat_table_1st$gender,Q6_stat_table_1st$DM_baseline, Q6_stat_table_1st$Pattern_major_baseline, exclude = "Unclassified", useNA = "no")
+t1 <- t %>% addmargins() %>% stats::ftable()
+t2 <- t %>% prop.table() %>% multiply_by(100) %>% addmargins() %>% round(2) %>% stats::ftable()
+
+t3 <- 
+  data.frame(matrix(data = paste0((t1) %>% t(), " (", (t2) %>% t(), "%)"),
+                    nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE,
+  ))
+names(t3) <- attr(t1,"col.vars") %>% unlist()
+t3$gender  <-  c(rbind(attr(t1,"row.vars")[1] %>% unlist(), "", "",""))
+t3 <- t3 %>% dplyr::relocate(gender, .before = 'Pattern I')
+t3$.  <-  attr(t1,"row.vars")[2] %>% unlist() %>% rep(times= length(attr(t1,"row.vars")[1] %>% unlist()))
+t3 <- t3 %>% dplyr::relocate('.', .before = 'Pattern I')
+
+table_girc_ob <- 
+  t3 %>% 
   kable(format = "html", caption = "<b>Table: Stuty Group - Obesity Program</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
@@ -149,7 +222,9 @@ table_girc_ob <- data.frame(matrix(data = paste0(t1 %>% t(), " (", t2 %>% t(), "
   gsub("font-size: initial !important;", 
        "font-size: 15pt !important;", 
        .)
-rm(list = c("t","t1", "t2"))
+
+rm(list = c("t","t1", "t2", "t3"))
+
 
 #DM View
 #[input] table, all: addmargins(), row:addmargins(t1:2;t2:1,2),rbind RowSum
@@ -431,3 +506,11 @@ table_02_girc <-
 
 
 
+# Pattern A -> Pattern B Comparison ---------------------------------------
+ # [Obstacle]Cannot analyze for now: do not have post-intervened OGTT in the 1st treatment,
+datasets_target_issue <- Q6_stat_table_1st %>% mutate(Pattern_change = paste(Pattern_major_baseline, Pattern_major_endpoint, sep = ">"))
+datasets_target_issue$Pattern_major_endpoint %>% table()
+datasets_target_issue$Pattern_change %>% factor(labels = )
+
+datasets_target_issue <- Q6_stat_table_1st %>% dplyr::rename(gp = Pattern_change)
+datasets_target_issue <- datasets_target_issue %>% filter(gp %in% levels(datasets_target_issue$gp))

@@ -22,7 +22,7 @@ CREATE MATERIALIZED VIEW "03_FLC_self_report" AS (
 --        AND group_classes.created_at > '2022-01-01'
     ),
     group_classes_of_flc_program_join_users_and_clients AS (
-      SELECT 
+      SELECT DISTINCT ON (clients.id, group_class_orders.group_class_id)
         group_classes_of_flc_program_join_users.*,
         group_class_orders.client_id,
         group_class_orders.group_class_id AS class_id,

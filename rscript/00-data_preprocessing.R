@@ -830,19 +830,25 @@ a3 <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "tops
 stat_table <- lin_mapping(stat_table, client_type, id, a3, client_type, id)
 rm(a3)
 
+#rm Inf/-Inf as NA.
+df <- stat_table
+df[,1:ncol(df)] <- lapply(df[,1:ncol(df)], function(x) {
+  ifelse(is.infinite(x), NA, x)
+})
+
 #Create OB. dataset
-stat_table_1st_ob <- stat_table %>% filter((client_type == 2) & 
+stat_table_1st_ob <- df %>% filter((client_type == 2) & 
                                          (!is.na(weight_baseline)) & (!is.na(weight_endpoint)) & 
                                          (!is.na(glucose_ac_baseline)) & (!is.na(glucose_ac_endpoint)) &
                                          (!is.na(note_count)))
 
 
 #Create DM. dataset
-stat_table_1st_dm <- stat_table %>% filter((client_type == 1) & 
+stat_table_1st_dm <- df %>% filter((client_type == 1) & 
                                          (!is.na(weight_baseline)) & (!is.na(weight_endpoint)) & 
                                          (!is.na(glucose_ac_baseline)) & (!is.na(glucose_ac_endpoint)) &
-                                         (!is.na(note_count))) %>% nrow()
+                                         (!is.na(note_count)))
 
 
 
-rm(list = c("stat_tm", "clinic_blood_data_ori","clinic_inbody_data_ori","df01_profile_tmp","df06_Diet_day_tmp"))
+rm(list = c("stat_tm", "clinic_blood_data_ori","clinic_inbody_data_ori","df01_profile_tmp","df06_Diet_day_tmp","df"))

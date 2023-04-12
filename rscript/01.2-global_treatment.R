@@ -516,6 +516,63 @@ cor_table_02 <- M2_df %>% gvisTable(options=list(frozenColumns = 2,
                                                  height=300))
 
 
+
+#[Cor: All numeric vars]
+
+a <- stat_table_1st_ob %>% select_if(is.numeric) %>% 
+  select(-c(id, class_freq, class_order)) %>% 
+  select_if(~ sd(., na.rm = TRUE) %>% is.nan() %>% not() & is.na(sd(., na.rm = TRUE)) %>% not()) %>% 
+  select_if(~ sum(!is.na(.)) >= 60)
+
+#SELECT 770 in order to analyze
+# a <- a %>% filter(!is.na(wepa50_baseline))
+
+library(corrplot)
+#[Correlation r] 
+M_all <- cor(a, use = "pairwise.complete.obs") %>% round(2)
+M_test_all <- cor.mtest(a , conf.level = .95)
+M_col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))  
+
+
+for (i in c(1:length(colnames(M_all)))) {
+  if (i == 1) {
+    M_all_value <- M_all %>% round(2) 
+    M_all_sign <- M_test_all$p %>% stats::symnum(corr = FALSE, na = FALSE, cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", "**", "*", ".", "ns")) %>% as.data.frame.matrix()
+    M_all_df <- M_all_value
+    M_all_df[,] <- NA
+  }
+  
+  M_all_df[,i] <- paste0(M_all_value[,i], " (", M_all_sign[,i], ")")
+  
+  if (i ==  length(colnames(M_all))) {
+    rm(list = c("M_all_value", "M_all_sign"))
+    M_all_df <- M_all_df %>% as.data.frame()
+    M_all_df <- M_all_df %>% add_column(vars = rownames(M_all_df), .before = names(M_all_df)[1])
+    M_all_df <- M_all_df %>% add_column("#" = seq(1, nrow(M_all_df)), .before = names(M_all_df)[1])
+  }
+  
+} 
+
+names(M_all_df) <- names(M_all_df) %>% lin_ch_en_format(format = "ch", origin = "en")
+rownames(M_all_df) <- rownames(M_all_df) %>% lin_ch_en_format(format = "ch", origin = "en")
+
+library(tidyverse)
+library(DT)
+cor_table_all_01 <- 
+  M_all_df %>% select(-c('#', 'vars')) %>% 
+  datatable(extensions = c('Buttons',"FixedColumns"),
+            options = list(fixedColumns = list(leftColumns = 1),
+                           dom = 'Blfrtip',
+                           # buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           initComplete = JS("function(settings, json) {","$(this.api().table().header()).css({'font-size': '12px'});","}"),
+                           scrollX = TRUE,
+                           autoWidth = TRUE,
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+
+rm(list = c("a", "M_all", "M_test_all", "M_all_df"))
+
+
 # Effi.  stratification ---------------------------------------------------
 
 #Divide into 3 group based on ∆weight
@@ -524,6 +581,7 @@ QQ1_stat_table_1st_bad$`∆weight%` %>%summary()
 QQ1_stat_table_1st_bad$id %>% unique() %>% length()
 QQ1_stat_table_1st_bad %>% summary()
 QQ1_stat_table_1st_bad$gp <- "Poor"
+
 
 QQ1_stat_table_1st_medium <- stat_table_1st_ob %>% filter((`∆weight%` > -10) & (`∆weight%` < -5) )
 QQ1_stat_table_1st_medium$`∆weight%` %>%summary()
@@ -541,29 +599,10 @@ QQ1_stat_table_1st <- rbind(QQ1_stat_table_1st_bad, QQ1_stat_table_1st_good)
 QQ1_stat_table_1st <- rbind(QQ1_stat_table_1st, QQ1_stat_table_1st_medium)
 QQ1_stat_table_1st$gp %<>% factor(levels = c("Poor", "Medium", "Good"))
 
-             #profile
-vars_en <- c("id","client_type","age","gender","date_t0","date_t1",
-             #inbody - baseline
-             "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","pbm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
-             #blood- baseline
-             "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline", "uric_acid_baseline", "amylase_baseline","lipase_baseline",
-             #inbody - endpoint
-             "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","pbm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
-             #blood- endpoint
-             "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint", "uric_acid_endpoint", "amylase_endpoint","lipase_endpoint",
-             #diet
-             "upload_day_%","note_count","pic_counts","carb_E%","protein_E%","fat_E%","calorie_day","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
-             #others
-             "gp",
-             #inbody - ∆
-             "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
-             #blood - ∆
-             "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆uric_acid","∆amylase","∆lipase",
-             #inbody - ∆%
-             "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",
-             #blood - ∆%
-             "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆uric_acid%","∆amylase%","∆lipase%"
-)
+rm(list = c("QQ1_stat_table_1st_bad","QQ1_stat_table_1st_good","QQ1_stat_table_1st_medium"))
+
+#import "vars_en"
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00_vars_vector.R")
 
 QQ1_stat_table_1st <- QQ1_stat_table_1st %>% select(vars_en)
 
@@ -575,40 +614,102 @@ names(QQ1_stat_table_1st) <- lin_ch_en_format(x = names(QQ1_stat_table_1st), for
 
 QQ1_stat_table_1st_a <- QQ1_stat_table_1st %>% select(-grep("∆", names(QQ1_stat_table_1st)))
 
-##Improvement: Uncertain, default setting
-QQ1_stat_table_1st_b <- QQ1_stat_table_1st %>% select(grep("∆", names(QQ1_stat_table_1st), value = TRUE) %>% 
-                                                        grep(paste(c("bmr", "uric_acid", "amylase", "lipase"), collapse = "|"), ., value = TRUE))
 ##Improvement: negative (減少越多，越往上長)
+QQ1_stat_table_1st_b <- QQ1_stat_table_1st %>% select(grep("∆", names(QQ1_stat_table_1st), value = TRUE) %>% 
+                                                        grep(paste(c("weight", "bmi", "bf", "pbf", "vfa_level", "wc", "ffm", "hba1c", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., value = TRUE)) %>% multiply_by(-1)
+##Improvement: default (減少越多，越往上長)
 QQ1_stat_table_1st_c <- QQ1_stat_table_1st %>% select(grep("∆", names(QQ1_stat_table_1st), value = TRUE) %>% 
-                                                        grep(paste(c("weight", "bmi", "bf", "pbf", "vfa", "wc", "ffm", "hba1c", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., value = TRUE)) %>% multiply_by(-1)
-##Improvement: positive
-QQ1_stat_table_1st_d <- QQ1_stat_table_1st %>% select(grep("∆", names(QQ1_stat_table_1st), value = TRUE) %>% 
-                                                        grep(paste(c("bsmi", "bm$", "bm%", "homa_beta", "hdl", "homa_beta"), collapse = "|"), ., value = TRUE)) %>% multiply_by(-1)
+                                                        grep(paste(c("weight", "bmi", "bf", "pbf", "vfa_level", "wc", "ffm", "hba1c", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., invert = TRUE, value = TRUE)) %>% multiply_by(-1)
 
-QQ1_stat_table_1st <- Reduce(cbind,list(QQ1_stat_table_1st_a, QQ1_stat_table_1st_b, QQ1_stat_table_1st_c, QQ1_stat_table_1st_d), accumulate =FALSE) 
+QQ1_stat_table_1st <- Reduce(cbind,list(QQ1_stat_table_1st_a, QQ1_stat_table_1st_b,QQ1_stat_table_1st_c), accumulate =FALSE) 
+
+rm(list = c("QQ1_stat_table_1st_a","QQ1_stat_table_1st_b","QQ1_stat_table_1st_c"))
 
 #order again!!
 QQ1_stat_table_1st <- QQ1_stat_table_1st %>% select(vars_en)
+
+#select observation > 50!!
+QQ1_stat_table_1st <- QQ1_stat_table_1st %>% select_if(~ sum(!is.na(.)) >= 50)
 
 #change colname to run plot
 QQ1_stat_table_1st_for_plot <- QQ1_stat_table_1st
 
 names(QQ1_stat_table_1st_for_plot) <- gsub("∆", "delta_", names(QQ1_stat_table_1st_for_plot))
-names(QQ1_stat_table_1st_for_plot) <- gsub("%", "_percent", names(QQ1_stat_table_1st_for_plot))
+names(QQ1_stat_table_1st_for_plot) <- gsub("%", "_p", names(QQ1_stat_table_1st_for_plot))
+
+vars_en_adj <- QQ1_stat_table_1st %>% names()
 
 #set output plot order
-var_vector <- c(vars_en %>% grep("baseline$", .),
-                vars_en %>% grep("endpoint$", .),
-                vars_en %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp|date", ., invert = TRUE),
-                setdiff(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .)),
-                intersect(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .))
+var_vector <- c(vars_en_adj %>% grep("baseline$", .),
+                vars_en_adj %>% grep("endpoint$", .),
+                vars_en_adj %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp|date", ., invert = TRUE),
+                setdiff(vars_en_adj %>% grep("[∆]", .), vars_en_adj %>% grep("[%]", .)),
+                intersect(vars_en_adj %>% grep("[∆]", .), vars_en_adj %>% grep("[%]", .))
 )
+
+# x0 <- c("t0","t1","delta","delta_p")
+# x1 <- (myplot_table[["vars_en_adj"]] %>% grep("^[∆]?weight",.))
+# x2 <- (myplot_table[["vars_en_adj"]] %>% grep("wepa50",.))
+# x3 <- (myplot_table[["vars_en_adj"]] %>% grep("ecw_ratio",.))
+# x4 <- which(myplot_table[["vars_en_adj"]] %in% (myplot_table[["vars_en_adj"]] %>% grep("left_arm_fat",., value = TRUE) %>% grep("percent",., invert = TRUE, value = TRUE)))
+# x5 <- (myplot_table[["vars_en_adj"]] %>% grep("water_weight_left_arm",.))
+# x6 <- (myplot_table[["vars_en_adj"]] %>% grep("hba1c",.))
+# x7 <- (myplot_table[["vars_en_adj"]] %>% grep("tg",.))
+# x8 <- (myplot_table[["vars_en_adj"]] %>% grep("egfr",.))
+# x9 <- (myplot_table[["vars_en_adj"]] %>% grep("tsh",.))
+# x10 <- (myplot_table[["vars_en_adj"]] %>% grep("wbc",.))
+# x11 <- (myplot_table[["vars_en_adj"]] %>% grep("^age",.))
+# x12 <- (myplot_table[["vars_en_adj"]] %>% grep("calorie_deficit_sum",.))
+# 
+# myplot_table$block <- NA
+
+for (i in c(1:4)) {
+  if (i == 1) {
+    myplot_table <- data.frame(num = seq(1, length(vars_en_adj)),
+                               vars_ch = lin_ch_en_format(x = vars_en_adj, format = "ch", origin = "en"))
+    myplot_table <- lin_mapping(myplot_table, vars_en_adj, vars_ch, vars_table, en, ch)
+    myplot_table <- lin_mapping(myplot_table, field, vars_ch, vars_table, field, ch)
+    
+    myplot_table <- myplot_table[var_vector,]
+    myplot_table$num <- seq(1, length(myplot_table$num))
+    
+    myplot_table$block <- NA
+    x0 <- c("t0","t1","delta","delta_p")
+    x1 <- (myplot_table[["vars_en_adj"]] %>% grep("^[∆]?weight",.))
+    x2 <- (myplot_table[["vars_en_adj"]] %>% grep("wepa50",.))
+    x3 <- (myplot_table[["vars_en_adj"]] %>% grep("ecw_ratio",.))
+    x4 <- which(myplot_table[["vars_en_adj"]] %in% (myplot_table[["vars_en_adj"]] %>% grep("left_arm_fat",., value = TRUE) %>% grep("percent",., invert = TRUE, value = TRUE)))
+    x5 <- (myplot_table[["vars_en_adj"]] %>% grep("water_weight_left_arm",.))
+    x6 <- (myplot_table[["vars_en_adj"]] %>% grep("hba1c",.))
+    x7 <- (myplot_table[["vars_en_adj"]] %>% grep("tg",.))
+    x8 <- (myplot_table[["vars_en_adj"]] %>% grep("egfr",.))
+    x9 <- (myplot_table[["vars_en_adj"]] %>% grep("tsh",.))
+    x10 <- (myplot_table[["vars_en_adj"]] %>% grep("wbc",.))
+    x11 <- (myplot_table[["vars_en_adj"]] %>% grep("lipase",.))
+    x12 <- (myplot_table[["vars_en_adj"]] %>% grep("^age",.))
+    x13 <- (myplot_table[["vars_en_adj"]] %>% grep("calorie_deficit_sum",.))
+  }
+  for (j in c(1:10)) {
+    if (j != 10) {
+      myplot_table$block[(eval(parse(text = paste0("x", j))))[i]:((eval(parse(text = paste0("x", j+1))))[i]-1)] <- paste(x0[i], j, sep = "_")
+    }else{
+      myplot_table$block[x10[i]:x11[i]] <- paste(x0[i], j, sep = "_")
+    }
+  }
+  
+  if ((i == 4) & (j == 10)) {
+    myplot_table$block[x12:x13] <- "diet"
+    rm(list = paste0("x", seq(0,13)))
+  }
+  
+}
+
 
 
 #Establish vars_table for visualization
-myplot_table <- data.frame(num = seq(1, length(vars_en)),
-                           vars_ch = lin_ch_en_format(x = vars_en, format = "ch", origin = "en"))
-myplot_table <- lin_mapping(myplot_table, vars_en, vars_ch, vars_table, en, ch)
+myplot_table <- data.frame(num = seq(1, length(vars_en_adj)),
+                           vars_ch = lin_ch_en_format(x = vars_en_adj, format = "ch", origin = "en"))
+myplot_table <- lin_mapping(myplot_table, vars_en_adj, vars_ch, vars_table, en, ch)
 myplot_table <- lin_mapping(myplot_table, field, vars_ch, vars_table, field, ch)
 
 myplot_table <- myplot_table[var_vector,]
@@ -626,20 +727,40 @@ for (i in c(var_vector)) {
   
   a <- QQ1_stat_table_1st_for_plot %>% colnames() %>% head(i) %>% tail(1)
   a_title <- myplot_table[myplot_table$num == j, "vars_ch"]
+  #observation not less than 3: count >= 3
   
+  #Poor: male >= 3
+  a1 <- (table(Count = is.na(QQ1_stat_table_1st_for_plot[[a]]), QQ1_stat_table_1st_for_plot[["gender"]], QQ1_stat_table_1st_for_plot[["gp"]]) %>% ftable())[2,1]
+  #Medium/Good: male >= 3 任2
+  a2 <- (table(Count = is.na(QQ1_stat_table_1st_for_plot[[a]]), QQ1_stat_table_1st_for_plot[["gender"]], QQ1_stat_table_1st_for_plot[["gp"]]) %>% ftable())[2,2]
+  a3 <- (table(Count = is.na(QQ1_stat_table_1st_for_plot[[a]]), QQ1_stat_table_1st_for_plot[["gender"]], QQ1_stat_table_1st_for_plot[["gp"]]) %>% ftable())[2,3]
+  if_run <- (a1 >= 3 & (a2 >= 3 | a3 >= 3)) 
   
-  #p.sign?
-  stat.test <- 
-    QQ1_stat_table_1st_for_plot %>%
-    group_by(gender) %>%
-    rstatix::t_test(as.formula(paste(a, "gp", sep = " ~ ")), ref.group = "Poor") 
-  stat.test <- stat.test %>% rstatix::add_xy_position(x = "gender", fun = "mean_se", dodge = 0.8)
-  
-  #for customed summary table - part 1/4 [p value]
-  vector_pvalue <- append(vector_pvalue, 
-                          stat.test %>% select(p.adj.signif) %>% pull() %>% head(2) %>% tail(1)
-  )
-  
+  if (if_run) {
+    #p.sign?
+    stat.test <- 
+      QQ1_stat_table_1st_for_plot %>%
+      group_by(gender) %>%
+      rstatix::t_test(as.formula(paste(a, "gp", sep = " ~ ")), ref.group = "Poor") 
+    stat.test <- stat.test %>% rstatix::add_xy_position(x = "gender", fun = "mean_se", dodge = 0.8)
+    
+    #for customed summary table - part 1/4 [p value]
+    vector_pvalue <- append(vector_pvalue, 
+                            stat.test %>% select(p.adj.signif) %>% pull() %>% head(2) %>% tail(1)
+    )
+  }else{
+    #p.sign?
+    stat.test <- 
+      QQ1_stat_table_1st_for_plot %>%
+      rstatix::t_test(as.formula(paste(a, "gp", sep = " ~ ")), ref.group = "Poor") 
+    stat.test <- stat.test %>% rstatix::add_xy_position(x = "gender", fun = "mean_se", dodge = 0.8)
+    
+    #for customed summary table - part 1/4 [p value]
+    vector_pvalue <- append(vector_pvalue, 
+                            stat.test %>% select(p.adj.signif) %>% pull() %>% head(2) %>% tail(1)
+    )
+  }
+
   #plot
   plot <- 
     QQ1_stat_table_1st_for_plot %>% 
@@ -657,7 +778,7 @@ for (i in c(var_vector)) {
     )
   
   myplots[[j]] <- plot
-  
+    
   progress(j, max = length(var_vector))
   if (j == length(var_vector)) {
     cat("-----[Completed!!]-----", rep("\n", 3))
@@ -685,7 +806,7 @@ table_01 <-
 summary_table <- 
   QQ1_stat_table_1st %>% 
   group_by(gender, gp) %>% 
-  summarize_at(vars_en[var_vector],
+  summarize_at(vars_en_adj[var_vector],
                function(x) paste(mean(x, na.rm = TRUE) %>% round(2), (sd(x, na.rm = TRUE)/sqrt(n())) %>% round(2), sep = " ± ")
   )
 
@@ -711,5 +832,4 @@ table_02 <-
        .) %>% 
   scroll_box(height = "500px", width = "100%")
 
-
-
+rm(list = c("vars_en_adj", "a1","a2","a3"))

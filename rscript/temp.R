@@ -997,3 +997,45 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       
       
       
+      
+
+# all vars analysis -------------------------------------------------------
+
+
+      
+      
+      a <- stat_table_1st_ob %>% select_if(is.numeric) %>% 
+        select(-c(id, class_freq, class_order)) %>% 
+        select_if(~ mean(., na.rm = TRUE) %>% is.nan() %>% not() & is.na(mean(., na.rm = TRUE)) %>% not()) %>% 
+        select_if(~ all(mean(.) != median(.)))
+
+      
+      library(corrplot)
+      #[Correlation r] Efficacy x Diet
+      M_all <- cor(a, use = "pairwise.complete.obs") %>% round(2)
+      #[2Do]change row,col names into chinese
+      M_test_all <- cor.mtest(a , conf.level = .95)
+      M_col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))  
+      
+      
+      for (i in c(1:length(colnames(M_all)))) {
+        if (i == 1) {
+          M_all_value <- M_all %>% round(2) 
+          M_all_sign <- M_test_all$p %>% stats::symnum(corr = FALSE, na = FALSE, cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", "**", "*", ".", "ns")) %>% as.data.frame.matrix()
+          M_all_df <- M_all_value
+          M_all_df[,] <- NA
+        }
+        
+        M_all_df[,i] <- paste0(M_all_value[,i], " (", M_all_sign[,i], ")")
+        
+        if (i ==  length(colnames(M_all))) {
+          rm(list = c("M_all_value", "M_all_sign"))
+          M_all_df <- M_all_df %>% as.data.frame()
+          M_all_df <- M_all_df %>% add_column(vars = rownames(M_all_df), .before = names(M_all_df)[1])
+          M_all_df <- M_all_df %>% add_column("#" = seq(1, nrow(M_all_df)), .before = names(M_all_df)[1])
+        }
+        
+      } 
+      
+      
+      

@@ -1,5 +1,6 @@
 SELECT
   member_id AS client_id,
+  clients.mobile,
   data->>'Body Height' AS body_height,
   data->>'Rise Height' AS rise_height,
   data->>'Scye Depth A' AS scye_depth_a,
@@ -161,6 +162,7 @@ SELECT
   data->>'Center Front Neck to Upper Front Chest Length B' AS center_front_neck_to_upper_front_chest_length_b,
   data->>'Center Front Neck to Upper Front Chest Length C' AS center_front_neck_to_upper_front_chest_length_c
 FROM measurements
+INNER JOIN clients ON clients.id = measurements.client_id
 WHERE equip_brand = 'TG3D'
   AND member_type = 'Client'
 

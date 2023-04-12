@@ -1,4 +1,4 @@
-SELECT clients.id, clients.name, clients.gender, clients.birthday AS btd, programs.name AS program_name, orgs.name AS org_name, group_classes.started_at AS date_T0, group_classes.finished_at AS date_T1
+SELECT clients.id, clients.name, clients.gender, clients.birthday AS btd, clients.mobile, programs.name AS program_name, orgs.name AS org_name, group_classes.started_at AS date_T0, group_classes.finished_at AS date_T1
 FROM clients
 INNER JOIN group_class_orders
 ON group_class_orders.client_id = clients.id

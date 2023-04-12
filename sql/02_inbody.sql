@@ -1,5 +1,6 @@
 SELECT
-  member_id AS client_id, 
+  member_id AS client_id,
+  clients.mobile,
   date AS date_inbody,
   data->'height' AS height, 
   data->'weight' AS weight, 
@@ -84,4 +85,7 @@ SELECT
   equip_serial, 
   member_type
 FROM measurements
+INNER JOIN clients
+ON clients.id = measurements.member_id
 WHERE equip_brand = 'InBody'
+  AND member_type = 'Client'

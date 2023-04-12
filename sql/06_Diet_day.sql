@@ -4,6 +4,7 @@ WITH client_diet_by_date AS (
   SELECT
     notes.client_id,
     notes.date AS date_diet,
+    clients.mobile,
     COUNT(DISTINCT notes.id) AS note_counts,
     COUNT(note_assets.id) FILTER(WHERE note_assets.url IS NOT NULL) AS pic_counts,
     COUNT(note_assets.id) FILTER(WHERE note_assets.url IS NULL) AS essay_count,
@@ -17,10 +18,11 @@ WITH client_diet_by_date AS (
      SUM((note_assets.data->>'protein')::DECIMAL) * 4 +
      SUM((note_assets.data->>'fat')::DECIMAL) * 9) AS calorie
   FROM notes
+  INNER JOIN clients ON clients.id = notes.client_id
   LEFT JOIN note_assets ON note_assets.note_id = notes.id
 --  TEMP
-  -- WHERE notes.date > '2023-02-20'
-  GROUP BY notes.client_id, notes.date
+  --  WHERE notes.date > '2023-02-20'
+  GROUP BY notes.client_id, notes.date, clients.mobile
 )
 SELECT DISTINCT ON (client_diet_by_date.client_id, client_diet_by_date.date_diet)
   client_diet_by_date.*, client_targets.begin_date, client_targets.end_date, client_targets.calorie AS calorie_target, client_targets.updated_at AS target_updated_at

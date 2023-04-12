@@ -2,6 +2,7 @@
 
 SELECT
   client_id, date AS date_diet, data->>'meal_order' AS meal_order,
+  clients.mobile,  
   SUM((data->>'carbohydrate')::NUMERIC) AS carbohydrate,
   SUM((data->>'protein')::NUMERIC) AS protein,
   SUM((data->>'fat')::NUMERIC) AS fat,
@@ -17,6 +18,7 @@ SELECT
   SUM((data->>'milk_skim')::NUMERIC) AS milk_skim,
   SUM((data->>'oil')::NUMERIC) AS oil
 FROM notes
+INNER JOIN clients ON clients.id = notes.client_id
 WHERE type = 'FoodNote'
 --  AND date > '2023-2-20'
-GROUP BY client_id, date, data->>'meal_order'
+GROUP BY client_id, date, data->>'meal_order', clients.mobile

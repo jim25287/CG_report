@@ -7,24 +7,24 @@
 #Age
 stat_table_1st_ob$age_gp <- cut(stat_table_1st_ob$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
 pie_01 <- 
-stat_table_1st_ob %>% group_by(age_gp) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Age',
-                                                                                           legend = "{position:'right'}",
-                                                                                           pieHole = 0.5,
-                                                                                           #slices = "{1:{offset:0.1}}",
-                                                                                           backgroundColor = "#f9fffb",
-                                                                                           width = "600",
-                                                                                           height = "400"))
+  stat_table_1st_ob %>% group_by(age_gp) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Age',
+                                                                                                legend = "{position:'right'}",
+                                                                                                pieHole = 0.5,
+                                                                                                #slices = "{1:{offset:0.1}}",
+                                                                                                backgroundColor = "#f9fffb",
+                                                                                                width = "600",
+                                                                                                height = "400"))
 
 #Gender
 pie_02 <- 
-stat_table_1st_ob %>% group_by(gender) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Gender',
-                                                                                           legend = "{position:'right'}",
-                                                                                           pieHole = 0.5,
-                                                                                           #slices = "{0:{offset:0.1}}",
-                                                                                           backgroundColor = "#f9fffb",
-                                                                                           colors = "['#DC3912', '#3366CC']",
-                                                                                           width = "600",
-                                                                                           height = "400"))
+  stat_table_1st_ob %>% group_by(gender) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Gender',
+                                                                                                legend = "{position:'right'}",
+                                                                                                pieHole = 0.5,
+                                                                                                #slices = "{0:{offset:0.1}}",
+                                                                                                backgroundColor = "#f9fffb",
+                                                                                                colors = "['#DC3912', '#3366CC']",
+                                                                                                width = "600",
+                                                                                                height = "400"))
 
 
 
@@ -33,22 +33,22 @@ stat_table_1st_ob %>% group_by(gender) %>% summarise(n = n()) %>% gvisPieChart(o
 stat_table_1st_ob$bmi_gp <- cut(stat_table_1st_ob$bmi_baseline, c(0,18.5,24,27,100), c("underweight", "normal", "overweight", "obesity"))
 
 pie_03 <- 
-stat_table_1st_ob %>% filter(gender == "male") %>% group_by(bmi_gp) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Male',
-                                                                                                                        legend = "{position:'right'}",
-                                                                                                                        pieHole = 0.5,
-                                                                                                                        #slices = "{2:{offset:0.1}}",
-                                                                                                                        backgroundColor = "#f9fffb",
-                                                                                                                        width = "600",
-                                                                                                                        height = "400"))
+  stat_table_1st_ob %>% filter(gender == "male") %>% group_by(bmi_gp) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Male',
+                                                                                                                             legend = "{position:'right'}",
+                                                                                                                             pieHole = 0.5,
+                                                                                                                             #slices = "{2:{offset:0.1}}",
+                                                                                                                             backgroundColor = "#f9fffb",
+                                                                                                                             width = "600",
+                                                                                                                             height = "400"))
 
 pie_04 <- 
-stat_table_1st_ob %>% filter(gender == "female") %>% group_by(bmi_gp) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Female',
-                                                                                                                          legend = "{position:'right'}",
-                                                                                                                          pieHole = 0.5,
-                                                                                                                          #slices = "{1:{offset:0.1}}",
-                                                                                                                          backgroundColor = "#f9fffb",
-                                                                                                                          width = "600",
-                                                                                                                          height = "400"))
+  stat_table_1st_ob %>% filter(gender == "female") %>% group_by(bmi_gp) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = 'Female',
+                                                                                                                               legend = "{position:'right'}",
+                                                                                                                               pieHole = 0.5,
+                                                                                                                               #slices = "{1:{offset:0.1}}",
+                                                                                                                               backgroundColor = "#f9fffb",
+                                                                                                                               width = "600",
+                                                                                                                               height = "400"))
 
 
 
@@ -167,71 +167,83 @@ library(ggplot2)
 
 
 #ggviz_bar_stack
-  global_eff_bar_df <- function(data, gender){
-    sex <- deparse(substitute(gender))
-    data <- data %>% as.tibble()
-    #create df
-    b <- data %>% filter((gender == sex) & (variable == levels(data[[deparse(substitute(variable))]])[1])) %>% select(c("Group", "N")) %>% as.data.frame() %>% t()
-    colnames(b) <- b["Group",]
-    b <- b %>%  as.data.frame()
-    b <- b["N",]
-    #transform ori table
-    b <-
-      Reduce(rbind,list(b,
-                        data %>% filter((gender == sex) & (variable == levels(data$variable)[2])) %>% select(c("Group", "N")) %>% as.data.frame() %>% select("N") %>% t() %>%  as.vector(),
-                        data %>% filter((gender == sex) & (variable == levels(data$variable)[3])) %>% select(c("Group", "N")) %>% as.data.frame() %>% select("N") %>% t() %>%  as.vector()
-      ))
-    #adjust df
-    b <- b %>% lapply(as.numeric) %>% as.tibble()
-    b$var <- levels(a$variable)
-    return(b)
-  }
-  
-  b <- global_eff_bar_df(data = a, female)
-  
-  
-  #plot
-  col_color <- 
-    paste0("[", RColorBrewer::brewer.pal(11, 'RdYlBu')[c(2,3,4,5,7,9,10)] %>% rev() %>% 
-             stringr::str_c('\'', ., '\'') %>% 
-             stringr::str_c(collapse = ","), "]")
-  
-  plot_stack_col_female <-
-    gvisColumnChart(b , xvar = "var", yvar = b %>% select(-var) %>% names() %>% rev(),
-                    options = list(isStacked = 'percent',
-                                   bar="{groupWidth:'50%'}",
-                                   title = '控糖減重成效-身體組成(Female)',
-                                   legend = "{position:'right'}",
-                                   colors = col_color,
-                                   backgroundColor = "#f9fffb",
-                                   width = "600",
-                                   height = "600"))
-  
-  b <- global_eff_bar_df(data = a, male)
-  
-  col_color <- 
-    paste0("[", RColorBrewer::brewer.pal(11, 'RdYlBu')[c(2,3,4,5,7,9,10)] %>% rev() %>% 
-             stringr::str_c('\'', ., '\'') %>% 
-             stringr::str_c(collapse = ","), "]")
-  plot_stack_col_male <-
-    gvisColumnChart(b , xvar = "var", yvar = b %>% select(-var) %>% names() %>% rev(),
-                    options = list(isStacked = 'percent',
-                                   bar="{groupWidth:'50%'}",
-                                   title = '控糖減重成效-身體組成(Male)',
-                                   legend = "{position:'right'}",
-                                   colors = col_color,
-                                   backgroundColor = "#f9fffb",
-                                   width = "600",
-                                   height = "600"))
-  
+global_eff_bar_df <- function(data, gender){
+  sex <- deparse(substitute(gender))
+  data <- data %>% as.tibble()
+  #create df
+  b <- data %>% filter((gender == sex) & (variable == levels(data[[deparse(substitute(variable))]])[1])) %>% select(c("Group", "N")) %>% as.data.frame() %>% t()
+  colnames(b) <- b["Group",]
+  b <- b %>%  as.data.frame()
+  b <- b["N",]
+  #transform ori table
+  b <-
+    Reduce(rbind,list(b,
+                      data %>% filter((gender == sex) & (variable == levels(data$variable)[2])) %>% select(c("Group", "N")) %>% as.data.frame() %>% select("N") %>% t() %>%  as.vector(),
+                      data %>% filter((gender == sex) & (variable == levels(data$variable)[3])) %>% select(c("Group", "N")) %>% as.data.frame() %>% select("N") %>% t() %>%  as.vector()
+    ))
+  #adjust df
+  b <- b %>% lapply(as.numeric) %>% as.tibble()
+  b$var <- levels(a$variable)
+  return(b)
+}
+
+b <- global_eff_bar_df(data = a, female)
+
+
+#plot
+col_color <- 
+  paste0("[", RColorBrewer::brewer.pal(11, 'RdYlBu')[c(2,3,4,5,7,9,10)] %>% rev() %>% 
+           stringr::str_c('\'', ., '\'') %>% 
+           stringr::str_c(collapse = ","), "]")
+
+plot_stack_col_female <-
+  gvisColumnChart(b , xvar = "var", yvar = b %>% select(-var) %>% names() %>% rev(),
+                  options = list(isStacked = 'percent',
+                                 bar="{groupWidth:'50%'}",
+                                 title = '控糖減重成效-身體組成(Female)',
+                                 legend = "{position:'right'}",
+                                 colors = col_color,
+                                 backgroundColor = "#f9fffb",
+                                 width = "600",
+                                 height = "600"))
+
+b <- global_eff_bar_df(data = a, male)
+
+col_color <- 
+  paste0("[", RColorBrewer::brewer.pal(11, 'RdYlBu')[c(2,3,4,5,7,9,10)] %>% rev() %>% 
+           stringr::str_c('\'', ., '\'') %>% 
+           stringr::str_c(collapse = ","), "]")
+plot_stack_col_male <-
+  gvisColumnChart(b , xvar = "var", yvar = b %>% select(-var) %>% names() %>% rev(),
+                  options = list(isStacked = 'percent',
+                                 bar="{groupWidth:'50%'}",
+                                 title = '控糖減重成效-身體組成(Male)',
+                                 legend = "{position:'right'}",
+                                 colors = col_color,
+                                 backgroundColor = "#f9fffb",
+                                 width = "600",
+                                 height = "600"))
+
 
 rm(list = c("a", "b", "data"))
 
 # Line plot ---------------------------------------------------------------
 #Establish summary table
 a <- stat_table_1st_ob %>% select(grep("baseline$", stat_table_1st_ob %>% names())) %>% select_if(is.numeric)
-
 b <- stat_table_1st_ob %>% select(grep("endpoint$", stat_table_1st_ob %>% names())) %>% select_if(is.numeric)
+var_ch <- c("weight","bmi","bf", "pbf","bsmi",  "bm", "vfa_level","wc", "ffm","bmr","hba1c", "glucose_ac", "insulin","homa_ir", "homa_beta", "tg", "tc", "hdl", "ldl", "uric_acid", "amylase","lipase")
+
+a <- a %>% select_if(is.numeric) %>%
+  select(grep(paste0("^",paste(var_ch, collapse = "|")), names(.)))
+b <- b %>% select_if(is.numeric) %>%
+  select(grep(paste0("^",paste(var_ch, collapse = "|")), names(.)))
+
+a <- a %>% select(grep("bfmi|ffmi|tbwffm|insulin_pc_1hr|insulin_pc_2hr|sd_ldl|pbm",
+                       names(a), invert = T)) 
+b <- b %>% select(grep("bfmi|ffmi|tbwffm|insulin_pc_1hr|insulin_pc_2hr|sd_ldl|pbm",
+                       names(b), invert = T)) 
+
+
 
 #[D0] mean
 stat_table_1st_ob_temp <- 
@@ -344,7 +356,7 @@ stat_table_1st_ob_temp_barchart <- stat_table_1st_ob_temp_barchart %>% mutate(sd
 
 
 #line chart
-var_ch <- c("weight","bmi","bf", "pbf","bsmi",  "bm", "vfa","wc", "ffm","bmr","hba1c", "glucose_ac", "insulin","homa_ir", "homa_beta", "tg", "tc", "hdl", "ldl", "uric_acid", "amylase","lipase")
+var_ch <- c("weight","bmi","bf", "pbf","bsmi",  "bm", "vfa_level","wc", "ffm","bmr","hba1c", "glucose_ac", "insulin","homa_ir", "homa_beta", "tg", "tc", "hdl", "ldl", "uric_acid", "amylase","lipase")
 line_plot_df <- stat_table_1st_ob_temp_barchart %>% filter(variable %in% var_ch)
 var_ch <- var_ch %>% lin_ch_en_format(format = "ch", origin = "en")
 
@@ -384,6 +396,7 @@ line_plot <-
 # 
 # #line_plot <- 
 # gvisLineChart(a, xvar = "pre_post", yvar = c("weight", "bf")) %>% plot()
+
 
 
 
@@ -647,21 +660,6 @@ var_vector <- c(vars_en_adj %>% grep("baseline$", .),
                 intersect(vars_en_adj %>% grep("[∆]", .), vars_en_adj %>% grep("[%]", .))
 )
 
-# x0 <- c("t0","t1","delta","delta_p")
-# x1 <- (myplot_table[["vars_en_adj"]] %>% grep("^[∆]?weight",.))
-# x2 <- (myplot_table[["vars_en_adj"]] %>% grep("wepa50",.))
-# x3 <- (myplot_table[["vars_en_adj"]] %>% grep("ecw_ratio",.))
-# x4 <- which(myplot_table[["vars_en_adj"]] %in% (myplot_table[["vars_en_adj"]] %>% grep("left_arm_fat",., value = TRUE) %>% grep("percent",., invert = TRUE, value = TRUE)))
-# x5 <- (myplot_table[["vars_en_adj"]] %>% grep("water_weight_left_arm",.))
-# x6 <- (myplot_table[["vars_en_adj"]] %>% grep("hba1c",.))
-# x7 <- (myplot_table[["vars_en_adj"]] %>% grep("tg",.))
-# x8 <- (myplot_table[["vars_en_adj"]] %>% grep("egfr",.))
-# x9 <- (myplot_table[["vars_en_adj"]] %>% grep("tsh",.))
-# x10 <- (myplot_table[["vars_en_adj"]] %>% grep("wbc",.))
-# x11 <- (myplot_table[["vars_en_adj"]] %>% grep("^age",.))
-# x12 <- (myplot_table[["vars_en_adj"]] %>% grep("calorie_deficit_sum",.))
-# 
-# myplot_table$block <- NA
 
 for (i in c(1:4)) {
   if (i == 1) {
@@ -704,16 +702,6 @@ for (i in c(1:4)) {
   
 }
 
-
-
-#Establish vars_table for visualization
-myplot_table <- data.frame(num = seq(1, length(vars_en_adj)),
-                           vars_ch = lin_ch_en_format(x = vars_en_adj, format = "ch", origin = "en"))
-myplot_table <- lin_mapping(myplot_table, vars_en_adj, vars_ch, vars_table, en, ch)
-myplot_table <- lin_mapping(myplot_table, field, vars_ch, vars_table, field, ch)
-
-myplot_table <- myplot_table[var_vector,]
-myplot_table$num <- seq(1, length(myplot_table$num))
 
 
 myplots <- vector('list', length(var_vector))

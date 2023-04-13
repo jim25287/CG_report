@@ -508,9 +508,9 @@ table_02_girc <-
 
 # Pattern A -> Pattern B Comparison ---------------------------------------
  # [Obstacle]Cannot analyze for now: do not have post-intervened OGTT in the 1st treatment,
-datasets_target_issue <- Q6_stat_table_1st %>% mutate(Pattern_change = paste(Pattern_major_baseline, Pattern_major_endpoint, sep = ">"))
-datasets_target_issue$Pattern_major_endpoint %>% table()
-datasets_target_issue$Pattern_change %>% factor(labels = )
-
-datasets_target_issue <- Q6_stat_table_1st %>% dplyr::rename(gp = Pattern_change)
-datasets_target_issue <- datasets_target_issue %>% filter(gp %in% levels(datasets_target_issue$gp))
+# datasets_target_issue <- Q6_stat_table_1st %>% mutate(Pattern_change = paste(Pattern_major_baseline, Pattern_major_endpoint, sep = ">"))
+# datasets_target_issue$Pattern_major_endpoint %>% table()
+# datasets_target_issue$Pattern_change %>% factor(labels = )
+# 
+# datasets_target_issue <- Q6_stat_table_1st %>% dplyr::rename(gp = Pattern_change)
+# datasets_target_issue <- datasets_target_issue %>% filter(gp %in% levels(datasets_target_issue$gp))

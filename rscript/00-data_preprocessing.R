@@ -245,8 +245,8 @@ earliest_rows$weight <- ifelse(earliest_rows$weight <= 30, NA, earliest_rows$wei
 earliest_rows$weight <- ifelse(earliest_rows$weight > 200, NA, earliest_rows$weight)
 earliest_rows$bmi <- ifelse(earliest_rows$bmi <= 10, NA, earliest_rows$bmi)
 earliest_rows$bmi <- ifelse(earliest_rows$bmi > 100, NA, earliest_rows$bmi)
-earliest_rows$fat <- ifelse(earliest_rows$fat <= 5, NA, earliest_rows$fat)
-earliest_rows$fat <- ifelse(earliest_rows$fat > 100, NA, earliest_rows$fat)
+earliest_rows$fat_mass <- ifelse(earliest_rows$fat_mass <= 5, NA, earliest_rows$fat_mass)
+earliest_rows$fat_mass <- ifelse(earliest_rows$fat_mass > 100, NA, earliest_rows$fat_mass)
 earliest_rows$wc <- ifelse(earliest_rows$wc <= 50, NA, earliest_rows$wc)
 
 
@@ -279,8 +279,8 @@ second_rows$weight <- ifelse(second_rows$weight <= 30, NA, second_rows$weight)
 second_rows$weight <- ifelse(second_rows$weight > 200, NA, second_rows$weight)
 second_rows$bmi <- ifelse(second_rows$bmi <= 10, NA, second_rows$bmi)
 second_rows$bmi <- ifelse(second_rows$bmi > 100, NA, second_rows$bmi)
-second_rows$fat <- ifelse(second_rows$fat <= 5, NA, second_rows$fat)
-second_rows$fat <- ifelse(second_rows$fat > 100, NA, second_rows$fat)
+second_rows$fat_mass <- ifelse(second_rows$fat_mass <= 5, NA, second_rows$fat_mass)
+second_rows$fat_mass <- ifelse(second_rows$fat_mass > 100, NA, second_rows$fat_mass)
 second_rows$wc <- ifelse(second_rows$wc <= 50, NA, second_rows$wc)
 
 
@@ -363,6 +363,9 @@ names(df04_non_FLC_self_report) <- c("client_id","date_free_t0","date_free_t1", 
                                      "wc_after", "weight_delta", "bmi_delta", "fat_delta", 
                                      "wc_delta", "weight_delta_p", "bmi_delta_p", "fat_delta_p", 
                                      "wc_delta_p","age", "note_count", "upload_day_p")
+
+
+
 names(df04_non_FLC_self_report) <- names(df04_non_FLC_self_report) %>% lin_ch_en_format(format = "en", origin = "raw_en")
 
 
@@ -467,32 +470,48 @@ df06_Diet_day <- df06_Diet_day %>% filter(!is.na(client_id))
 #merge day/meal
 df06_Diet_day <- merge(df06_Diet_day, df07_Diet_meal, by.x = c("client_id", "date_diet"), all.x = TRUE)
 
-#outliers adjust:
-  #all record should be replaced by avg performance, instead of caloire only.
-id_diet <- df06_Diet_day[(df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]])), "client_id"] %>% unique()
-# [執行時間]
-# 使用者      系統      流逝 
-# 14342.534  5612.097 28568.632 
-for (i in c(id_diet)) {
-  if (i == c(id_diet) %>% head(1)) {
-    ptm <- proc.time()
-    j = 1
-  }
-  df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]]))), df06_Diet_day %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] <- 
-    df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] >= 500)), df06_Diet_day %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] %>% lapply(., function(x) mean(x, na.rm =TRUE) %>% round(2))
-  
-  
-  progress(j, length(id_diet))
-  j = j + 1
-  
-  if (i == c(id_diet) %>% tail(1)) {
-    cat("\n[Completed!]\n")
-    cat("\n[執行時間]\n")
-    # (115279/115279) 09:08:45
-    print(proc.time() - ptm)
-    rm(id_diet)
-  }
-}
+
+# [Old]#outliers adjust:
+#   #all record should be replaced by avg performance, instead of caloire only.
+# id_diet <- df06_Diet_day[(df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]])), "client_id"] %>% unique()
+# # [執行時間]
+# # 使用者      系統      流逝 
+# # 14342.534  5612.097 28568.632 
+# for (i in c(id_diet)) {
+#   if (i == c(id_diet) %>% head(1)) {
+#     ptm <- proc.time()
+#     j = 1
+#   }
+#   df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] < 500) | (is.na(df06_Diet_day[["calorie"]]))), df06_Diet_day %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] <- 
+#     df06_Diet_day[(df06_Diet_day[["client_id"]] == i) & ((df06_Diet_day[["calorie"]] >= 500)), df06_Diet_day %>% names() %>% grep("client_id|date_diet|begin_date|end_date|target_updated_at", .,  invert = TRUE)] %>% lapply(., function(x) mean(x, na.rm =TRUE) %>% round(2))
+#   
+#   
+#   progress(j, length(id_diet))
+#   j = j + 1
+#   
+#   if (i == c(id_diet) %>% tail(1)) {
+#     cat("\n[Completed!]\n")
+#     cat("\n[執行時間]\n")
+#     # (115279/115279) 09:08:45
+#     print(proc.time() - ptm)
+#     rm(id_diet)
+#   }
+# }
+
+#[Reviced: improve 99.39% efficiency]
+# 使用者    系統    流逝 
+# 136.849  20.287 173.887 
+df06_Diet_day <- df06_Diet_day %>% 
+  group_by(client_id) %>% 
+  mutate_at(vars(c("note_counts","pic_counts","essay_count","light_green_count","light_yellow_count","light_red_count","carbohydrate","protein","fat","calorie","calorie_target","fruits","vegetables","grains","meat_bean","milk","oil")),
+            ~ifelse(calorie < 500 | is.na(calorie), NA, .)) %>% 
+  mutate_at(vars(c("calorie_target","fruits","vegetables","grains","meat_bean","milk","oil")),
+            ~ifelse(is.na(calorie), mean(., na.rm = TRUE), .)) %>%
+  mutate_at(vars(c("note_counts","pic_counts","essay_count","light_green_count","light_yellow_count","light_red_count","carbohydrate","protein","fat","calorie")),
+            ~ifelse(is.na(calorie), mean(., na.rm = TRUE), .)) %>%
+  ungroup()
+
+
 
 
 #calorie_deficit
@@ -565,7 +584,7 @@ stat_tm <- stat_tm %>% filter( ((id %in% stat_tm[which(duplicated(stat_tm$id)),"
 
 
 
-
+#each id cost 0.47 sec
 for (i in c(unique(stat_tm[["id"]]))) {
   #1. create dataframe
   if (i == (c(unique(stat_tm[["id"]])) %>% head(1))) {
@@ -832,9 +851,8 @@ rm(a3)
 
 #rm Inf/-Inf as NA.
 df <- stat_table
-df[,1:ncol(df)] <- lapply(df[,1:ncol(df)], function(x) {
-  ifelse(is.infinite(x), NA, x)
-})
+df <- df %>% 
+  mutate_if(is.numeric, ~ifelse(is.infinite(.), NA, .))
 
 #Create OB. dataset
 stat_table_1st_ob <- df %>% filter((client_type == 2) & 

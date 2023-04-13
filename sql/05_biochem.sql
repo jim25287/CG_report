@@ -1,5 +1,6 @@
 SELECT
   member_id AS client_id,
+  clients.mobile,
   date AS date_blood,
   measurements.data->>'glucose_ac' AS glucose_ac,
   measurements.data->>'glucose_pc_1hr' AS glucose_pc_1hr,
@@ -78,5 +79,6 @@ SELECT
   measurements.data->>'apoli_b' AS apoli_b,
   measurements.data->>'apolib_ai_ratio' AS apolib_ai_ratio
 FROM measurements
-WHERE provider = 'soft_bio'
+INNER JOIN clients ON clients.id = measurements.member_id
+WHERE measurements.provider = 'soft_bio'
   AND member_type = 'Client';

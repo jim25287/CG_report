@@ -1,6 +1,7 @@
 SELECT
-  member_id AS client_id, 
-  date AS date_inbody,
+  member_id AS client_id,
+  clients.mobile,
+  measurements.date AS date_inbody,
   data->'height' AS height, 
   data->'weight' AS weight, 
   data->'bmi' AS bmi, 
@@ -21,10 +22,13 @@ SELECT
   data->'body_mineral' AS body_mineral, 
   data->'bfmi' AS bfmi, 
   data->'bsmi' AS bsmi, 
-  data->'ffmi' AS ffmi, 
-  data->'systolic_blood_pressure' AS systolic_blood_pressure, 
-  data->'diastolic_blood_pressure' AS diastolic_blood_pressure, 
-  data->'pulse' AS pulse, 
+  data->'ffmi' AS ffmi,
+  blood_data.systolic_blood_pressure,
+  blood_data.diastolic_blood_pressure,
+  blood_data.pulse,
+--  data->'systolic_blood_pressure' AS systolic_blood_pressure,
+--  data->'diastolic_blood_pressure' AS diastolic_blood_pressure,
+--  data->'pulse' AS pulse,
   data->'bmr' AS bmr, 
   data->'wepa50' AS wepa50, 
   data->'algle_50_left_arm' AS algle_50_left_arm, 
@@ -83,5 +87,26 @@ SELECT
   equip_model, 
   equip_serial, 
   member_type
-FROM measurements
-WHERE equip_brand = 'InBody'
+FROM (
+  SELECT * FROM measurements
+  WHERE equip_brand = 'InBody'
+) AS measurements
+LEFT JOIN (
+  SELECT 
+  member_id AS client_id,
+  date,
+  data->'systolic_blood_pressure' AS systolic_blood_pressure,
+  data->'diastolic_blood_pressure' AS diastolic_blood_pressure,
+  data->'pulse' AS pulse
+  FROM measurements
+  WHERE equip_brand = 'imedtac'
+) AS blood_data
+  ON blood_data.client_id = measurements.member_id
+  AND blood_data.date = measurements.date
+INNER JOIN clients
+ON clients.id = measurements.member_id
+WHERE member_type = 'Client'
+--  and data->>'pulse' IS NOt NULL
+  
+
+select *, equip_brand from measurements where data->>'extracelluar_water_ratio_left_leg' is not null

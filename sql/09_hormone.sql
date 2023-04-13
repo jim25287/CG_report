@@ -9,9 +9,11 @@ FROM CROSSTAB(
   WITH surveys_with_answers AS (
     SELECT
       surveys.target_id AS client_id,
+      clients.mobile,
       surveys.taken_at AS date_hormone,
       survey_answers.*
     FROM surveys
+    INNER JOIN clients ON clients.id = surveys.target_id
     INNER JOIN question_sets
       ON question_sets.survey_form_id = surveys.survey_form_id
     INNER JOIN (
@@ -41,16 +43,16 @@ FROM CROSSTAB(
       INNER JOIN question_sets on question_sets.id = questions.question_set_id
       WHERE question_sets.score_calculation_type = 4
     )
-  SELECT client_id, surveys_with_answers.date_hormone, choices.score, COUNT(choices.score)
+  SELECT client_id, mobile, surveys_with_answers.date_hormone, choices.score, COUNT(choices.score)
   FROM surveys_with_answers
   INNER JOIN LP_scores_of_choices AS choices
   ON choices.id = surveys_with_answers.choice_id
-  GROUP BY client_id, date_hormone, choices.score
+  GROUP BY client_id, mobile, date_hormone, choices.score
   UNION
-  SELECT surveys_with_answers.client_id, surveys_with_answers.date_hormone, choices.score, COUNT(choices.score)
+  SELECT surveys_with_answers.client_id, mobile, surveys_with_answers.date_hormone, choices.score, COUNT(choices.score)
   FROM surveys_with_answers
   INNER JOIN tclea_scores_of_choices AS choices
   ON choices.id = surveys_with_answers.choice_id
-  GROUP BY client_id, date_hormone, choices.score
+  GROUP BY client_id, mobile, date_hormone, choices.score
   $$, $$VALUES('L'), ('P'), ('t'), ('c'), ('l'), ('e'), ('a')$$
-) AS ct("client_id" INT, "date_hormone" TEXT, "hormone_L" TEXT, "hormone_P" TEXT, "hormone_t" INT, "hormone_c" TEXT, "hormone_l" TEXT, "hormone_e" INT, "hormone_a" INT)
+) AS ct("client_id" INT, "mobile" TEXT, "date_hormone" TEXT, "hormone_L" TEXT, "hormone_P" TEXT, "hormone_t" INT, "hormone_c" TEXT, "hormone_l" TEXT, "hormone_e" INT, "hormone_a" INT)

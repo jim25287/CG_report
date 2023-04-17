@@ -4,9 +4,13 @@
 for (let i = 0; i < tables.length; i++) {
     let table = tables[i];
     table.innerHTML = table.innerHTML.replace(/\(#tab:input rscript\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_global\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_test\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_sua\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_girc\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_flc\)/g, "");
 }
 </script>
-
 
 
 

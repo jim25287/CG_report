@@ -51,6 +51,21 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.1/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.27/datatables.js"></script>
+<link href="libs/dt-core-1.12.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.12.1/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.12.1/js/jquery.dataTables.min.js"></script>
+<link href="libs/dt-ext-buttons-1.12.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="libs/dt-ext-buttons-1.12.1/js/dataTables.buttons.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.html5.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.colVis.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.print.min.js"></script>
+<link href="libs/dt-ext-fixedcolumns-1.12.1/css/fixedColumns.dataTables.min.css" rel="stylesheet" />
+<script src="libs/dt-ext-fixedcolumns-1.12.1/js/dataTables.fixedColumns.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <!-- Google tag (gtag.js) -->
@@ -91,7 +106,8 @@
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#baseline_ob"><i class="fa fa-check"></i>初始狀態(Baseline)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#endpoint_ob"><i class="fa fa-check"></i>介入後狀態(Endpoint)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#diet_ob"><i class="fa fa-check"></i>飲食(Diet)</a></li>
-<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#effectiveness_ob"><i class="fa fa-check"></i>成效(Effectiveness)</a></li>
+<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#delta_ob"><i class="fa fa-check"></i>∆成效(Effectiveness)</a></li>
+<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#delta_p_ob"><i class="fa fa-check"></i>∆成效(%)(Effectiveness)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#Summary_ob"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
 <li class="chapter" data-level="1.6" data-path="strat_1_testosterone.html"><a href="strat_1_testosterone.html"><i class="fa fa-check"></i><b>1.6</b> 分層分析-2: 男性:睪固酮(Testosterone)</a>
@@ -162,7 +178,7 @@
 <h3>DM x GIRC分佈(All)<a href="girc_analysis_.html#girc_table_all" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption style="font-size: 15pt !important;">
-<b>Table: Pooled Data with Blood Test</b>
+(#tab:input plot rscript_girc)<b>Table: Pooled Data with Blood Test</b>
 </caption>
 <thead>
 <tr>
@@ -201,22 +217,22 @@ female
 Normal
 </td>
 <td style="text-align:center;">
-166 (7.92%)
+176 (8.12%)
 </td>
 <td style="text-align:center;">
-507 (24.2%)
+520 (23.99%)
 </td>
 <td style="text-align:center;">
-280 (13.37%)
+286 (13.19%)
 </td>
 <td style="text-align:center;">
-34 (1.62%)
+37 (1.71%)
 </td>
 <td style="text-align:center;">
-26 (1.24%)
+26 (1.2%)
 </td>
 <td style="text-align:center;">
-1013 (48.35%)
+1045 (48.2%)
 </td>
 </tr>
 <tr>
@@ -226,22 +242,22 @@ Normal
 Pre-DM
 </td>
 <td style="text-align:center;">
-33 (1.58%)
+34 (1.57%)
 </td>
 <td style="text-align:center;">
-152 (7.26%)
+156 (7.2%)
 </td>
 <td style="text-align:center;">
-281 (13.41%)
+292 (13.47%)
 </td>
 <td style="text-align:center;">
-47 (2.24%)
+49 (2.26%)
 </td>
 <td style="text-align:center;">
-10 (0.48%)
+10 (0.46%)
 </td>
 <td style="text-align:center;">
-523 (24.96%)
+541 (24.95%)
 </td>
 </tr>
 <tr>
@@ -251,22 +267,22 @@ Pre-DM
 DM
 </td>
 <td style="text-align:center;">
-12 (0.57%)
+14 (0.65%)
 </td>
 <td style="text-align:center;">
-32 (1.53%)
+33 (1.52%)
 </td>
 <td style="text-align:center;">
-134 (6.4%)
+139 (6.41%)
 </td>
 <td style="text-align:center;">
-37 (1.77%)
+40 (1.85%)
 </td>
 <td style="text-align:center;">
-79 (3.77%)
+80 (3.69%)
 </td>
 <td style="text-align:center;">
-294 (14.03%)
+306 (14.11%)
 </td>
 </tr>
 <tr>
@@ -276,22 +292,22 @@ DM
 Sum
 </td>
 <td style="text-align:center;">
-211 (10.07%)
+224 (10.33%)
 </td>
 <td style="text-align:center;">
-691 (32.98%)
+709 (32.7%)
 </td>
 <td style="text-align:center;">
-695 (33.17%)
+717 (33.07%)
 </td>
 <td style="text-align:center;">
-118 (5.63%)
+126 (5.81%)
 </td>
 <td style="text-align:center;">
-115 (5.49%)
+116 (5.35%)
 </td>
 <td style="text-align:center;">
-1830 (87.35%)
+1892 (87.27%)
 </td>
 </tr>
 <tr>
@@ -302,22 +318,22 @@ male
 Normal
 </td>
 <td style="text-align:center;">
-14 (0.67%)
+15 (0.69%)
 </td>
 <td style="text-align:center;">
-48 (2.29%)
+51 (2.35%)
 </td>
 <td style="text-align:center;">
-15 (0.72%)
+17 (0.78%)
 </td>
 <td style="text-align:center;">
-8 (0.38%)
+8 (0.37%)
 </td>
 <td style="text-align:center;">
 1 (0.05%)
 </td>
 <td style="text-align:center;">
-86 (4.11%)
+92 (4.24%)
 </td>
 </tr>
 <tr>
@@ -327,22 +343,22 @@ Normal
 Pre-DM
 </td>
 <td style="text-align:center;">
-3 (0.14%)
+4 (0.18%)
 </td>
 <td style="text-align:center;">
-50 (2.39%)
+50 (2.31%)
 </td>
 <td style="text-align:center;">
-21 (1%)
+23 (1.06%)
 </td>
 <td style="text-align:center;">
-22 (1.05%)
+23 (1.06%)
 </td>
 <td style="text-align:center;">
 1 (0.05%)
 </td>
 <td style="text-align:center;">
-97 (4.63%)
+101 (4.66%)
 </td>
 </tr>
 <tr>
@@ -352,22 +368,22 @@ Pre-DM
 DM
 </td>
 <td style="text-align:center;">
-6 (0.29%)
+6 (0.28%)
 </td>
 <td style="text-align:center;">
-16 (0.76%)
+16 (0.74%)
 </td>
 <td style="text-align:center;">
-28 (1.34%)
+29 (1.34%)
 </td>
 <td style="text-align:center;">
-10 (0.48%)
+10 (0.46%)
 </td>
 <td style="text-align:center;">
-22 (1.05%)
+22 (1.01%)
 </td>
 <td style="text-align:center;">
-82 (3.91%)
+83 (3.83%)
 </td>
 </tr>
 <tr>
@@ -377,22 +393,22 @@ DM
 Sum
 </td>
 <td style="text-align:center;">
-23 (1.1%)
+25 (1.15%)
 </td>
 <td style="text-align:center;">
-114 (5.44%)
+117 (5.4%)
 </td>
 <td style="text-align:center;">
-64 (3.05%)
+69 (3.18%)
 </td>
 <td style="text-align:center;">
-40 (1.91%)
+41 (1.89%)
 </td>
 <td style="text-align:center;">
-24 (1.15%)
+24 (1.11%)
 </td>
 <td style="text-align:center;">
-265 (12.65%)
+276 (12.73%)
 </td>
 </tr>
 <tr>
@@ -403,22 +419,22 @@ Sum
 Normal
 </td>
 <td style="text-align:center;">
-180 (8.59%)
+191 (8.81%)
 </td>
 <td style="text-align:center;">
-555 (26.49%)
+571 (26.34%)
 </td>
 <td style="text-align:center;">
-295 (14.08%)
+303 (13.98%)
 </td>
 <td style="text-align:center;">
-42 (2%)
+45 (2.08%)
 </td>
 <td style="text-align:center;">
-27 (1.29%)
+27 (1.25%)
 </td>
 <td style="text-align:center;">
-1099 (52.46%)
+1137 (52.44%)
 </td>
 </tr>
 <tr>
@@ -428,22 +444,22 @@ Normal
 Pre-DM
 </td>
 <td style="text-align:center;">
-36 (1.72%)
+38 (1.75%)
 </td>
 <td style="text-align:center;">
-202 (9.64%)
+206 (9.5%)
 </td>
 <td style="text-align:center;">
-302 (14.42%)
+315 (14.53%)
 </td>
 <td style="text-align:center;">
-69 (3.29%)
+72 (3.32%)
 </td>
 <td style="text-align:center;">
-11 (0.53%)
+11 (0.51%)
 </td>
 <td style="text-align:center;">
-620 (29.59%)
+642 (29.61%)
 </td>
 </tr>
 <tr>
@@ -453,22 +469,22 @@ Pre-DM
 DM
 </td>
 <td style="text-align:center;">
-18 (0.86%)
+20 (0.92%)
 </td>
 <td style="text-align:center;">
-48 (2.29%)
+49 (2.26%)
 </td>
 <td style="text-align:center;">
-162 (7.73%)
+168 (7.75%)
 </td>
 <td style="text-align:center;">
-47 (2.24%)
+50 (2.31%)
 </td>
 <td style="text-align:center;">
-101 (4.82%)
+102 (4.7%)
 </td>
 <td style="text-align:center;">
-376 (17.95%)
+389 (17.94%)
 </td>
 </tr>
 <tr>
@@ -478,22 +494,22 @@ DM
 Sum
 </td>
 <td style="text-align:center;">
-234 (11.17%)
+249 (11.49%)
 </td>
 <td style="text-align:center;">
-805 (38.42%)
+826 (38.1%)
 </td>
 <td style="text-align:center;">
-759 (36.23%)
+786 (36.25%)
 </td>
 <td style="text-align:center;">
-158 (7.54%)
+167 (7.7%)
 </td>
 <td style="text-align:center;">
-139 (6.63%)
+140 (6.46%)
 </td>
 <td style="text-align:center;">
-2095 (100%)
+2168 (100%)
 </td>
 </tr>
 </tbody>
@@ -507,7 +523,7 @@ Sum
 </table>
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption style="font-size: 15pt !important;">
-<b>Table: Pooled Data with Blood Test(DM View)</b>
+(#tab:input plot rscript_girc)<b>Table: Pooled Data with Blood Test(DM View)</b>
 </caption>
 <thead>
 <tr>
@@ -539,22 +555,22 @@ Sum
 Normal
 </td>
 <td style="text-align:center;">
-180 (16.38%)
+191 (16.8%)
 </td>
 <td style="text-align:center;">
-555 (50.5%)
+571 (50.22%)
 </td>
 <td style="text-align:center;">
-295 (26.84%)
+303 (26.65%)
 </td>
 <td style="text-align:center;">
-42 (3.82%)
+45 (3.96%)
 </td>
 <td style="text-align:center;">
-27 (2.46%)
+27 (2.37%)
 </td>
 <td style="text-align:center;">
-1099 (100%)
+1137 (100%)
 </td>
 </tr>
 <tr>
@@ -562,22 +578,22 @@ Normal
 Pre-DM
 </td>
 <td style="text-align:center;">
-36 (5.81%)
+38 (5.92%)
 </td>
 <td style="text-align:center;">
-202 (32.58%)
+206 (32.09%)
 </td>
 <td style="text-align:center;">
-302 (48.71%)
+315 (49.07%)
 </td>
 <td style="text-align:center;">
-69 (11.13%)
+72 (11.21%)
 </td>
 <td style="text-align:center;">
-11 (1.77%)
+11 (1.71%)
 </td>
 <td style="text-align:center;">
-620 (100%)
+642 (100%)
 </td>
 </tr>
 <tr>
@@ -585,22 +601,22 @@ Pre-DM
 DM
 </td>
 <td style="text-align:center;">
-18 (4.79%)
+20 (5.14%)
 </td>
 <td style="text-align:center;">
-48 (12.77%)
+49 (12.6%)
 </td>
 <td style="text-align:center;">
-162 (43.09%)
+168 (43.19%)
 </td>
 <td style="text-align:center;">
-47 (12.5%)
+50 (12.85%)
 </td>
 <td style="text-align:center;">
-101 (26.86%)
+102 (26.22%)
 </td>
 <td style="text-align:center;">
-376 (100%)
+389 (100%)
 </td>
 </tr>
 <tr>
@@ -608,22 +624,22 @@ DM
 Total
 </td>
 <td style="text-align:center;">
-234
+249
 </td>
 <td style="text-align:center;">
-805
+826
 </td>
 <td style="text-align:center;">
-759
+786
 </td>
 <td style="text-align:center;">
-158
+167
 </td>
 <td style="text-align:center;">
-139
+140
 </td>
 <td style="text-align:center;">
-2095
+2168
 </td>
 </tr>
 </tbody>
@@ -637,7 +653,7 @@ Total
 </table>
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption style="font-size: 15pt !important;">
-<b>Table: Pooled Data with Blood Test(IR View)</b>
+(#tab:input plot rscript_girc)<b>Table: Pooled Data with Blood Test(IR View)</b>
 </caption>
 <thead>
 <tr>
@@ -669,22 +685,22 @@ Total
 Normal
 </td>
 <td style="text-align:center;">
-180 (76.92%)
+191 (76.71%)
 </td>
 <td style="text-align:center;">
-555 (68.94%)
+571 (69.13%)
 </td>
 <td style="text-align:center;">
-295 (38.87%)
+303 (38.55%)
 </td>
 <td style="text-align:center;">
-42 (26.58%)
+45 (26.95%)
 </td>
 <td style="text-align:center;">
-27 (19.42%)
+27 (19.29%)
 </td>
 <td style="text-align:center;">
-1099
+1137
 </td>
 </tr>
 <tr>
@@ -692,22 +708,22 @@ Normal
 Pre-DM
 </td>
 <td style="text-align:center;">
-36 (15.38%)
+38 (15.26%)
 </td>
 <td style="text-align:center;">
-202 (25.09%)
+206 (24.94%)
 </td>
 <td style="text-align:center;">
-302 (39.79%)
+315 (40.08%)
 </td>
 <td style="text-align:center;">
-69 (43.67%)
+72 (43.11%)
 </td>
 <td style="text-align:center;">
-11 (7.91%)
+11 (7.86%)
 </td>
 <td style="text-align:center;">
-620
+642
 </td>
 </tr>
 <tr>
@@ -715,22 +731,22 @@ Pre-DM
 DM
 </td>
 <td style="text-align:center;">
-18 (7.69%)
+20 (8.03%)
 </td>
 <td style="text-align:center;">
-48 (5.96%)
+49 (5.93%)
 </td>
 <td style="text-align:center;">
-162 (21.34%)
+168 (21.37%)
 </td>
 <td style="text-align:center;">
-47 (29.75%)
+50 (29.94%)
 </td>
 <td style="text-align:center;">
-101 (72.66%)
+102 (72.86%)
 </td>
 <td style="text-align:center;">
-376
+389
 </td>
 </tr>
 <tr>
@@ -738,22 +754,22 @@ DM
 Sum
 </td>
 <td style="text-align:center;">
-234 (100%)
+249 (100%)
 </td>
 <td style="text-align:center;">
-805 (100%)
+826 (100%)
 </td>
 <td style="text-align:center;">
-759 (100%)
+786 (100%)
 </td>
 <td style="text-align:center;">
-158 (100%)
+167 (100%)
 </td>
 <td style="text-align:center;">
-139 (100%)
+140 (100%)
 </td>
 <td style="text-align:center;">
-2095
+2168
 </td>
 </tr>
 </tbody>
@@ -770,7 +786,7 @@ Sum
 <h3>DM x GIRC分佈(Obesity Program)<a href="girc_analysis_.html#girc_table_ob" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption style="font-size: 15pt !important;">
-<b>Table: Stuty Group - Obesity Program</b>
+(#tab:input plot rscript_girc)<b>Table: Stuty Group - Obesity Program</b>
 </caption>
 <thead>
 <tr>
@@ -809,22 +825,22 @@ female
 Normal
 </td>
 <td style="text-align:center;">
-50 (7.22%)
+51 (7.18%)
 </td>
 <td style="text-align:center;">
-192 (27.71%)
+196 (27.61%)
 </td>
 <td style="text-align:center;">
-95 (13.71%)
+96 (13.52%)
 </td>
 <td style="text-align:center;">
-16 (2.31%)
+16 (2.25%)
 </td>
 <td style="text-align:center;">
-9 (1.3%)
+9 (1.27%)
 </td>
 <td style="text-align:center;">
-362 (52.24%)
+368 (51.83%)
 </td>
 </tr>
 <tr>
@@ -834,22 +850,22 @@ Normal
 Pre-DM
 </td>
 <td style="text-align:center;">
-9 (1.3%)
+9 (1.27%)
 </td>
 <td style="text-align:center;">
-55 (7.94%)
+58 (8.17%)
 </td>
 <td style="text-align:center;">
-102 (14.72%)
+105 (14.79%)
 </td>
 <td style="text-align:center;">
-19 (2.74%)
+19 (2.68%)
 </td>
 <td style="text-align:center;">
-3 (0.43%)
+3 (0.42%)
 </td>
 <td style="text-align:center;">
-188 (27.13%)
+194 (27.32%)
 </td>
 </tr>
 <tr>
@@ -859,22 +875,22 @@ Pre-DM
 DM
 </td>
 <td style="text-align:center;">
-2 (0.29%)
+2 (0.28%)
 </td>
 <td style="text-align:center;">
-6 (0.87%)
+6 (0.85%)
 </td>
 <td style="text-align:center;">
-26 (3.75%)
+26 (3.66%)
 </td>
 <td style="text-align:center;">
-7 (1.01%)
+7 (0.99%)
 </td>
 <td style="text-align:center;">
 1 (0.14%)
 </td>
 <td style="text-align:center;">
-42 (6.06%)
+42 (5.92%)
 </td>
 </tr>
 <tr>
@@ -884,22 +900,22 @@ DM
 Sum
 </td>
 <td style="text-align:center;">
-61 (8.8%)
+62 (8.73%)
 </td>
 <td style="text-align:center;">
-253 (36.51%)
+260 (36.62%)
 </td>
 <td style="text-align:center;">
-223 (32.18%)
+227 (31.97%)
 </td>
 <td style="text-align:center;">
-42 (6.06%)
+42 (5.92%)
 </td>
 <td style="text-align:center;">
-13 (1.88%)
+13 (1.83%)
 </td>
 <td style="text-align:center;">
-592 (85.43%)
+604 (85.07%)
 </td>
 </tr>
 <tr>
@@ -910,22 +926,22 @@ male
 Normal
 </td>
 <td style="text-align:center;">
-5 (0.72%)
+5 (0.7%)
 </td>
 <td style="text-align:center;">
-20 (2.89%)
+20 (2.82%)
 </td>
 <td style="text-align:center;">
-9 (1.3%)
+9 (1.27%)
 </td>
 <td style="text-align:center;">
-3 (0.43%)
+3 (0.42%)
 </td>
 <td style="text-align:center;">
 0 (0%)
 </td>
 <td style="text-align:center;">
-37 (5.34%)
+37 (5.21%)
 </td>
 </tr>
 <tr>
@@ -938,19 +954,19 @@ Pre-DM
 1 (0.14%)
 </td>
 <td style="text-align:center;">
-25 (3.61%)
+28 (3.94%)
 </td>
 <td style="text-align:center;">
-9 (1.3%)
+10 (1.41%)
 </td>
 <td style="text-align:center;">
-15 (2.16%)
+15 (2.11%)
 </td>
 <td style="text-align:center;">
 0 (0%)
 </td>
 <td style="text-align:center;">
-50 (7.22%)
+54 (7.61%)
 </td>
 </tr>
 <tr>
@@ -966,16 +982,16 @@ DM
 1 (0.14%)
 </td>
 <td style="text-align:center;">
-7 (1.01%)
+8 (1.13%)
 </td>
 <td style="text-align:center;">
-5 (0.72%)
+5 (0.7%)
 </td>
 <td style="text-align:center;">
 1 (0.14%)
 </td>
 <td style="text-align:center;">
-14 (2.02%)
+15 (2.11%)
 </td>
 </tr>
 <tr>
@@ -985,22 +1001,22 @@ DM
 Sum
 </td>
 <td style="text-align:center;">
-6 (0.87%)
+6 (0.85%)
 </td>
 <td style="text-align:center;">
-46 (6.64%)
+49 (6.9%)
 </td>
 <td style="text-align:center;">
-25 (3.61%)
+27 (3.8%)
 </td>
 <td style="text-align:center;">
-23 (3.32%)
+23 (3.24%)
 </td>
 <td style="text-align:center;">
 1 (0.14%)
 </td>
 <td style="text-align:center;">
-101 (14.57%)
+106 (14.93%)
 </td>
 </tr>
 <tr>
@@ -1011,22 +1027,22 @@ Sum
 Normal
 </td>
 <td style="text-align:center;">
-55 (7.94%)
+56 (7.89%)
 </td>
 <td style="text-align:center;">
-212 (30.59%)
+216 (30.42%)
 </td>
 <td style="text-align:center;">
-104 (15.01%)
+105 (14.79%)
 </td>
 <td style="text-align:center;">
-19 (2.74%)
+19 (2.68%)
 </td>
 <td style="text-align:center;">
-9 (1.3%)
+9 (1.27%)
 </td>
 <td style="text-align:center;">
-399 (57.58%)
+405 (57.04%)
 </td>
 </tr>
 <tr>
@@ -1036,22 +1052,22 @@ Normal
 Pre-DM
 </td>
 <td style="text-align:center;">
-10 (1.44%)
+10 (1.41%)
 </td>
 <td style="text-align:center;">
-80 (11.54%)
+86 (12.11%)
 </td>
 <td style="text-align:center;">
-111 (16.02%)
+115 (16.2%)
 </td>
 <td style="text-align:center;">
-34 (4.91%)
+34 (4.79%)
 </td>
 <td style="text-align:center;">
-3 (0.43%)
+3 (0.42%)
 </td>
 <td style="text-align:center;">
-238 (34.34%)
+248 (34.93%)
 </td>
 </tr>
 <tr>
@@ -1061,22 +1077,22 @@ Pre-DM
 DM
 </td>
 <td style="text-align:center;">
-2 (0.29%)
+2 (0.28%)
 </td>
 <td style="text-align:center;">
-7 (1.01%)
+7 (0.99%)
 </td>
 <td style="text-align:center;">
-33 (4.76%)
+34 (4.79%)
 </td>
 <td style="text-align:center;">
-12 (1.73%)
+12 (1.69%)
 </td>
 <td style="text-align:center;">
-2 (0.29%)
+2 (0.28%)
 </td>
 <td style="text-align:center;">
-56 (8.08%)
+57 (8.03%)
 </td>
 </tr>
 <tr>
@@ -1086,22 +1102,22 @@ DM
 Sum
 </td>
 <td style="text-align:center;">
-67 (9.67%)
+68 (9.58%)
 </td>
 <td style="text-align:center;">
-299 (43.15%)
+309 (43.52%)
 </td>
 <td style="text-align:center;">
-248 (35.79%)
+254 (35.77%)
 </td>
 <td style="text-align:center;">
-65 (9.38%)
+65 (9.15%)
 </td>
 <td style="text-align:center;">
-14 (2.02%)
+14 (1.97%)
 </td>
 <td style="text-align:center;">
-693 (100%)
+710 (100%)
 </td>
 </tr>
 </tbody>
@@ -1115,7 +1131,7 @@ Sum
 </table>
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption style="font-size: 15pt !important;">
-<b>Table: Stuty Group - Obesity Program(DM View)</b>
+(#tab:input plot rscript_girc)<b>Table: Stuty Group - Obesity Program(DM View)</b>
 </caption>
 <thead>
 <tr>
@@ -1147,22 +1163,22 @@ Sum
 Normal
 </td>
 <td style="text-align:center;">
-55 (13.78%)
+56 (13.83%)
 </td>
 <td style="text-align:center;">
-212 (53.13%)
+216 (53.33%)
 </td>
 <td style="text-align:center;">
-104 (26.07%)
+105 (25.93%)
 </td>
 <td style="text-align:center;">
-19 (4.76%)
+19 (4.69%)
 </td>
 <td style="text-align:center;">
-9 (2.26%)
+9 (2.22%)
 </td>
 <td style="text-align:center;">
-399 (100%)
+405 (100%)
 </td>
 </tr>
 <tr>
@@ -1170,22 +1186,22 @@ Normal
 Pre-DM
 </td>
 <td style="text-align:center;">
-10 (4.2%)
+10 (4.03%)
 </td>
 <td style="text-align:center;">
-80 (33.61%)
+86 (34.68%)
 </td>
 <td style="text-align:center;">
-111 (46.64%)
+115 (46.37%)
 </td>
 <td style="text-align:center;">
-34 (14.29%)
+34 (13.71%)
 </td>
 <td style="text-align:center;">
-3 (1.26%)
+3 (1.21%)
 </td>
 <td style="text-align:center;">
-238 (100%)
+248 (100%)
 </td>
 </tr>
 <tr>
@@ -1193,22 +1209,22 @@ Pre-DM
 DM
 </td>
 <td style="text-align:center;">
-2 (3.57%)
+2 (3.51%)
 </td>
 <td style="text-align:center;">
-7 (12.5%)
+7 (12.28%)
 </td>
 <td style="text-align:center;">
-33 (58.93%)
+34 (59.65%)
 </td>
 <td style="text-align:center;">
-12 (21.43%)
+12 (21.05%)
 </td>
 <td style="text-align:center;">
-2 (3.57%)
+2 (3.51%)
 </td>
 <td style="text-align:center;">
-56 (100%)
+57 (100%)
 </td>
 </tr>
 <tr>
@@ -1216,13 +1232,13 @@ DM
 Total
 </td>
 <td style="text-align:center;">
-67
+68
 </td>
 <td style="text-align:center;">
-299
+309
 </td>
 <td style="text-align:center;">
-248
+254
 </td>
 <td style="text-align:center;">
 65
@@ -1231,7 +1247,7 @@ Total
 14
 </td>
 <td style="text-align:center;">
-693
+710
 </td>
 </tr>
 </tbody>
@@ -1245,7 +1261,7 @@ Total
 </table>
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption style="font-size: 15pt !important;">
-<b>Table: Stuty Group - Obesity Program(IR View)</b>
+(#tab:input plot rscript_girc)<b>Table: Stuty Group - Obesity Program(IR View)</b>
 </caption>
 <thead>
 <tr>
@@ -1277,13 +1293,13 @@ Total
 Normal
 </td>
 <td style="text-align:center;">
-55 (82.09%)
+56 (82.35%)
 </td>
 <td style="text-align:center;">
-212 (70.9%)
+216 (69.9%)
 </td>
 <td style="text-align:center;">
-104 (41.94%)
+105 (41.34%)
 </td>
 <td style="text-align:center;">
 19 (29.23%)
@@ -1292,7 +1308,7 @@ Normal
 9 (64.29%)
 </td>
 <td style="text-align:center;">
-399
+405
 </td>
 </tr>
 <tr>
@@ -1300,13 +1316,13 @@ Normal
 Pre-DM
 </td>
 <td style="text-align:center;">
-10 (14.93%)
+10 (14.71%)
 </td>
 <td style="text-align:center;">
-80 (26.76%)
+86 (27.83%)
 </td>
 <td style="text-align:center;">
-111 (44.76%)
+115 (45.28%)
 </td>
 <td style="text-align:center;">
 34 (52.31%)
@@ -1315,7 +1331,7 @@ Pre-DM
 3 (21.43%)
 </td>
 <td style="text-align:center;">
-238
+248
 </td>
 </tr>
 <tr>
@@ -1323,13 +1339,13 @@ Pre-DM
 DM
 </td>
 <td style="text-align:center;">
-2 (2.99%)
+2 (2.94%)
 </td>
 <td style="text-align:center;">
-7 (2.34%)
+7 (2.27%)
 </td>
 <td style="text-align:center;">
-33 (13.31%)
+34 (13.39%)
 </td>
 <td style="text-align:center;">
 12 (18.46%)
@@ -1338,7 +1354,7 @@ DM
 2 (14.29%)
 </td>
 <td style="text-align:center;">
-56
+57
 </td>
 </tr>
 <tr>
@@ -1346,13 +1362,13 @@ DM
 Sum
 </td>
 <td style="text-align:center;">
-67 (100%)
+68 (100%)
 </td>
 <td style="text-align:center;">
-299 (100%)
+309 (100%)
 </td>
 <td style="text-align:center;">
-248 (100%)
+254 (100%)
 </td>
 <td style="text-align:center;">
 65 (100%)
@@ -1361,7 +1377,7 @@ Sum
 14 (100%)
 </td>
 <td style="text-align:center;">
-693
+710
 </td>
 </tr>
 </tbody>
@@ -1379,51 +1395,51 @@ Sum
 </div>
 <div id="baseline_girc" class="section level3 unnumbered hasAnchor">
 <h3>初始狀態(Baseline)<a href="girc_analysis_.html#baseline_girc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="inbody-8" class="section level4 hasAnchor" number="2.2.0.1">
-<h4><span class="header-section-number">2.2.0.1</span> <strong>Inbody</strong><a href="girc_analysis_.html#inbody-8" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-74-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="inbody-6" class="section level4 hasAnchor" number="2.2.0.1">
+<h4><span class="header-section-number">2.2.0.1</span> <strong>Inbody</strong><a href="girc_analysis_.html#inbody-6" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-107-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
-<div id="blood-8" class="section level4 hasAnchor" number="2.2.0.2">
-<h4><span class="header-section-number">2.2.0.2</span> <strong>Blood</strong><a href="girc_analysis_.html#blood-8" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-75-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="blood-6" class="section level4 hasAnchor" number="2.2.0.2">
+<h4><span class="header-section-number">2.2.0.2</span> <strong>Blood</strong><a href="girc_analysis_.html#blood-6" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-108-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="endpoint_girc" class="section level3 unnumbered hasAnchor">
 <h3>介入後狀態(Endpoint)<a href="girc_analysis_.html#endpoint_girc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="inbody-9" class="section level4 hasAnchor" number="2.2.0.3">
-<h4><span class="header-section-number">2.2.0.3</span> <strong>Inbody</strong><a href="girc_analysis_.html#inbody-9" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-76-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="inbody-7" class="section level4 hasAnchor" number="2.2.0.3">
+<h4><span class="header-section-number">2.2.0.3</span> <strong>Inbody</strong><a href="girc_analysis_.html#inbody-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-109-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
-<div id="blood-9" class="section level4 hasAnchor" number="2.2.0.4">
-<h4><span class="header-section-number">2.2.0.4</span> <strong>Blood</strong><a href="girc_analysis_.html#blood-9" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-77-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="blood-7" class="section level4 hasAnchor" number="2.2.0.4">
+<h4><span class="header-section-number">2.2.0.4</span> <strong>Blood</strong><a href="girc_analysis_.html#blood-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-110-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="diet_girc" class="section level3 unnumbered hasAnchor">
 <h3>飲食(Diet)<a href="girc_analysis_.html#diet_girc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-78-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-111-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
 <div id="effectiveness_girc" class="section level3 unnumbered hasAnchor">
 <h3>成效(Effectiveness)<a href="girc_analysis_.html#effectiveness_girc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="成效-inbody-8" class="section level4 hasAnchor" number="2.2.0.5">
-<h4><span class="header-section-number">2.2.0.5</span> <strong>成效(∆)-Inbody</strong><a href="girc_analysis_.html#成效-inbody-8" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-79-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="成效-inbody-6" class="section level4 hasAnchor" number="2.2.0.5">
+<h4><span class="header-section-number">2.2.0.5</span> <strong>成效(∆)-Inbody</strong><a href="girc_analysis_.html#成效-inbody-6" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-112-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
-<div id="成效-blood-8" class="section level4 hasAnchor" number="2.2.0.6">
-<h4><span class="header-section-number">2.2.0.6</span> <strong>成效(∆)-Blood</strong><a href="girc_analysis_.html#成效-blood-8" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-80-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="成效-blood-6" class="section level4 hasAnchor" number="2.2.0.6">
+<h4><span class="header-section-number">2.2.0.6</span> <strong>成效(∆)-Blood</strong><a href="girc_analysis_.html#成效-blood-6" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-113-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
-<div id="成效-inbody-9" class="section level4 hasAnchor" number="2.2.0.7">
-<h4><span class="header-section-number">2.2.0.7</span> <strong>成效(%)-Inbody</strong><a href="girc_analysis_.html#成效-inbody-9" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-81-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="成效-inbody-7" class="section level4 hasAnchor" number="2.2.0.7">
+<h4><span class="header-section-number">2.2.0.7</span> <strong>成效(%)-Inbody</strong><a href="girc_analysis_.html#成效-inbody-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-114-1.svg" width="960" style="display: block; margin: auto;" /></p>
 </div>
-<div id="成效-blood-9" class="section level4 hasAnchor" number="2.2.0.8">
-<h4><span class="header-section-number">2.2.0.8</span> <strong>成效(%)-Blood</strong><a href="girc_analysis_.html#成效-blood-9" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-82-1.svg" width="960" style="display: block; margin: auto;" /></p>
+<div id="成效-blood-7" class="section level4 hasAnchor" number="2.2.0.8">
+<h4><span class="header-section-number">2.2.0.8</span> <strong>成效(%)-Blood</strong><a href="girc_analysis_.html#成效-blood-7" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-115-1.svg" width="960" style="display: block; margin: auto;" /></p>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; overflow-x: scroll; width:100%; ">
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption style="font-size: 15pt !important;">
-<b>Statistics:</b>
+(#tab:input plot rscript_girc)<b>Statistics:</b>
 </caption>
 <thead>
 <tr>
@@ -1481,13 +1497,13 @@ Pattern V
 體重(T0)
 </td>
 <td style="text-align:center;">
-70.11 ± 1.5
+70.48 ± 1.52
 </td>
 <td style="text-align:center;">
-72.49 ± 0.75
+72.56 ± 0.73
 </td>
 <td style="text-align:center;">
-70.45 ± 0.78
+70.53 ± 0.77
 </td>
 <td style="text-align:center;">
 91.5 ± 2.34
@@ -1499,10 +1515,10 @@ Pattern V
 89.28 ± 3.34
 </td>
 <td style="text-align:center;">
-93.16 ± 2.35
+92.1 ± 2.29
 </td>
 <td style="text-align:center;">
-91.62 ± 2.29
+90.68 ± 2.34
 </td>
 <td style="text-align:center;">
 114.36 ± 4.63
@@ -1516,13 +1532,13 @@ Pattern V
 BMI(T0)
 </td>
 <td style="text-align:center;">
-26.29 ± 0.49
+26.47 ± 0.51
 </td>
 <td style="text-align:center;">
-27.97 ± 0.27
+27.98 ± 0.27
 </td>
 <td style="text-align:center;">
-27.72 ± 0.29
+27.69 ± 0.29
 </td>
 <td style="text-align:center;">
 35.26 ± 0.86
@@ -1534,10 +1550,10 @@ BMI(T0)
 28.92 ± 0.89
 </td>
 <td style="text-align:center;">
-30.92 ± 0.78
+30.71 ± 0.75
 </td>
 <td style="text-align:center;">
-31.02 ± 0.8
+30.73 ± 0.78
 </td>
 <td style="text-align:center;">
 36.87 ± 1.58
@@ -1551,13 +1567,13 @@ BMI(T0)
 體脂重(T0)
 </td>
 <td style="text-align:center;">
-26.04 ± 0.93
+26.43 ± 0.99
 </td>
 <td style="text-align:center;">
-29.18 ± 0.55
+29.2 ± 0.53
 </td>
 <td style="text-align:center;">
-28.21 ± 0.55
+28.21 ± 0.54
 </td>
 <td style="text-align:center;">
 42.65 ± 1.63
@@ -1569,10 +1585,10 @@ BMI(T0)
 25.2 ± 2.04
 </td>
 <td style="text-align:center;">
-30.94 ± 1.69
+30.78 ± 1.61
 </td>
 <td style="text-align:center;">
-30.98 ± 1.8
+30.52 ± 1.72
 </td>
 <td style="text-align:center;">
 44.83 ± 3.67
@@ -1586,13 +1602,13 @@ BMI(T0)
 體脂率(T0)
 </td>
 <td style="text-align:center;">
-36.64 ± 0.7
+36.92 ± 0.75
 </td>
 <td style="text-align:center;">
-39.59 ± 0.38
+39.59 ± 0.37
 </td>
 <td style="text-align:center;">
-39.43 ± 0.4
+39.38 ± 0.39
 </td>
 <td style="text-align:center;">
 46.08 ± 0.76
@@ -1604,10 +1620,10 @@ BMI(T0)
 28.12 ± 1.63
 </td>
 <td style="text-align:center;">
-32.48 ± 0.96
+32.76 ± 0.95
 </td>
 <td style="text-align:center;">
-33.28 ± 1.23
+33.11 ± 1.15
 </td>
 <td style="text-align:center;">
 37.9 ± 1.65
@@ -1621,10 +1637,10 @@ BMI(T0)
 骨骼肌質量指數(T0)
 </td>
 <td style="text-align:center;">
-6.8 ± 0.1
+6.81 ± 0.1
 </td>
 <td style="text-align:center;">
-6.83 ± 0.04
+6.84 ± 0.04
 </td>
 <td style="text-align:center;">
 6.74 ± 0.05
@@ -1639,10 +1655,10 @@ BMI(T0)
 8.83 ± 0.17
 </td>
 <td style="text-align:center;">
-8.78 ± 0.12
+8.69 ± 0.13
 </td>
 <td style="text-align:center;">
-8.78 ± 0.1
+8.7 ± 0.11
 </td>
 <td style="text-align:center;">
 9.53 ± 0.17
@@ -1656,13 +1672,13 @@ BMI(T0)
 骨骼肌率(T0)
 </td>
 <td style="text-align:center;">
-34.45 ± 0.39
+34.3 ± 0.41
 </td>
 <td style="text-align:center;">
-32.92 ± 0.21
+32.93 ± 0.2
 </td>
 <td style="text-align:center;">
-32.92 ± 0.22
+32.95 ± 0.21
 </td>
 <td style="text-align:center;">
 29.86 ± 0.41
@@ -1674,10 +1690,10 @@ BMI(T0)
 40.92 ± 1.06
 </td>
 <td style="text-align:center;">
-38.2 ± 0.56
+37.99 ± 0.56
 </td>
 <td style="text-align:center;">
-37.63 ± 0.71
+37.67 ± 0.66
 </td>
 <td style="text-align:center;">
 35.33 ± 0.95
@@ -1691,13 +1707,13 @@ BMI(T0)
 內臟脂肪面積(T0)
 </td>
 <td style="text-align:center;">
-134.94 ± 4.9
+137.92 ± 5.31
 </td>
 <td style="text-align:center;">
-151.12 ± 3
+150.92 ± 2.89
 </td>
 <td style="text-align:center;">
-141.45 ± 2.86
+141.17 ± 2.82
 </td>
 <td style="text-align:center;">
 192.56 ± 5.64
@@ -1709,10 +1725,10 @@ BMI(T0)
 96.27 ± 3.84
 </td>
 <td style="text-align:center;">
-123.37 ± 6.18
+124.24 ± 5.98
 </td>
 <td style="text-align:center;">
-133.22 ± 8.61
+131.07 ± 8.04
 </td>
 <td style="text-align:center;">
 186.09 ± 16.54
@@ -1726,13 +1742,13 @@ BMI(T0)
 腰圍(T0)
 </td>
 <td style="text-align:center;">
-88.94 ± 1.29
+89.33 ± 1.32
 </td>
 <td style="text-align:center;">
-92.41 ± 0.65
+92.5 ± 0.64
 </td>
 <td style="text-align:center;">
-91.32 ± 0.71
+91.35 ± 0.71
 </td>
 <td style="text-align:center;">
 110.18 ± 1.87
@@ -1744,10 +1760,10 @@ BMI(T0)
 100.43 ± 3.16
 </td>
 <td style="text-align:center;">
-104.55 ± 1.82
+103.87 ± 1.76
 </td>
 <td style="text-align:center;">
-104.39 ± 2.31
+104.02 ± 2.25
 </td>
 <td style="text-align:center;">
 123.4 ± 3.69
@@ -1761,13 +1777,13 @@ BMI(T0)
 除脂體重(T0)
 </td>
 <td style="text-align:center;">
-44.07 ± 0.77
+44.05 ± 0.76
 </td>
 <td style="text-align:center;">
-43.3 ± 0.32
+43.36 ± 0.32
 </td>
 <td style="text-align:center;">
-42.24 ± 0.34
+42.33 ± 0.34
 </td>
 <td style="text-align:center;">
 48.85 ± 0.94
@@ -1779,10 +1795,10 @@ BMI(T0)
 64.08 ± 2.24
 </td>
 <td style="text-align:center;">
-62.22 ± 1.07
+61.32 ± 1.14
 </td>
 <td style="text-align:center;">
-60.64 ± 1.04
+60.16 ± 1.11
 </td>
 <td style="text-align:center;">
 69.53 ± 1.38
@@ -1796,13 +1812,13 @@ BMI(T0)
 基礎代謝率(T0)
 </td>
 <td style="text-align:center;">
-1321.87 ± 16.59
+1321.53 ± 16.33
 </td>
 <td style="text-align:center;">
-1305.43 ± 6.92
+1306.65 ± 6.88
 </td>
 <td style="text-align:center;">
-1282.35 ± 7.44
+1284.22 ± 7.43
 </td>
 <td style="text-align:center;">
 1425.12 ± 20.25
@@ -1814,10 +1830,10 @@ BMI(T0)
 1754 ± 48.4
 </td>
 <td style="text-align:center;">
-1713.8 ± 23.11
+1694.45 ± 24.51
 </td>
 <td style="text-align:center;">
-1680.24 ± 22.36
+1669.63 ± 23.91
 </td>
 <td style="text-align:center;">
 1871.74 ± 29.92
@@ -1834,10 +1850,10 @@ BMI(T0)
 5.31 ± 0.04
 </td>
 <td style="text-align:center;">
-5.42 ± 0.02
+5.43 ± 0.02
 </td>
 <td style="text-align:center;">
-5.57 ± 0.03
+5.55 ± 0.03
 </td>
 <td style="text-align:center;">
 5.72 ± 0.08
@@ -1849,10 +1865,10 @@ BMI(T0)
 5.45 ± 0.09
 </td>
 <td style="text-align:center;">
-5.65 ± 0.05
+5.66 ± 0.05
 </td>
 <td style="text-align:center;">
-5.78 ± 0.12
+5.89 ± 0.16
 </td>
 <td style="text-align:center;">
 6.23 ± 0.19
@@ -1866,13 +1882,13 @@ BMI(T0)
 空腹血糖(T0)
 </td>
 <td style="text-align:center;">
-83.43 ± 1.35
+83.37 ± 1.32
 </td>
 <td style="text-align:center;">
-84.31 ± 0.6
+84.38 ± 0.59
 </td>
 <td style="text-align:center;">
-87.29 ± 0.94
+86.81 ± 0.76
 </td>
 <td style="text-align:center;">
 89.52 ± 1.31
@@ -1884,10 +1900,10 @@ BMI(T0)
 82.83 ± 2.09
 </td>
 <td style="text-align:center;">
-88.37 ± 1.38
+88.24 ± 1.3
 </td>
 <td style="text-align:center;">
-94.4 ± 2.92
+95.52 ± 3.04
 </td>
 <td style="text-align:center;">
 98.65 ± 6.14
@@ -1901,10 +1917,10 @@ BMI(T0)
 空腹胰島素(T0)
 </td>
 <td style="text-align:center;">
-7.46 ± 0.48
+7.4 ± 0.48
 </td>
 <td style="text-align:center;">
-10.91 ± 0.33
+10.98 ± 0.33
 </td>
 <td style="text-align:center;">
 10.72 ± 0.37
@@ -1919,10 +1935,10 @@ BMI(T0)
 8.07 ± 2.1
 </td>
 <td style="text-align:center;">
-13.94 ± 0.93
+14.11 ± 0.89
 </td>
 <td style="text-align:center;">
-13.87 ± 1.16
+13.57 ± 1.09
 </td>
 <td style="text-align:center;">
 35.89 ± 2.24
@@ -1936,13 +1952,13 @@ BMI(T0)
 胰島素阻抗值(T0)
 </td>
 <td style="text-align:center;">
-1.56 ± 0.11
+1.54 ± 0.11
 </td>
 <td style="text-align:center;">
-2.3 ± 0.08
+2.32 ± 0.08
 </td>
 <td style="text-align:center;">
-2.35 ± 0.09
+2.33 ± 0.09
 </td>
 <td style="text-align:center;">
 8.14 ± 0.51
@@ -1954,10 +1970,10 @@ BMI(T0)
 1.7 ± 0.48
 </td>
 <td style="text-align:center;">
-3.08 ± 0.23
+3.11 ± 0.21
 </td>
 <td style="text-align:center;">
-3.36 ± 0.34
+3.31 ± 0.31
 </td>
 <td style="text-align:center;">
 8.84 ± 0.82
@@ -1971,13 +1987,13 @@ BMI(T0)
 β細胞功能(T0)
 </td>
 <td style="text-align:center;">
-164.69 ± 32.12
+163.23 ± 31.63
 </td>
 <td style="text-align:center;">
-200.12 ± 9.16
+200.84 ± 8.96
 </td>
 <td style="text-align:center;">
-189.22 ± 10.02
+189.9 ± 9.87
 </td>
 <td style="text-align:center;">
 548.4 ± 40.2
@@ -1989,10 +2005,10 @@ BMI(T0)
 136.68 ± 24.24
 </td>
 <td style="text-align:center;">
-220.74 ± 19.68
+223.1 ± 18.7
 </td>
 <td style="text-align:center;">
-156.52 ± 16.93
+151.87 ± 16.12
 </td>
 <td style="text-align:center;">
 496.13 ± 59.59
@@ -2006,13 +2022,13 @@ BMI(T0)
 三酸甘油脂(T0)
 </td>
 <td style="text-align:center;">
-82.26 ± 5.86
+81.82 ± 5.78
 </td>
 <td style="text-align:center;">
-99.77 ± 3.3
+100.54 ± 3.26
 </td>
 <td style="text-align:center;">
-125.82 ± 11.53
+114.6 ± 3.96
 </td>
 <td style="text-align:center;">
 181.02 ± 24.59
@@ -2024,10 +2040,10 @@ BMI(T0)
 108.83 ± 24.2
 </td>
 <td style="text-align:center;">
-154.35 ± 13.32
+155.16 ± 12.62
 </td>
 <td style="text-align:center;">
-153.72 ± 17.67
+149.37 ± 16.65
 </td>
 <td style="text-align:center;">
 183.83 ± 18.85
@@ -2041,13 +2057,13 @@ BMI(T0)
 總膽固醇(T0)
 </td>
 <td style="text-align:center;">
-205.62 ± 4.84
+204.85 ± 4.83
 </td>
 <td style="text-align:center;">
-195.17 ± 2.27
+195.56 ± 2.22
 </td>
 <td style="text-align:center;">
-200.47 ± 2.62
+199.65 ± 2.55
 </td>
 <td style="text-align:center;">
 187.57 ± 6.09
@@ -2059,10 +2075,10 @@ BMI(T0)
 184.83 ± 11.86
 </td>
 <td style="text-align:center;">
-204.87 ± 6.02
+202.08 ± 6
 </td>
 <td style="text-align:center;">
-189.84 ± 7.2
+187.74 ± 6.81
 </td>
 <td style="text-align:center;">
 187.39 ± 8.95
@@ -2076,13 +2092,13 @@ BMI(T0)
 高密度脂蛋白(T0)
 </td>
 <td style="text-align:center;">
-64.93 ± 2.22
+64.92 ± 2.18
 </td>
 <td style="text-align:center;">
-56.21 ± 0.71
+56.14 ± 0.7
 </td>
 <td style="text-align:center;">
-55.02 ± 0.86
+55.21 ± 0.85
 </td>
 <td style="text-align:center;">
 44.62 ± 1.26
@@ -2094,10 +2110,10 @@ BMI(T0)
 47.23 ± 3.3
 </td>
 <td style="text-align:center;">
-46.33 ± 1.4
+46.35 ± 1.33
 </td>
 <td style="text-align:center;">
-45.47 ± 1.33
+45.57 ± 1.23
 </td>
 <td style="text-align:center;">
 39.68 ± 1.57
@@ -2111,13 +2127,13 @@ BMI(T0)
 低密度脂蛋白(T0)
 </td>
 <td style="text-align:center;">
-122.64 ± 3.93
+122 ± 3.92
 </td>
 <td style="text-align:center;">
-121.68 ± 2.04
+122.13 ± 2
 </td>
 <td style="text-align:center;">
-125.5 ± 2.31
+125.41 ± 2.26
 </td>
 <td style="text-align:center;">
 122 ± 5.48
@@ -2129,10 +2145,10 @@ BMI(T0)
 120.83 ± 11.21
 </td>
 <td style="text-align:center;">
-135.24 ± 5.37
+132.94 ± 5.34
 </td>
 <td style="text-align:center;">
-122.96 ± 6.7
+121.37 ± 6.29
 </td>
 <td style="text-align:center;">
 121.48 ± 6.48
@@ -2146,13 +2162,13 @@ BMI(T0)
 尿酸(T0)
 </td>
 <td style="text-align:center;">
-4.8 ± 0.15
+4.8 ± 0.14
 </td>
 <td style="text-align:center;">
 5.17 ± 0.07
 </td>
 <td style="text-align:center;">
-5.2 ± 0.07
+5.21 ± 0.07
 </td>
 <td style="text-align:center;">
 5.91 ± 0.16
@@ -2164,10 +2180,10 @@ BMI(T0)
 6.02 ± 0.5
 </td>
 <td style="text-align:center;">
-6.94 ± 0.19
+6.86 ± 0.19
 </td>
 <td style="text-align:center;">
-6.56 ± 0.29
+6.47 ± 0.3
 </td>
 <td style="text-align:center;">
 7.54 ± 0.35
@@ -2181,13 +2197,13 @@ BMI(T0)
 澱粉脢(T0)
 </td>
 <td style="text-align:center;">
-49.08 ± 2.29
+49.24 ± 2.26
 </td>
 <td style="text-align:center;">
-46.38 ± 0.89
+46.2 ± 0.88
 </td>
 <td style="text-align:center;">
-44.09 ± 0.89
+44.36 ± 0.89
 </td>
 <td style="text-align:center;">
 36.24 ± 1.83
@@ -2199,10 +2215,10 @@ BMI(T0)
 42.83 ± 4.27
 </td>
 <td style="text-align:center;">
-43.04 ± 2.53
+43.65 ± 2.48
 </td>
 <td style="text-align:center;">
-40.08 ± 2.2
+41.37 ± 2.25
 </td>
 <td style="text-align:center;">
 40.61 ± 2.85
@@ -2216,13 +2232,13 @@ BMI(T0)
 解脂脢(T0)
 </td>
 <td style="text-align:center;">
-23.41 ± 1.59
+23.39 ± 1.56
 </td>
 <td style="text-align:center;">
-25.34 ± 0.93
+25.26 ± 0.91
 </td>
 <td style="text-align:center;">
-24.14 ± 0.84
+23.92 ± 0.8
 </td>
 <td style="text-align:center;">
 27.36 ± 3.88
@@ -2234,10 +2250,10 @@ BMI(T0)
 23.83 ± 6.52
 </td>
 <td style="text-align:center;">
-27.22 ± 3.23
+27.76 ± 3.1
 </td>
 <td style="text-align:center;">
-23.44 ± 1.93
+23.81 ± 1.81
 </td>
 <td style="text-align:center;">
 23.17 ± 2.7
@@ -2251,28 +2267,28 @@ BMI(T0)
 體重(T1)
 </td>
 <td style="text-align:center;">
-65.49 ± 1.37
+65.82 ± 1.38
 </td>
 <td style="text-align:center;">
-67.65 ± 0.72
+67.71 ± 0.7
 </td>
 <td style="text-align:center;">
-65.84 ± 0.75
+65.9 ± 0.74
 </td>
 <td style="text-align:center;">
 85.83 ± 2.34
 </td>
 <td style="text-align:center;">
-66.52 ± 3.99
+66.47 ± 4
 </td>
 <td style="text-align:center;">
 83.28 ± 4.57
 </td>
 <td style="text-align:center;">
-86.27 ± 2.34
+85.51 ± 2.25
 </td>
 <td style="text-align:center;">
-84.26 ± 2.05
+83.8 ± 2.05
 </td>
 <td style="text-align:center;">
 106.94 ± 4.54
@@ -2286,28 +2302,28 @@ BMI(T0)
 BMI(T1)
 </td>
 <td style="text-align:center;">
-24.56 ± 0.45
+24.71 ± 0.46
 </td>
 <td style="text-align:center;">
 26.1 ± 0.26
 </td>
 <td style="text-align:center;">
-25.81 ± 0.27
+25.78 ± 0.26
 </td>
 <td style="text-align:center;">
 33.09 ± 0.87
 </td>
 <td style="text-align:center;">
-24.82 ± 1.24
+24.8 ± 1.24
 </td>
 <td style="text-align:center;">
 26.95 ± 1.23
 </td>
 <td style="text-align:center;">
-28.64 ± 0.78
+28.53 ± 0.74
 </td>
 <td style="text-align:center;">
-28.56 ± 0.77
+28.42 ± 0.72
 </td>
 <td style="text-align:center;">
 34.48 ± 1.54
@@ -2321,28 +2337,28 @@ BMI(T1)
 體脂重(T1)
 </td>
 <td style="text-align:center;">
-23.08 ± 0.88
+23.42 ± 0.93
 </td>
 <td style="text-align:center;">
-25.85 ± 0.53
+25.87 ± 0.51
 </td>
 <td style="text-align:center;">
-25.12 ± 0.52
+25.12 ± 0.51
 </td>
 <td style="text-align:center;">
 38.9 ± 1.67
 </td>
 <td style="text-align:center;">
-24.16 ± 2.75
+24.07 ± 2.75
 </td>
 <td style="text-align:center;">
 21.33 ± 2.77
 </td>
 <td style="text-align:center;">
-25.95 ± 1.73
+25.97 ± 1.66
 </td>
 <td style="text-align:center;">
-25.93 ± 1.71
+25.75 ± 1.61
 </td>
 <td style="text-align:center;">
 39.63 ± 3.57
@@ -2356,28 +2372,28 @@ BMI(T1)
 體脂率(T1)
 </td>
 <td style="text-align:center;">
-34.7 ± 0.78
+34.97 ± 0.81
 </td>
 <td style="text-align:center;">
-37.44 ± 0.41
+37.46 ± 0.4
 </td>
 <td style="text-align:center;">
-37.47 ± 0.42
+37.43 ± 0.41
 </td>
 <td style="text-align:center;">
 44.64 ± 0.87
 </td>
 <td style="text-align:center;">
-35.15 ± 1.9
+35.03 ± 1.89
 </td>
 <td style="text-align:center;">
 25.17 ± 2.1
 </td>
 <td style="text-align:center;">
-29.11 ± 1.09
+29.46 ± 1.09
 </td>
 <td style="text-align:center;">
-30.2 ± 1.38
+30.18 ± 1.27
 </td>
 <td style="text-align:center;">
 35.59 ± 1.73
@@ -2394,25 +2410,25 @@ BMI(T1)
 6.54 ± 0.09
 </td>
 <td style="text-align:center;">
-6.57 ± 0.04
+6.58 ± 0.04
 </td>
 <td style="text-align:center;">
-6.48 ± 0.05
+6.48 ± 0.04
 </td>
 <td style="text-align:center;">
 7.47 ± 0.12
 </td>
 <td style="text-align:center;">
-6.49 ± 0.23
+6.5 ± 0.22
 </td>
 <td style="text-align:center;">
 8.53 ± 0.19
 </td>
 <td style="text-align:center;">
-8.5 ± 0.12
+8.42 ± 0.12
 </td>
 <td style="text-align:center;">
-8.41 ± 0.1
+8.36 ± 0.1
 </td>
 <td style="text-align:center;">
 9.29 ± 0.19
@@ -2426,28 +2442,28 @@ BMI(T1)
 骨骼肌率(T1)
 </td>
 <td style="text-align:center;">
-35.37 ± 0.43
+35.23 ± 0.44
 </td>
 <td style="text-align:center;">
 33.94 ± 0.22
 </td>
 <td style="text-align:center;">
-33.8 ± 0.22
+33.83 ± 0.22
 </td>
 <td style="text-align:center;">
 30.55 ± 0.47
 </td>
 <td style="text-align:center;">
-35.01 ± 0.96
+35.05 ± 0.95
 </td>
 <td style="text-align:center;">
 42.39 ± 1.24
 </td>
 <td style="text-align:center;">
-39.94 ± 0.63
+39.69 ± 0.64
 </td>
 <td style="text-align:center;">
-39.27 ± 0.79
+39.24 ± 0.73
 </td>
 <td style="text-align:center;">
 36.57 ± 1
@@ -2461,28 +2477,28 @@ BMI(T1)
 內臟脂肪面積(T1)
 </td>
 <td style="text-align:center;">
-118.86 ± 4.84
+121.47 ± 5.18
 </td>
 <td style="text-align:center;">
-132.87 ± 2.94
+132.39 ± 2.85
 </td>
 <td style="text-align:center;">
-123.97 ± 2.8
+123.66 ± 2.75
 </td>
 <td style="text-align:center;">
 180.35 ± 6.34
 </td>
 <td style="text-align:center;">
-119.26 ± 20.02
+118 ± 20.06
 </td>
 <td style="text-align:center;">
 83.13 ± 9.3
 </td>
 <td style="text-align:center;">
-96.97 ± 5.27
+98.79 ± 5.28
 </td>
 <td style="text-align:center;">
-109.71 ± 7.6
+109.42 ± 6.99
 </td>
 <td style="text-align:center;">
 173.27 ± 15.44
@@ -2496,28 +2512,28 @@ BMI(T1)
 腰圍(T1)
 </td>
 <td style="text-align:center;">
-84.55 ± 1.23
+84.89 ± 1.27
 </td>
 <td style="text-align:center;">
-87.65 ± 0.64
+87.7 ± 0.63
 </td>
 <td style="text-align:center;">
-86.79 ± 0.71
+86.75 ± 0.7
 </td>
 <td style="text-align:center;">
 105.2 ± 1.93
 </td>
 <td style="text-align:center;">
-86.45 ± 3.63
+86.26 ± 3.65
 </td>
 <td style="text-align:center;">
 93.9 ± 4.96
 </td>
 <td style="text-align:center;">
-96.98 ± 1.87
+96.55 ± 1.78
 </td>
 <td style="text-align:center;">
-97.68 ± 2.36
+97.63 ± 2.24
 </td>
 <td style="text-align:center;">
 116.2 ± 3.82
@@ -2531,28 +2547,28 @@ BMI(T1)
 除脂體重(T1)
 </td>
 <td style="text-align:center;">
-42.41 ± 0.72
+42.4 ± 0.71
 </td>
 <td style="text-align:center;">
-41.8 ± 0.3
+41.84 ± 0.3
 </td>
 <td style="text-align:center;">
-40.71 ± 0.34
+40.78 ± 0.34
 </td>
 <td style="text-align:center;">
 46.92 ± 0.91
 </td>
 <td style="text-align:center;">
-42.36 ± 1.55
+42.4 ± 1.55
 </td>
 <td style="text-align:center;">
 61.95 ± 2.28
 </td>
 <td style="text-align:center;">
-60.32 ± 1.03
+59.54 ± 1.06
 </td>
 <td style="text-align:center;">
-58.33 ± 0.96
+58.05 ± 1.02
 </td>
 <td style="text-align:center;">
 67.32 ± 1.28
@@ -2566,28 +2582,28 @@ BMI(T1)
 基礎代謝率(T1)
 </td>
 <td style="text-align:center;">
-1285.98 ± 15.5
+1285.79 ± 15.25
 </td>
 <td style="text-align:center;">
-1273.02 ± 6.52
+1273.82 ± 6.5
 </td>
 <td style="text-align:center;">
-1249.39 ± 7.27
+1250.96 ± 7.26
 </td>
 <td style="text-align:center;">
 1383.45 ± 19.58
 </td>
 <td style="text-align:center;">
-1284.92 ± 33.51
+1285.69 ± 33.36
 </td>
 <td style="text-align:center;">
 1708.5 ± 49.35
 </td>
 <td style="text-align:center;">
-1672.72 ± 22.15
+1655.92 ± 22.98
 </td>
 <td style="text-align:center;">
-1629.92 ± 20.66
+1623.85 ± 22.01
 </td>
 <td style="text-align:center;">
 1823.96 ± 27.57
@@ -2601,13 +2617,13 @@ BMI(T1)
 糖化血色素(T1)
 </td>
 <td style="text-align:center;">
-5.15 ± 0.04
+5.14 ± 0.04
 </td>
 <td style="text-align:center;">
 5.2 ± 0.02
 </td>
 <td style="text-align:center;">
-5.29 ± 0.02
+5.28 ± 0.02
 </td>
 <td style="text-align:center;">
 5.33 ± 0.05
@@ -2619,10 +2635,10 @@ BMI(T1)
 5.35 ± 0.09
 </td>
 <td style="text-align:center;">
-5.36 ± 0.04
+5.37 ± 0.04
 </td>
 <td style="text-align:center;">
-5.39 ± 0.08
+5.53 ± 0.14
 </td>
 <td style="text-align:center;">
 5.55 ± 0.08
@@ -2636,13 +2652,13 @@ BMI(T1)
 空腹血糖(T1)
 </td>
 <td style="text-align:center;">
-77.33 ± 1.06
+77.06 ± 1.07
 </td>
 <td style="text-align:center;">
-76.08 ± 0.5
+76.26 ± 0.5
 </td>
 <td style="text-align:center;">
-77.65 ± 0.68
+77.75 ± 0.67
 </td>
 <td style="text-align:center;">
 80.74 ± 1.22
@@ -2654,10 +2670,10 @@ BMI(T1)
 81.5 ± 2.93
 </td>
 <td style="text-align:center;">
-77.57 ± 1.13
+77.9 ± 1.08
 </td>
 <td style="text-align:center;">
-77.4 ± 2.41
+79.93 ± 3.02
 </td>
 <td style="text-align:center;">
 80.22 ± 1.77
@@ -2671,13 +2687,13 @@ BMI(T1)
 空腹胰島素(T1)
 </td>
 <td style="text-align:center;">
-6.99 ± 0.65
+6.91 ± 0.64
 </td>
 <td style="text-align:center;">
-8.94 ± 0.4
+9.04 ± 0.39
 </td>
 <td style="text-align:center;">
-9.01 ± 0.39
+9.03 ± 0.38
 </td>
 <td style="text-align:center;">
 21.86 ± 1.95
@@ -2689,10 +2705,10 @@ BMI(T1)
 9.13 ± 3.48
 </td>
 <td style="text-align:center;">
-10.58 ± 1.12
+11.16 ± 1.15
 </td>
 <td style="text-align:center;">
-9.39 ± 1.25
+9.35 ± 1.16
 </td>
 <td style="text-align:center;">
 24.81 ± 4.2
@@ -2706,13 +2722,13 @@ BMI(T1)
 胰島素阻抗值(T1)
 </td>
 <td style="text-align:center;">
-1.37 ± 0.14
+1.36 ± 0.14
 </td>
 <td style="text-align:center;">
-1.74 ± 0.08
+1.76 ± 0.08
 </td>
 <td style="text-align:center;">
-1.79 ± 0.09
+1.8 ± 0.08
 </td>
 <td style="text-align:center;">
 4.42 ± 0.41
@@ -2724,10 +2740,10 @@ BMI(T1)
 1.9 ± 0.75
 </td>
 <td style="text-align:center;">
-2.07 ± 0.22
+2.2 ± 0.23
 </td>
 <td style="text-align:center;">
-1.87 ± 0.27
+1.91 ± 0.25
 </td>
 <td style="text-align:center;">
 5.04 ± 1.04
@@ -2741,13 +2757,13 @@ BMI(T1)
 β細胞功能(T1)
 </td>
 <td style="text-align:center;">
-174.07 ± 34.19
+164.12 ± 35.07
 </td>
 <td style="text-align:center;">
-261.08 ± 22.9
+260.89 ± 22.32
 </td>
 <td style="text-align:center;">
-318.8 ± 42.93
+316.4 ± 42.19
 </td>
 <td style="text-align:center;">
 610.1 ± 100.77
@@ -2759,10 +2775,10 @@ BMI(T1)
 166.67 ± 45.95
 </td>
 <td style="text-align:center;">
-284.12 ± 40.32
+288.14 ± 38.11
 </td>
 <td style="text-align:center;">
-98.03 ± 92.06
+96.25 ± 85.13
 </td>
 <td style="text-align:center;">
 564.97 ± 80.9
@@ -2776,13 +2792,13 @@ BMI(T1)
 三酸甘油脂(T1)
 </td>
 <td style="text-align:center;">
-78.33 ± 3.39
+78.08 ± 3.34
 </td>
 <td style="text-align:center;">
-90.74 ± 2.36
+91.04 ± 2.34
 </td>
 <td style="text-align:center;">
-97.78 ± 3.94
+97.78 ± 3.88
 </td>
 <td style="text-align:center;">
 127.38 ± 9.23
@@ -2794,10 +2810,10 @@ BMI(T1)
 72.17 ± 9.83
 </td>
 <td style="text-align:center;">
-130.78 ± 8.13
+129.51 ± 7.66
 </td>
 <td style="text-align:center;">
-108.28 ± 7.58
+105.56 ± 7.26
 </td>
 <td style="text-align:center;">
 161.61 ± 18.85
@@ -2811,13 +2827,13 @@ BMI(T1)
 總膽固醇(T1)
 </td>
 <td style="text-align:center;">
-212.43 ± 5.66
+211.81 ± 5.6
 </td>
 <td style="text-align:center;">
-201.86 ± 2.92
+202.23 ± 2.88
 </td>
 <td style="text-align:center;">
-200.11 ± 2.89
+199.54 ± 2.87
 </td>
 <td style="text-align:center;">
 178.74 ± 6.32
@@ -2829,10 +2845,10 @@ BMI(T1)
 184.5 ± 19.16
 </td>
 <td style="text-align:center;">
-202.67 ± 8.25
+199.8 ± 7.93
 </td>
 <td style="text-align:center;">
-188.28 ± 7.72
+186.67 ± 7.22
 </td>
 <td style="text-align:center;">
 181.96 ± 9.56
@@ -2846,13 +2862,13 @@ BMI(T1)
 高密度脂蛋白(T1)
 </td>
 <td style="text-align:center;">
-58.08 ± 1.95
+58.01 ± 1.92
 </td>
 <td style="text-align:center;">
-50.75 ± 0.64
+50.65 ± 0.62
 </td>
 <td style="text-align:center;">
-49.78 ± 0.8
+49.82 ± 0.79
 </td>
 <td style="text-align:center;">
 38.92 ± 1.09
@@ -2864,10 +2880,10 @@ BMI(T1)
 46.08 ± 3.59
 </td>
 <td style="text-align:center;">
-40.93 ± 1.23
+41.24 ± 1.18
 </td>
 <td style="text-align:center;">
-44.34 ± 2.24
+44.44 ± 2.08
 </td>
 <td style="text-align:center;">
 35 ± 1.29
@@ -2881,13 +2897,13 @@ BMI(T1)
 低密度脂蛋白(T1)
 </td>
 <td style="text-align:center;">
-136.52 ± 4.65
+136.03 ± 4.6
 </td>
 <td style="text-align:center;">
-130.58 ± 2.48
+131.14 ± 2.46
 </td>
 <td style="text-align:center;">
-129.4 ± 2.53
+128.93 ± 2.5
 </td>
 <td style="text-align:center;">
 119.36 ± 5.68
@@ -2899,10 +2915,10 @@ BMI(T1)
 123.83 ± 16.61
 </td>
 <td style="text-align:center;">
-136.35 ± 6.93
+134.14 ± 6.68
 </td>
 <td style="text-align:center;">
-121.6 ± 7.13
+120.44 ± 6.66
 </td>
 <td style="text-align:center;">
 121.83 ± 7.72
@@ -2916,13 +2932,13 @@ BMI(T1)
 尿酸(T1)
 </td>
 <td style="text-align:center;">
-3.94 ± 0.11
+3.98 ± 0.12
 </td>
 <td style="text-align:center;">
-4.58 ± 0.08
+4.57 ± 0.07
 </td>
 <td style="text-align:center;">
-4.59 ± 0.08
+4.59 ± 0.07
 </td>
 <td style="text-align:center;">
 5.26 ± 0.22
@@ -2934,10 +2950,10 @@ BMI(T1)
 4.47 ± 0.39
 </td>
 <td style="text-align:center;">
-6.1 ± 0.22
+5.99 ± 0.21
 </td>
 <td style="text-align:center;">
-5.6 ± 0.26
+5.59 ± 0.27
 </td>
 <td style="text-align:center;">
 6.86 ± 0.36
@@ -2951,13 +2967,13 @@ BMI(T1)
 澱粉脢(T1)
 </td>
 <td style="text-align:center;">
-51.39 ± 2.39
+51.45 ± 2.35
 </td>
 <td style="text-align:center;">
-48.17 ± 1
+47.97 ± 0.99
 </td>
 <td style="text-align:center;">
-46.01 ± 1.08
+46.33 ± 1.07
 </td>
 <td style="text-align:center;">
 35.95 ± 1.73
@@ -2969,10 +2985,10 @@ BMI(T1)
 48.17 ± 4.46
 </td>
 <td style="text-align:center;">
-43.46 ± 2.73
+45.04 ± 3.16
 </td>
 <td style="text-align:center;">
-41.16 ± 2.76
+42.26 ± 2.68
 </td>
 <td style="text-align:center;">
 42.17 ± 2.89
@@ -2986,13 +3002,13 @@ BMI(T1)
 解脂脢(T1)
 </td>
 <td style="text-align:center;">
-36.84 ± 2.43
+36.71 ± 2.39
 </td>
 <td style="text-align:center;">
-38.87 ± 1.66
+38.85 ± 1.63
 </td>
 <td style="text-align:center;">
-35.33 ± 1.24
+35.52 ± 1.22
 </td>
 <td style="text-align:center;">
 32.5 ± 2.63
@@ -3004,10 +3020,10 @@ BMI(T1)
 47.33 ± 12
 </td>
 <td style="text-align:center;">
-38.22 ± 4.91
+42.69 ± 6.53
 </td>
 <td style="text-align:center;">
-31.8 ± 2.77
+31.56 ± 2.57
 </td>
 <td style="text-align:center;">
 32.83 ± 3.35
@@ -3021,13 +3037,13 @@ BMI(T1)
 年齡
 </td>
 <td style="text-align:center;">
-39.74 ± 0.93
+39.69 ± 0.91
 </td>
 <td style="text-align:center;">
-37.92 ± 0.59
+37.89 ± 0.58
 </td>
 <td style="text-align:center;">
-41.07 ± 0.75
+40.99 ± 0.74
 </td>
 <td style="text-align:center;">
 32.43 ± 1.55
@@ -3039,10 +3055,10 @@ BMI(T1)
 34.83 ± 4.37
 </td>
 <td style="text-align:center;">
-39.98 ± 1.48
+40.22 ± 1.63
 </td>
 <td style="text-align:center;">
-45.24 ± 2.34
+46.44 ± 2.33
 </td>
 <td style="text-align:center;">
 33.13 ± 1.85
@@ -3056,28 +3072,28 @@ BMI(T1)
 飲食紀錄完成率(%)
 </td>
 <td style="text-align:center;">
-77.44 ± 3.63
+78.03 ± 3.58
 </td>
 <td style="text-align:center;">
-73.35 ± 1.79
+73.49 ± 1.77
 </td>
 <td style="text-align:center;">
-74.57 ± 1.96
+74.33 ± 1.95
 </td>
 <td style="text-align:center;">
 66.56 ± 4.62
 </td>
 <td style="text-align:center;">
-76.12 ± 5.82
+76.26 ± 5.86
 </td>
 <td style="text-align:center;">
 61.6 ± 14.72
 </td>
 <td style="text-align:center;">
-73.92 ± 4.41
+72.55 ± 4.43
 </td>
 <td style="text-align:center;">
-73.8 ± 5.91
+72.08 ± 5.94
 </td>
 <td style="text-align:center;">
 56.18 ± 7.02
@@ -3091,34 +3107,34 @@ BMI(T1)
 紀錄數量
 </td>
 <td style="text-align:center;">
-232.49 ± 18.84
+232.7 ± 18.55
 </td>
 <td style="text-align:center;">
-195.89 ± 10.47
+196.25 ± 10.29
 </td>
 <td style="text-align:center;">
-187.39 ± 8.36
+188.61 ± 8.36
 </td>
 <td style="text-align:center;">
-156.44 ± 19.58
+156.36 ± 19.56
 </td>
 <td style="text-align:center;">
-173.54 ± 26.64
+173.71 ± 26.66
 </td>
 <td style="text-align:center;">
-130.68 ± 29.92
+130.67 ± 29.92
 </td>
 <td style="text-align:center;">
-213.12 ± 31.36
+207.5 ± 30.11
 </td>
 <td style="text-align:center;">
-201.03 ± 33.52
+192.8 ± 31.88
 </td>
 <td style="text-align:center;">
-144.96 ± 36.25
+144.95 ± 36.25
 </td>
 <td style="text-align:center;">
-163.68 ± NA
+163.69 ± NA
 </td>
 </tr>
 <tr>
@@ -3126,34 +3142,34 @@ BMI(T1)
 上傳照片張數
 </td>
 <td style="text-align:center;">
-168.91 ± 12.66
+170.36 ± 12.49
 </td>
 <td style="text-align:center;">
-157.86 ± 6.76
+158.43 ± 6.69
 </td>
 <td style="text-align:center;">
-159.97 ± 6.75
+160.36 ± 6.75
 </td>
 <td style="text-align:center;">
-130.93 ± 13.59
+130.97 ± 13.6
 </td>
 <td style="text-align:center;">
-134.49 ± 20.44
+134.59 ± 20.45
 </td>
 <td style="text-align:center;">
 161.84 ± 52.62
 </td>
 <td style="text-align:center;">
-162.56 ± 17.37
+158.35 ± 16.92
 </td>
 <td style="text-align:center;">
-175.34 ± 24.28
+166.74 ± 23.44
 </td>
 <td style="text-align:center;">
 130.19 ± 33.94
 </td>
 <td style="text-align:center;">
-253.04 ± NA
+253.08 ± NA
 </td>
 </tr>
 <tr>
@@ -3161,13 +3177,13 @@ BMI(T1)
 碳水攝取率(E%)
 </td>
 <td style="text-align:center;">
-19.91 ± 0.84
+19.76 ± 0.84
 </td>
 <td style="text-align:center;">
-18.79 ± 0.44
+18.88 ± 0.43
 </td>
 <td style="text-align:center;">
-19.05 ± 0.44
+19.1 ± 0.44
 </td>
 <td style="text-align:center;">
 17.94 ± 0.93
@@ -3179,10 +3195,10 @@ BMI(T1)
 22.55 ± 2.38
 </td>
 <td style="text-align:center;">
-17.17 ± 1
+17.8 ± 1.03
 </td>
 <td style="text-align:center;">
-16.77 ± 1.4
+16.83 ± 1.33
 </td>
 <td style="text-align:center;">
 18.09 ± 1.55
@@ -3196,13 +3212,13 @@ BMI(T1)
 蛋白攝取率(E%)
 </td>
 <td style="text-align:center;">
-27.7 ± 0.66
+27.73 ± 0.65
 </td>
 <td style="text-align:center;">
-27.23 ± 0.17
+27.19 ± 0.17
 </td>
 <td style="text-align:center;">
-27.07 ± 0.19
+27.06 ± 0.18
 </td>
 <td style="text-align:center;">
 27.97 ± 0.45
@@ -3214,10 +3230,10 @@ BMI(T1)
 26.1 ± 1.2
 </td>
 <td style="text-align:center;">
-28.25 ± 0.41
+28.11 ± 0.4
 </td>
 <td style="text-align:center;">
-27.55 ± 0.59
+27.53 ± 0.56
 </td>
 <td style="text-align:center;">
 27.68 ± 0.73
@@ -3231,16 +3247,16 @@ BMI(T1)
 脂肪攝取率(E%)
 </td>
 <td style="text-align:center;">
-52.39 ± 0.82
+52.5 ± 0.81
 </td>
 <td style="text-align:center;">
-53.98 ± 0.34
+53.93 ± 0.33
 </td>
 <td style="text-align:center;">
-53.87 ± 0.33
+53.84 ± 0.32
 </td>
 <td style="text-align:center;">
-54.09 ± 0.71
+54.08 ± 0.71
 </td>
 <td style="text-align:center;">
 55.03 ± 1.68
@@ -3249,10 +3265,10 @@ BMI(T1)
 51.34 ± 1.96
 </td>
 <td style="text-align:center;">
-54.58 ± 0.69
+54.09 ± 0.74
 </td>
 <td style="text-align:center;">
-55.68 ± 1.04
+55.64 ± 0.99
 </td>
 <td style="text-align:center;">
 54.23 ± 1.26
@@ -3266,28 +3282,28 @@ BMI(T1)
 總攝取熱量(日)
 </td>
 <td style="text-align:center;">
-791.72 ± 41.3
+797.97 ± 40.75
 </td>
 <td style="text-align:center;">
-742.76 ± 20.85
+744.34 ± 20.72
 </td>
 <td style="text-align:center;">
-753.41 ± 22.22
+751.86 ± 22
 </td>
 <td style="text-align:center;">
-668.68 ± 50.17
+668.68 ± 50.18
 </td>
 <td style="text-align:center;">
-798.86 ± 80.53
+799.85 ± 80.95
 </td>
 <td style="text-align:center;">
 719.21 ± 180.15
 </td>
 <td style="text-align:center;">
-848.44 ± 59.52
+828.09 ± 58.58
 </td>
 <td style="text-align:center;">
-863.86 ± 80.93
+836.15 ± 81.55
 </td>
 <td style="text-align:center;">
 642.82 ± 95.26
@@ -3298,34 +3314,34 @@ BMI(T1)
 </tr>
 <tr>
 <td style="text-align:left;">
-綠燈率(%)
+綠燈率
 </td>
 <td style="text-align:center;">
-80.39 ± 2.08
+80.67 ± 2.06
 </td>
 <td style="text-align:center;">
-81.8 ± 1
+81.5 ± 1.03
 </td>
 <td style="text-align:center;">
-81.55 ± 1.09
+81.53 ± 1.08
 </td>
 <td style="text-align:center;">
-82.47 ± 2.26
+82.45 ± 2.25
 </td>
 <td style="text-align:center;">
-87.81 ± 2.55
+87.77 ± 2.55
 </td>
 <td style="text-align:center;">
-64.96 ± 9.73
+64.99 ± 9.72
 </td>
 <td style="text-align:center;">
-82.26 ± 2.37
+80.76 ± 2.6
 </td>
 <td style="text-align:center;">
-86.08 ± 2.72
+85.65 ± 2.6
 </td>
 <td style="text-align:center;">
-78.95 ± 3.92
+78.96 ± 3.92
 </td>
 <td style="text-align:center;">
 87.75 ± NA
@@ -3333,72 +3349,72 @@ BMI(T1)
 </tr>
 <tr>
 <td style="text-align:left;">
-黃燈率(%)
+黃燈率
 </td>
 <td style="text-align:center;">
-17.58 ± 2.03
+17.32 ± 2.01
 </td>
 <td style="text-align:center;">
-15.33 ± 0.87
+15.69 ± 0.91
 </td>
 <td style="text-align:center;">
-16.02 ± 0.98
+16.02 ± 0.97
 </td>
 <td style="text-align:center;">
-15.81 ± 2.02
+15.82 ± 2.01
 </td>
 <td style="text-align:center;">
-10.59 ± 2.37
+10.62 ± 2.38
 </td>
 <td style="text-align:center;">
-27.71 ± 7.42
+27.7 ± 7.42
 </td>
 <td style="text-align:center;">
-15.27 ± 1.99
+16.81 ± 2.3
 </td>
 <td style="text-align:center;">
-12.32 ± 2.09
+12.82 ± 2.03
 </td>
 <td style="text-align:center;">
-17.55 ± 3.48
+17.54 ± 3.48
 </td>
 <td style="text-align:center;">
-7.69 ± NA
+7.68 ± NA
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-紅燈率(%)
+紅燈率
 </td>
 <td style="text-align:center;">
-2.03 ± 0.45
+2.01 ± 0.45
 </td>
 <td style="text-align:center;">
-2.88 ± 0.38
+2.81 ± 0.37
 </td>
 <td style="text-align:center;">
-2.43 ± 0.33
+2.45 ± 0.32
 </td>
 <td style="text-align:center;">
 1.73 ± 0.5
 </td>
 <td style="text-align:center;">
-1.6 ± 1.18
+1.61 ± 1.19
 </td>
 <td style="text-align:center;">
-7.32 ± 4.62
+7.31 ± 4.61
 </td>
 <td style="text-align:center;">
-2.46 ± 0.81
+2.43 ± 0.76
 </td>
 <td style="text-align:center;">
-1.6 ± 0.81
+1.54 ± 0.77
 </td>
 <td style="text-align:center;">
 3.5 ± 1.62
 </td>
 <td style="text-align:center;">
-4.56 ± NA
+4.57 ± NA
 </td>
 </tr>
 <tr>
@@ -3441,13 +3457,13 @@ BMI(T1)
 蔬菜(日)
 </td>
 <td style="text-align:center;">
-2.66 ± 0.18
+2.69 ± 0.18
 </td>
 <td style="text-align:center;">
-2.5 ± 0.09
+2.51 ± 0.09
 </td>
 <td style="text-align:center;">
-2.55 ± 0.09
+2.54 ± 0.09
 </td>
 <td style="text-align:center;">
 2.09 ± 0.19
@@ -3459,10 +3475,10 @@ BMI(T1)
 1.8 ± 0.53
 </td>
 <td style="text-align:center;">
-2.63 ± 0.23
+2.54 ± 0.23
 </td>
 <td style="text-align:center;">
-2.79 ± 0.3
+2.73 ± 0.3
 </td>
 <td style="text-align:center;">
 2.07 ± 0.36
@@ -3494,10 +3510,10 @@ BMI(T1)
 1.87 ± 0.48
 </td>
 <td style="text-align:center;">
-1.31 ± 0.15
+1.31 ± 0.14
 </td>
 <td style="text-align:center;">
-1.12 ± 0.19
+1.1 ± 0.18
 </td>
 <td style="text-align:center;">
 1.05 ± 0.19
@@ -3511,28 +3527,28 @@ BMI(T1)
 蛋豆魚肉(日)
 </td>
 <td style="text-align:center;">
-6.82 ± 0.38
+6.89 ± 0.38
 </td>
 <td style="text-align:center;">
-6.46 ± 0.19
+6.47 ± 0.19
 </td>
 <td style="text-align:center;">
-6.52 ± 0.21
+6.5 ± 0.2
 </td>
 <td style="text-align:center;">
 6.01 ± 0.48
 </td>
 <td style="text-align:center;">
-7.13 ± 0.84
+7.15 ± 0.84
 </td>
 <td style="text-align:center;">
 5.99 ± 1.74
 </td>
 <td style="text-align:center;">
-7.76 ± 0.55
+7.55 ± 0.55
 </td>
 <td style="text-align:center;">
-7.8 ± 0.81
+7.54 ± 0.8
 </td>
 <td style="text-align:center;">
 5.73 ± 0.87
@@ -3581,10 +3597,10 @@ BMI(T1)
 油脂(日)
 </td>
 <td style="text-align:center;">
-3.06 ± 0.19
+3.09 ± 0.19
 </td>
 <td style="text-align:center;">
-2.84 ± 0.09
+2.85 ± 0.09
 </td>
 <td style="text-align:center;">
 2.89 ± 0.09
@@ -3599,10 +3615,10 @@ BMI(T1)
 2.6 ± 0.61
 </td>
 <td style="text-align:center;">
-3.07 ± 0.24
+3 ± 0.23
 </td>
 <td style="text-align:center;">
-3.24 ± 0.31
+3.15 ± 0.32
 </td>
 <td style="text-align:center;">
 2.37 ± 0.38
@@ -3616,28 +3632,28 @@ BMI(T1)
 ∆體重
 </td>
 <td style="text-align:center;">
-4.62 ± 0.28
+4.67 ± 0.28
 </td>
 <td style="text-align:center;">
-4.83 ± 0.15
+4.85 ± 0.14
 </td>
 <td style="text-align:center;">
-4.62 ± 0.14
+4.63 ± 0.14
 </td>
 <td style="text-align:center;">
 5.67 ± 0.51
 </td>
 <td style="text-align:center;">
-4.94 ± 0.87
+4.99 ± 0.86
 </td>
 <td style="text-align:center;">
 6 ± 1.81
 </td>
 <td style="text-align:center;">
-6.89 ± 0.42
+6.59 ± 0.45
 </td>
 <td style="text-align:center;">
-7.36 ± 0.7
+6.88 ± 0.73
 </td>
 <td style="text-align:center;">
 7.41 ± 0.66
@@ -3651,10 +3667,10 @@ BMI(T1)
 ∆BMI
 </td>
 <td style="text-align:center;">
-1.73 ± 0.11
+1.75 ± 0.11
 </td>
 <td style="text-align:center;">
-1.87 ± 0.06
+1.87 ± 0.05
 </td>
 <td style="text-align:center;">
 1.91 ± 0.11
@@ -3663,16 +3679,16 @@ BMI(T1)
 2.17 ± 0.19
 </td>
 <td style="text-align:center;">
-1.84 ± 0.31
+1.86 ± 0.31
 </td>
 <td style="text-align:center;">
 1.97 ± 0.59
 </td>
 <td style="text-align:center;">
-2.28 ± 0.14
+2.18 ± 0.15
 </td>
 <td style="text-align:center;">
-2.47 ± 0.22
+2.31 ± 0.24
 </td>
 <td style="text-align:center;">
 2.4 ± 0.22
@@ -3686,7 +3702,7 @@ BMI(T1)
 ∆體脂重
 </td>
 <td style="text-align:center;">
-2.96 ± 0.25
+3.02 ± 0.25
 </td>
 <td style="text-align:center;">
 3.33 ± 0.12
@@ -3698,16 +3714,16 @@ BMI(T1)
 3.75 ± 0.31
 </td>
 <td style="text-align:center;">
-3.35 ± 1.02
+3.44 ± 1.01
 </td>
 <td style="text-align:center;">
 3.87 ± 1.29
 </td>
 <td style="text-align:center;">
-4.98 ± 0.33
+4.8 ± 0.34
 </td>
 <td style="text-align:center;">
-5.05 ± 0.53
+4.77 ± 0.53
 </td>
 <td style="text-align:center;">
 5.2 ± 0.68
@@ -3721,28 +3737,28 @@ BMI(T1)
 ∆體脂率
 </td>
 <td style="text-align:center;">
-1.94 ± 0.28
+1.95 ± 0.27
 </td>
 <td style="text-align:center;">
-2.14 ± 0.12
+2.13 ± 0.12
 </td>
 <td style="text-align:center;">
-1.96 ± 0.14
+1.95 ± 0.14
 </td>
 <td style="text-align:center;">
 1.44 ± 0.21
 </td>
 <td style="text-align:center;">
-2.06 ± 0.96
+2.18 ± 0.97
 </td>
 <td style="text-align:center;">
 2.95 ± 1.12
 </td>
 <td style="text-align:center;">
-3.37 ± 0.32
+3.3 ± 0.32
 </td>
 <td style="text-align:center;">
-3.08 ± 0.43
+2.94 ± 0.42
 </td>
 <td style="text-align:center;">
 2.31 ± 0.46
@@ -3756,34 +3772,34 @@ BMI(T1)
 ∆骨骼肌質量指數
 </td>
 <td style="text-align:center;">
-0.27 ± 0.03
+-0.27 ± 0.03
 </td>
 <td style="text-align:center;">
-0.26 ± 0.01
+-0.26 ± 0.01
 </td>
 <td style="text-align:center;">
-0.26 ± 0.01
+-0.26 ± 0.01
 </td>
 <td style="text-align:center;">
-0.31 ± 0.04
+-0.31 ± 0.04
 </td>
 <td style="text-align:center;">
-0.28 ± 0.07
+-0.28 ± 0.08
 </td>
 <td style="text-align:center;">
-0.3 ± 0.12
+-0.3 ± 0.12
 </td>
 <td style="text-align:center;">
-0.28 ± 0.04
+-0.27 ± 0.04
 </td>
 <td style="text-align:center;">
-0.37 ± 0.05
+-0.34 ± 0.05
 </td>
 <td style="text-align:center;">
-0.24 ± 0.06
+-0.24 ± 0.06
 </td>
 <td style="text-align:center;">
-0.2 ± NA
+-0.2 ± NA
 </td>
 </tr>
 <tr>
@@ -3791,34 +3807,34 @@ BMI(T1)
 ∆骨骼肌重
 </td>
 <td style="text-align:center;">
-0.99 ± 0.11
+-0.99 ± 0.11
 </td>
 <td style="text-align:center;">
-0.92 ± 0.05
+-0.93 ± 0.05
 </td>
 <td style="text-align:center;">
-0.94 ± 0.06
+-0.95 ± 0.06
 </td>
 <td style="text-align:center;">
-1.14 ± 0.16
+-1.14 ± 0.16
 </td>
 <td style="text-align:center;">
-0.93 ± 0.3
+-0.92 ± 0.31
 </td>
 <td style="text-align:center;">
-1.37 ± 0.47
+-1.37 ± 0.47
 </td>
 <td style="text-align:center;">
-1.22 ± 0.18
+-1.15 ± 0.18
 </td>
 <td style="text-align:center;">
-1.39 ± 0.25
+-1.27 ± 0.24
 </td>
 <td style="text-align:center;">
-1.35 ± 0.23
+-1.35 ± 0.23
 </td>
 <td style="text-align:center;">
-0.9 ± NA
+-0.9 ± NA
 </td>
 </tr>
 <tr>
@@ -3826,28 +3842,28 @@ BMI(T1)
 ∆內臟脂肪面積
 </td>
 <td style="text-align:center;">
-15.02 ± 1.52
+15.2 ± 1.49
 </td>
 <td style="text-align:center;">
-15.95 ± 0.62
+16.17 ± 0.62
 </td>
 <td style="text-align:center;">
-16.39 ± 0.62
+16.52 ± 0.61
 </td>
 <td style="text-align:center;">
 14.9 ± 1.64
 </td>
 <td style="text-align:center;">
-16.32 ± 2.54
+18.08 ± 2.75
 </td>
 <td style="text-align:center;">
 13.13 ± 5.47
 </td>
 <td style="text-align:center;">
-28.24 ± 1.75
+26.59 ± 1.78
 </td>
 <td style="text-align:center;">
-23.29 ± 3.59
+21.51 ± 3.4
 </td>
 <td style="text-align:center;">
 20.69 ± 2.88
@@ -3861,28 +3877,28 @@ BMI(T1)
 ∆腰圍
 </td>
 <td style="text-align:center;">
-4.39 ± 0.37
+4.44 ± 0.35
 </td>
 <td style="text-align:center;">
-4.75 ± 0.19
+4.8 ± 0.19
 </td>
 <td style="text-align:center;">
-4.53 ± 0.19
+4.6 ± 0.19
 </td>
 <td style="text-align:center;">
 4.98 ± 0.59
 </td>
 <td style="text-align:center;">
-3.62 ± 1.11
+3.8 ± 1.11
 </td>
 <td style="text-align:center;">
 6.53 ± 2.14
 </td>
 <td style="text-align:center;">
-7.57 ± 0.51
+7.32 ± 0.52
 </td>
 <td style="text-align:center;">
-6.71 ± 0.79
+6.39 ± 0.77
 </td>
 <td style="text-align:center;">
 7.2 ± 0.88
@@ -3896,28 +3912,28 @@ BMI(T1)
 ∆除脂體重
 </td>
 <td style="text-align:center;">
-1.66 ± 0.19
+1.65 ± 0.19
 </td>
 <td style="text-align:center;">
-1.5 ± 0.09
+1.52 ± 0.09
 </td>
 <td style="text-align:center;">
-1.53 ± 0.1
+1.54 ± 0.1
 </td>
 <td style="text-align:center;">
 1.92 ± 0.27
 </td>
 <td style="text-align:center;">
-1.59 ± 0.55
+1.55 ± 0.56
 </td>
 <td style="text-align:center;">
 2.13 ± 0.83
 </td>
 <td style="text-align:center;">
-1.9 ± 0.29
+1.78 ± 0.29
 </td>
 <td style="text-align:center;">
-2.32 ± 0.42
+2.11 ± 0.41
 </td>
 <td style="text-align:center;">
 2.21 ± 0.38
@@ -3931,28 +3947,28 @@ BMI(T1)
 ∆基礎代謝率
 </td>
 <td style="text-align:center;">
--35.89 ± 4.18
+-35.74 ± 4.09
 </td>
 <td style="text-align:center;">
--32.42 ± 1.86
+-32.82 ± 1.85
 </td>
 <td style="text-align:center;">
--32.96 ± 2.13
+-33.26 ± 2.08
 </td>
 <td style="text-align:center;">
 -41.67 ± 5.85
 </td>
 <td style="text-align:center;">
--34.54 ± 11.9
+-33.77 ± 12.19
 </td>
 <td style="text-align:center;">
 -45.5 ± 17.78
 </td>
 <td style="text-align:center;">
--41.09 ± 6.35
+-38.53 ± 6.22
 </td>
 <td style="text-align:center;">
--50.32 ± 9.08
+-45.78 ± 8.98
 </td>
 <td style="text-align:center;">
 -47.78 ± 8.13
@@ -3966,13 +3982,13 @@ BMI(T1)
 ∆糖化血色素
 </td>
 <td style="text-align:center;">
-0.16 ± 0.03
+0.17 ± 0.03
 </td>
 <td style="text-align:center;">
-0.22 ± 0.01
+0.23 ± 0.01
 </td>
 <td style="text-align:center;">
-0.28 ± 0.02
+0.27 ± 0.02
 </td>
 <td style="text-align:center;">
 0.39 ± 0.04
@@ -3987,7 +4003,7 @@ BMI(T1)
 0.29 ± 0.03
 </td>
 <td style="text-align:center;">
-0.39 ± 0.07
+0.36 ± 0.06
 </td>
 <td style="text-align:center;">
 0.68 ± 0.17
@@ -4001,13 +4017,13 @@ BMI(T1)
 ∆空腹血糖
 </td>
 <td style="text-align:center;">
-6.1 ± 1.03
+6.31 ± 1.04
 </td>
 <td style="text-align:center;">
-8.23 ± 0.65
+8.11 ± 0.64
 </td>
 <td style="text-align:center;">
-9.63 ± 0.89
+9.05 ± 0.73
 </td>
 <td style="text-align:center;">
 8.79 ± 1.42
@@ -4019,10 +4035,10 @@ BMI(T1)
 1.33 ± 2.75
 </td>
 <td style="text-align:center;">
-10.8 ± 1.43
+10.35 ± 1.37
 </td>
 <td style="text-align:center;">
-17 ± 2.79
+15.59 ± 2.76
 </td>
 <td style="text-align:center;">
 18.43 ± 6.03
@@ -4036,13 +4052,13 @@ BMI(T1)
 ∆空腹胰島素
 </td>
 <td style="text-align:center;">
-0.48 ± 0.57
+0.49 ± 0.56
 </td>
 <td style="text-align:center;">
-1.96 ± 0.39
+1.94 ± 0.39
 </td>
 <td style="text-align:center;">
-1.71 ± 0.35
+1.7 ± 0.35
 </td>
 <td style="text-align:center;">
 14.98 ± 2.79
@@ -4054,10 +4070,10 @@ BMI(T1)
 -1.06 ± 2.52
 </td>
 <td style="text-align:center;">
-3.36 ± 0.93
+2.94 ± 0.93
 </td>
 <td style="text-align:center;">
-4.49 ± 1.51
+4.22 ± 1.41
 </td>
 <td style="text-align:center;">
 11.24 ± 4.09
@@ -4074,10 +4090,10 @@ BMI(T1)
 0.18 ± 0.12
 </td>
 <td style="text-align:center;">
-0.57 ± 0.09
+0.56 ± 0.09
 </td>
 <td style="text-align:center;">
-0.56 ± 0.09
+0.54 ± 0.08
 </td>
 <td style="text-align:center;">
 3.72 ± 0.62
@@ -4089,10 +4105,10 @@ BMI(T1)
 -0.2 ± 0.56
 </td>
 <td style="text-align:center;">
-1.02 ± 0.22
+0.91 ± 0.22
 </td>
 <td style="text-align:center;">
-1.5 ± 0.37
+1.4 ± 0.35
 </td>
 <td style="text-align:center;">
 3.8 ± 1.09
@@ -4106,34 +4122,34 @@ BMI(T1)
 ∆β細胞功能
 </td>
 <td style="text-align:center;">
--9.38 ± 58.94
+0.89 ± 58.6
 </td>
 <td style="text-align:center;">
--57.52 ± 22.73
+56.71 ± 22.13
 </td>
 <td style="text-align:center;">
--129.58 ± 42.15
+126.5 ± 41.44
 </td>
 <td style="text-align:center;">
--61.7 ± 101.93
+61.7 ± 101.93
 </td>
 <td style="text-align:center;">
-319.62 ± 345.54
+-319.62 ± 345.54
 </td>
 <td style="text-align:center;">
--29.98 ± 32.65
+29.98 ± 32.65
 </td>
 <td style="text-align:center;">
--63.38 ± 34.81
+65.04 ± 32.7
 </td>
 <td style="text-align:center;">
-58.49 ± 97.58
+-55.61 ± 90.24
 </td>
 <td style="text-align:center;">
--68.84 ± 95.51
+68.84 ± 95.51
 </td>
 <td style="text-align:center;">
--52 ± NA
+52 ± NA
 </td>
 </tr>
 <tr>
@@ -4141,13 +4157,13 @@ BMI(T1)
 ∆三酸甘油脂
 </td>
 <td style="text-align:center;">
-3.93 ± 4.78
+3.74 ± 4.71
 </td>
 <td style="text-align:center;">
-8.9 ± 2.69
+9.37 ± 2.66
 </td>
 <td style="text-align:center;">
-28.04 ± 11.44
+16.82 ± 3.53
 </td>
 <td style="text-align:center;">
 53.64 ± 22.23
@@ -4159,10 +4175,10 @@ BMI(T1)
 36.67 ± 24.87
 </td>
 <td style="text-align:center;">
-23.57 ± 9.6
+25.65 ± 9.26
 </td>
 <td style="text-align:center;">
-45.44 ± 15.62
+43.81 ± 14.54
 </td>
 <td style="text-align:center;">
 22.22 ± 13.52
@@ -4176,13 +4192,13 @@ BMI(T1)
 ∆總膽固醇
 </td>
 <td style="text-align:center;">
--6.8 ± 5.1
+-6.95 ± 5.02
 </td>
 <td style="text-align:center;">
--6.77 ± 2.17
+-6.75 ± 2.15
 </td>
 <td style="text-align:center;">
-0.36 ± 2.11
+0.11 ± 2.04
 </td>
 <td style="text-align:center;">
 8.83 ± 5.7
@@ -4194,10 +4210,10 @@ BMI(T1)
 0.33 ± 17.07
 </td>
 <td style="text-align:center;">
-2.2 ± 6.03
+2.29 ± 5.73
 </td>
 <td style="text-align:center;">
-1.56 ± 6.71
+1.07 ± 6.22
 </td>
 <td style="text-align:center;">
 5.43 ± 6.77
@@ -4211,34 +4227,34 @@ BMI(T1)
 ∆高密度脂蛋白
 </td>
 <td style="text-align:center;">
-6.84 ± 1.27
+-6.91 ± 1.26
 </td>
 <td style="text-align:center;">
-5.51 ± 0.55
+-5.53 ± 0.54
 </td>
 <td style="text-align:center;">
-5.24 ± 0.56
+-5.38 ± 0.55
 </td>
 <td style="text-align:center;">
-5.7 ± 1.16
+-5.7 ± 1.16
 </td>
 <td style="text-align:center;">
-10.83 ± 2.98
+-10.83 ± 2.98
 </td>
 <td style="text-align:center;">
-1.15 ± 4.49
+-1.15 ± 4.49
 </td>
 <td style="text-align:center;">
-5.4 ± 0.95
+-5.11 ± 0.92
 </td>
 <td style="text-align:center;">
-1.14 ± 2.12
+-1.13 ± 1.96
 </td>
 <td style="text-align:center;">
-4.67 ± 1.09
+-4.67 ± 1.09
 </td>
 <td style="text-align:center;">
-3.8 ± NA
+-3.8 ± NA
 </td>
 </tr>
 <tr>
@@ -4246,13 +4262,13 @@ BMI(T1)
 ∆低密度脂蛋白
 </td>
 <td style="text-align:center;">
--13.89 ± 4.32
+-14.03 ± 4.25
 </td>
 <td style="text-align:center;">
--8.92 ± 1.84
+-9.04 ± 1.83
 </td>
 <td style="text-align:center;">
--3.9 ± 1.91
+-3.52 ± 1.86
 </td>
 <td style="text-align:center;">
 2.64 ± 5.14
@@ -4264,10 +4280,10 @@ BMI(T1)
 -3 ± 15.89
 </td>
 <td style="text-align:center;">
--1.11 ± 5.02
+-1.2 ± 4.79
 </td>
 <td style="text-align:center;">
-1.36 ± 6.17
+0.93 ± 5.72
 </td>
 <td style="text-align:center;">
 -0.35 ± 5.41
@@ -4281,13 +4297,13 @@ BMI(T1)
 ∆尿酸
 </td>
 <td style="text-align:center;">
--0.86 ± 0.12
+-0.82 ± 0.12
 </td>
 <td style="text-align:center;">
--0.59 ± 0.07
+-0.6 ± 0.07
 </td>
 <td style="text-align:center;">
--0.6 ± 0.08
+-0.62 ± 0.08
 </td>
 <td style="text-align:center;">
 -0.66 ± 0.23
@@ -4299,10 +4315,10 @@ BMI(T1)
 -1.55 ± 0.36
 </td>
 <td style="text-align:center;">
--0.84 ± 0.18
+-0.87 ± 0.18
 </td>
 <td style="text-align:center;">
--0.96 ± 0.25
+-0.88 ± 0.24
 </td>
 <td style="text-align:center;">
 -0.68 ± 0.33
@@ -4316,13 +4332,13 @@ BMI(T1)
 ∆澱粉脢
 </td>
 <td style="text-align:center;">
-2.31 ± 1.11
+2.21 ± 1.09
 </td>
 <td style="text-align:center;">
-1.89 ± 0.62
+1.88 ± 0.61
 </td>
 <td style="text-align:center;">
-1.92 ± 0.69
+1.97 ± 0.68
 </td>
 <td style="text-align:center;">
 -0.29 ± 0.95
@@ -4334,10 +4350,10 @@ BMI(T1)
 5.33 ± 3.7
 </td>
 <td style="text-align:center;">
-0.41 ± 1.8
+1.39 ± 2.05
 </td>
 <td style="text-align:center;">
-1.08 ± 1.25
+0.89 ± 1.16
 </td>
 <td style="text-align:center;">
 1.57 ± 1.54
@@ -4351,13 +4367,13 @@ BMI(T1)
 ∆解脂脢
 </td>
 <td style="text-align:center;">
-13.43 ± 1.63
+13.32 ± 1.6
 </td>
 <td style="text-align:center;">
-13.47 ± 1.31
+13.53 ± 1.29
 </td>
 <td style="text-align:center;">
-11.19 ± 1.05
+11.61 ± 1.01
 </td>
 <td style="text-align:center;">
 5.14 ± 2.63
@@ -4369,10 +4385,10 @@ BMI(T1)
 23.5 ± 7.07
 </td>
 <td style="text-align:center;">
-11 ± 3.96
+14.94 ± 5.49
 </td>
 <td style="text-align:center;">
-8.36 ± 2.23
+7.74 ± 2.11
 </td>
 <td style="text-align:center;">
 9.65 ± 1.93
@@ -4386,28 +4402,28 @@ BMI(T1)
 ∆體重(%)
 </td>
 <td style="text-align:center;">
-6.49 ± 0.36
+6.51 ± 0.36
 </td>
 <td style="text-align:center;">
-6.68 ± 0.19
+6.7 ± 0.19
 </td>
 <td style="text-align:center;">
-6.58 ± 0.19
+6.59 ± 0.19
 </td>
 <td style="text-align:center;">
 6.28 ± 0.54
 </td>
 <td style="text-align:center;">
-6.64 ± 0.87
+6.73 ± 0.83
 </td>
 <td style="text-align:center;">
 6.97 ± 2.12
 </td>
 <td style="text-align:center;">
-7.51 ± 0.46
+7.22 ± 0.5
 </td>
 <td style="text-align:center;">
-7.96 ± 0.64
+7.43 ± 0.7
 </td>
 <td style="text-align:center;">
 6.58 ± 0.55
@@ -4421,28 +4437,28 @@ BMI(T1)
 ∆BMI(%)
 </td>
 <td style="text-align:center;">
-6.49 ± 0.36
+6.51 ± 0.36
 </td>
 <td style="text-align:center;">
-6.71 ± 0.19
+6.72 ± 0.19
 </td>
 <td style="text-align:center;">
-6.77 ± 0.28
+6.77 ± 0.27
 </td>
 <td style="text-align:center;">
 6.28 ± 0.54
 </td>
 <td style="text-align:center;">
-6.64 ± 0.87
+6.73 ± 0.83
 </td>
 <td style="text-align:center;">
 6.97 ± 2.12
 </td>
 <td style="text-align:center;">
-7.48 ± 0.46
+7.19 ± 0.5
 </td>
 <td style="text-align:center;">
-7.95 ± 0.64
+7.43 ± 0.7
 </td>
 <td style="text-align:center;">
 6.58 ± 0.55
@@ -4456,28 +4472,28 @@ BMI(T1)
 ∆體脂重(%)
 </td>
 <td style="text-align:center;">
-11.58 ± 0.97
+11.6 ± 0.95
 </td>
 <td style="text-align:center;">
-11.84 ± 0.42
+11.82 ± 0.41
 </td>
 <td style="text-align:center;">
-11.23 ± 0.44
+11.22 ± 0.43
 </td>
 <td style="text-align:center;">
 9.32 ± 0.8
 </td>
 <td style="text-align:center;">
-11.03 ± 3.06
+11.4 ± 3.05
 </td>
 <td style="text-align:center;">
 16.66 ± 5.67
 </td>
 <td style="text-align:center;">
-17.66 ± 1.28
+17.14 ± 1.32
 </td>
 <td style="text-align:center;">
-16.9 ± 1.7
+15.97 ± 1.72
 </td>
 <td style="text-align:center;">
 12.51 ± 1.65
@@ -4491,28 +4507,28 @@ BMI(T1)
 ∆體脂率(%)
 </td>
 <td style="text-align:center;">
-5.52 ± 0.84
+5.52 ± 0.83
 </td>
 <td style="text-align:center;">
-5.59 ± 0.33
+5.55 ± 0.32
 </td>
 <td style="text-align:center;">
-5.03 ± 0.37
+5.02 ± 0.36
 </td>
 <td style="text-align:center;">
 3.29 ± 0.49
 </td>
 <td style="text-align:center;">
-4.87 ± 2.68
+5.18 ± 2.71
 </td>
 <td style="text-align:center;">
 10.87 ± 4.17
 </td>
 <td style="text-align:center;">
-11.07 ± 1.11
+10.82 ± 1.1
 </td>
 <td style="text-align:center;">
-9.81 ± 1.45
+9.34 ± 1.39
 </td>
 <td style="text-align:center;">
 6.41 ± 1.35
@@ -4526,34 +4542,34 @@ BMI(T1)
 ∆骨骼肌質量指數(%)
 </td>
 <td style="text-align:center;">
-3.78 ± 0.41
+-3.78 ± 0.4
 </td>
 <td style="text-align:center;">
-3.78 ± 0.19
+-3.77 ± 0.19
 </td>
 <td style="text-align:center;">
-3.82 ± 0.21
+-3.79 ± 0.2
 </td>
 <td style="text-align:center;">
-3.96 ± 0.54
+-3.96 ± 0.54
 </td>
 <td style="text-align:center;">
-3.96 ± 1.03
+-3.84 ± 1.09
 </td>
 <td style="text-align:center;">
-3.37 ± 1.31
+-3.37 ± 1.31
 </td>
 <td style="text-align:center;">
-3.19 ± 0.4
+-3.04 ± 0.41
 </td>
 <td style="text-align:center;">
-4.2 ± 0.56
+-3.8 ± 0.59
 </td>
 <td style="text-align:center;">
-2.6 ± 0.6
+-2.6 ± 0.6
 </td>
 <td style="text-align:center;">
-2.53 ± NA
+-2.53 ± NA
 </td>
 </tr>
 <tr>
@@ -4561,34 +4577,34 @@ BMI(T1)
 ∆骨骼肌重(%)
 </td>
 <td style="text-align:center;">
-4.02 ± 0.44
+-4.01 ± 0.44
 </td>
 <td style="text-align:center;">
-3.81 ± 0.21
+-3.85 ± 0.2
 </td>
 <td style="text-align:center;">
-4.05 ± 0.27
+-4.08 ± 0.27
 </td>
 <td style="text-align:center;">
-4.2 ± 0.58
+-4.2 ± 0.58
 </td>
 <td style="text-align:center;">
-3.61 ± 1.26
+-3.57 ± 1.28
 </td>
 <td style="text-align:center;">
-3.75 ± 1.25
+-3.75 ± 1.25
 </td>
 <td style="text-align:center;">
-3.38 ± 0.49
+-3.18 ± 0.49
 </td>
 <td style="text-align:center;">
-3.99 ± 0.7
+-3.64 ± 0.69
 </td>
 <td style="text-align:center;">
-3.34 ± 0.53
+-3.34 ± 0.53
 </td>
 <td style="text-align:center;">
-2.92 ± NA
+-2.92 ± NA
 </td>
 </tr>
 <tr>
@@ -4596,28 +4612,28 @@ BMI(T1)
 ∆內臟脂肪面積(%)
 </td>
 <td style="text-align:center;">
-11.59 ± 1.15
+11.52 ± 1.13
 </td>
 <td style="text-align:center;">
-11.63 ± 0.49
+11.75 ± 0.49
 </td>
 <td style="text-align:center;">
-12.54 ± 0.55
+12.64 ± 0.53
 </td>
 <td style="text-align:center;">
 8.45 ± 1.01
 </td>
 <td style="text-align:center;">
-13.59 ± 2.14
+14.93 ± 2.22
 </td>
 <td style="text-align:center;">
 14.61 ± 6.05
 </td>
 <td style="text-align:center;">
-24 ± 1.33
+22.64 ± 1.44
 </td>
 <td style="text-align:center;">
-17.61 ± 2.41
+16.16 ± 2.32
 </td>
 <td style="text-align:center;">
 12.84 ± 1.76
@@ -4631,28 +4647,28 @@ BMI(T1)
 ∆腰圍(%)
 </td>
 <td style="text-align:center;">
-4.89 ± 0.39
+4.93 ± 0.38
 </td>
 <td style="text-align:center;">
-5.12 ± 0.2
+5.17 ± 0.2
 </td>
 <td style="text-align:center;">
-4.97 ± 0.2
+5.04 ± 0.2
 </td>
 <td style="text-align:center;">
 4.55 ± 0.51
 </td>
 <td style="text-align:center;">
-3.72 ± 1.1
+3.94 ± 1.1
 </td>
 <td style="text-align:center;">
 6.78 ± 2.24
 </td>
 <td style="text-align:center;">
-7.31 ± 0.48
+7.09 ± 0.49
 </td>
 <td style="text-align:center;">
-6.46 ± 0.75
+6.14 ± 0.74
 </td>
 <td style="text-align:center;">
 5.96 ± 0.73
@@ -4666,28 +4682,28 @@ BMI(T1)
 ∆除脂體重(%)
 </td>
 <td style="text-align:center;">
-3.67 ± 0.42
+3.65 ± 0.41
 </td>
 <td style="text-align:center;">
-3.39 ± 0.19
+3.43 ± 0.19
 </td>
 <td style="text-align:center;">
-3.55 ± 0.26
+3.58 ± 0.25
 </td>
 <td style="text-align:center;">
 3.88 ± 0.55
 </td>
 <td style="text-align:center;">
-3.39 ± 1.24
+3.29 ± 1.28
 </td>
 <td style="text-align:center;">
 3.31 ± 1.28
 </td>
 <td style="text-align:center;">
-2.99 ± 0.45
+2.79 ± 0.45
 </td>
 <td style="text-align:center;">
-3.74 ± 0.66
+3.4 ± 0.66
 </td>
 <td style="text-align:center;">
 3.11 ± 0.51
@@ -4701,28 +4717,28 @@ BMI(T1)
 ∆基礎代謝率(%)
 </td>
 <td style="text-align:center;">
--2.66 ± 0.31
+-2.65 ± 0.3
 </td>
 <td style="text-align:center;">
--2.44 ± 0.14
+-2.47 ± 0.14
 </td>
 <td style="text-align:center;">
--2.53 ± 0.17
+-2.55 ± 0.17
 </td>
 <td style="text-align:center;">
 -2.88 ± 0.41
 </td>
 <td style="text-align:center;">
--2.49 ± 0.9
+-2.42 ± 0.92
 </td>
 <td style="text-align:center;">
 -2.58 ± 1.01
 </td>
 <td style="text-align:center;">
--2.35 ± 0.36
+-2.2 ± 0.35
 </td>
 <td style="text-align:center;">
--2.94 ± 0.52
+-2.68 ± 0.52
 </td>
 <td style="text-align:center;">
 -2.51 ± 0.41
@@ -4736,13 +4752,13 @@ BMI(T1)
 ∆糖化血色素(%)
 </td>
 <td style="text-align:center;">
-3 ± 0.47
+3.16 ± 0.49
 </td>
 <td style="text-align:center;">
-3.96 ± 0.24
+4.08 ± 0.24
 </td>
 <td style="text-align:center;">
-4.76 ± 0.3
+4.68 ± 0.28
 </td>
 <td style="text-align:center;">
 6.49 ± 0.67
@@ -4754,10 +4770,10 @@ BMI(T1)
 1.81 ± 0.93
 </td>
 <td style="text-align:center;">
-4.95 ± 0.58
+5.03 ± 0.56
 </td>
 <td style="text-align:center;">
-6.35 ± 0.98
+5.94 ± 0.95
 </td>
 <td style="text-align:center;">
 9.88 ± 1.94
@@ -4771,13 +4787,13 @@ BMI(T1)
 ∆空腹血糖(%)
 </td>
 <td style="text-align:center;">
-6.75 ± 1.1
+7.03 ± 1.12
 </td>
 <td style="text-align:center;">
-9.05 ± 0.69
+8.91 ± 0.68
 </td>
 <td style="text-align:center;">
-10.06 ± 0.81
+9.74 ± 0.77
 </td>
 <td style="text-align:center;">
 9.33 ± 1.5
@@ -4789,10 +4805,10 @@ BMI(T1)
 1.48 ± 3.41
 </td>
 <td style="text-align:center;">
-11.6 ± 1.54
+11.13 ± 1.47
 </td>
 <td style="text-align:center;">
-16.76 ± 3.08
+15.35 ± 3.01
 </td>
 <td style="text-align:center;">
 14.66 ± 3.56
@@ -4806,13 +4822,13 @@ BMI(T1)
 ∆空腹胰島素(%)
 </td>
 <td style="text-align:center;">
--4.16 ± 9.13
+-3.61 ± 9
 </td>
 <td style="text-align:center;">
-9.79 ± 3.47
+9.61 ± 3.4
 </td>
 <td style="text-align:center;">
-4.34 ± 4.65
+3.91 ± 4.59
 </td>
 <td style="text-align:center;">
 36.01 ± 6.39
@@ -4824,10 +4840,10 @@ BMI(T1)
 -21.56 ± 33.34
 </td>
 <td style="text-align:center;">
-21.58 ± 5.86
+19.29 ± 5.73
 </td>
 <td style="text-align:center;">
-7.04 ± 26.37
+7.19 ± 24.38
 </td>
 <td style="text-align:center;">
 29.58 ± 10.24
@@ -4841,13 +4857,13 @@ BMI(T1)
 ∆胰島素阻抗值(%)
 </td>
 <td style="text-align:center;">
-0.78 ± 9.37
+1.45 ± 9.24
 </td>
 <td style="text-align:center;">
-14.62 ± 3.71
+14.33 ± 3.64
 </td>
 <td style="text-align:center;">
-9.81 ± 5.44
+9.32 ± 5.35
 </td>
 <td style="text-align:center;">
 40.93 ± 6.13
@@ -4859,10 +4875,10 @@ BMI(T1)
 -25.68 ± 38.95
 </td>
 <td style="text-align:center;">
-28.78 ± 5.99
+26.25 ± 5.91
 </td>
 <td style="text-align:center;">
-12.69 ± 30.52
+12.31 ± 28.22
 </td>
 <td style="text-align:center;">
 37.87 ± 10.55
@@ -4876,34 +4892,34 @@ BMI(T1)
 ∆β細胞功能(%)
 </td>
 <td style="text-align:center;">
--61.17 ± 23.8
+48.95 ± 26.41
 </td>
 <td style="text-align:center;">
--59.7 ± 20.66
+58.33 ± 20.11
 </td>
 <td style="text-align:center;">
--84.71 ± 20.58
+83.18 ± 20.23
 </td>
 <td style="text-align:center;">
--21.46 ± 18.79
+21.46 ± 18.79
 </td>
 <td style="text-align:center;">
-72.64 ± 175.59
+-72.64 ± 175.59
 </td>
 <td style="text-align:center;">
--22.11 ± 17.13
+22.11 ± 17.13
 </td>
 <td style="text-align:center;">
--46.07 ± 16.58
+45.3 ± 15.56
 </td>
 <td style="text-align:center;">
-40.05 ± 46.35
+-38.18 ± 42.88
 </td>
 <td style="text-align:center;">
--40.18 ± 21.44
+40.18 ± 21.44
 </td>
 <td style="text-align:center;">
--49.95 ± NA
+49.95 ± NA
 </td>
 </tr>
 <tr>
@@ -4911,13 +4927,13 @@ BMI(T1)
 ∆三酸甘油脂(%)
 </td>
 <td style="text-align:center;">
--8.02 ± 5.15
+-8.13 ± 5.07
 </td>
 <td style="text-align:center;">
--2.28 ± 2.54
+-1.87 ± 2.53
 </td>
 <td style="text-align:center;">
-7.7 ± 2.53
+7.07 ± 2.48
 </td>
 <td style="text-align:center;">
 15.85 ± 4.96
@@ -4929,10 +4945,10 @@ BMI(T1)
 14.03 ± 22.84
 </td>
 <td style="text-align:center;">
-3.19 ± 5.82
+4.67 ± 5.59
 </td>
 <td style="text-align:center;">
-18.22 ± 6.06
+18.37 ± 5.7
 </td>
 <td style="text-align:center;">
 8.97 ± 6.08
@@ -4946,13 +4962,13 @@ BMI(T1)
 ∆總膽固醇(%)
 </td>
 <td style="text-align:center;">
--4.35 ± 2.3
+-4.44 ± 2.27
 </td>
 <td style="text-align:center;">
--4.03 ± 1.1
+-4 ± 1.08
 </td>
 <td style="text-align:center;">
--0.49 ± 1.04
+-0.52 ± 1.02
 </td>
 <td style="text-align:center;">
 3.79 ± 2.54
@@ -4964,10 +4980,10 @@ BMI(T1)
 -0.25 ± 9.08
 </td>
 <td style="text-align:center;">
-1.01 ± 2.8
+0.9 ± 2.7
 </td>
 <td style="text-align:center;">
--0.31 ± 3.71
+-0.52 ± 3.43
 </td>
 <td style="text-align:center;">
 2.17 ± 3.67
@@ -4981,34 +4997,34 @@ BMI(T1)
 ∆高密度脂蛋白(%)
 </td>
 <td style="text-align:center;">
-9.44 ± 1.76
+-9.56 ± 1.74
 </td>
 <td style="text-align:center;">
-8.62 ± 0.92
+-8.68 ± 0.9
 </td>
 <td style="text-align:center;">
-8.58 ± 0.98
+-8.87 ± 0.95
 </td>
 <td style="text-align:center;">
-11.29 ± 2.31
+-11.29 ± 2.31
 </td>
 <td style="text-align:center;">
-14.33 ± 3.85
+-14.33 ± 3.85
 </td>
 <td style="text-align:center;">
-0.62 ± 8.91
+-0.62 ± 8.91
 </td>
 <td style="text-align:center;">
-10.81 ± 1.86
+-10.21 ± 1.8
 </td>
 <td style="text-align:center;">
-1.86 ± 4.8
+-1.89 ± 4.44
 </td>
 <td style="text-align:center;">
-10.65 ± 2.61
+-10.65 ± 2.61
 </td>
 <td style="text-align:center;">
-8.78 ± NA
+-8.78 ± NA
 </td>
 </tr>
 <tr>
@@ -5016,13 +5032,13 @@ BMI(T1)
 ∆低密度脂蛋白(%)
 </td>
 <td style="text-align:center;">
--13.78 ± 3.24
+-14.01 ± 3.2
 </td>
 <td style="text-align:center;">
--9.24 ± 1.59
+-9.25 ± 1.57
 </td>
 <td style="text-align:center;">
--5.19 ± 1.64
+-4.61 ± 1.56
 </td>
 <td style="text-align:center;">
 0.11 ± 3.68
@@ -5034,10 +5050,10 @@ BMI(T1)
 -4.35 ± 11.82
 </td>
 <td style="text-align:center;">
--1.11 ± 3.81
+-1.61 ± 3.77
 </td>
 <td style="text-align:center;">
--1.01 ± 5.56
+-1.26 ± 5.14
 </td>
 <td style="text-align:center;">
 -1.13 ± 5.39
@@ -5051,13 +5067,13 @@ BMI(T1)
 ∆尿酸(%)
 </td>
 <td style="text-align:center;">
--16.31 ± 2.14
+-15.5 ± 2.26
 </td>
 <td style="text-align:center;">
--10.06 ± 1.32
+-10.12 ± 1.3
 </td>
 <td style="text-align:center;">
--9.92 ± 1.49
+-10.26 ± 1.47
 </td>
 <td style="text-align:center;">
 -9.79 ± 3.98
@@ -5069,10 +5085,10 @@ BMI(T1)
 -24.8 ± 4.94
 </td>
 <td style="text-align:center;">
--10.88 ± 3.01
+-11.42 ± 2.94
 </td>
 <td style="text-align:center;">
--12.92 ± 4.05
+-11.85 ± 3.82
 </td>
 <td style="text-align:center;">
 -7.83 ± 3.96
@@ -5086,13 +5102,13 @@ BMI(T1)
 ∆澱粉脢(%)
 </td>
 <td style="text-align:center;">
-6.6 ± 2.21
+6.38 ± 2.19
 </td>
 <td style="text-align:center;">
-5.24 ± 1.22
+5.21 ± 1.2
 </td>
 <td style="text-align:center;">
-5.2 ± 1.48
+5.28 ± 1.46
 </td>
 <td style="text-align:center;">
 0.92 ± 2.63
@@ -5104,10 +5120,10 @@ BMI(T1)
 13.82 ± 7.52
 </td>
 <td style="text-align:center;">
-3.36 ± 3.35
+4.32 ± 3.47
 </td>
 <td style="text-align:center;">
-2.29 ± 2.77
+1.95 ± 2.58
 </td>
 <td style="text-align:center;">
 6.21 ± 3.89
@@ -5121,13 +5137,13 @@ BMI(T1)
 ∆解脂脢(%)
 </td>
 <td style="text-align:center;">
-66.25 ± 7.71
+65.69 ± 7.61
 </td>
 <td style="text-align:center;">
-64.12 ± 4.78
+65.16 ± 4.9
 </td>
 <td style="text-align:center;">
-61.17 ± 5.61
+62.59 ± 5.55
 </td>
 <td style="text-align:center;">
 47.27 ± 9.86
@@ -5139,10 +5155,10 @@ BMI(T1)
 113.82 ± 40.31
 </td>
 <td style="text-align:center;">
-59.43 ± 10.91
+64.26 ± 12.35
 </td>
 <td style="text-align:center;">
-44.33 ± 13.35
+41.05 ± 12.55
 </td>
 <td style="text-align:center;">
 66.41 ± 17.9
@@ -5167,7 +5183,7 @@ BMI(T1)
 <h3>Pattern改善分析<a href="girc_analysis_.html#girc_improvemnt_path" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption style="font-size: 15pt !important;">
-<b>Table: Improvemnt of Insulin Response Pattern in OGTT</b>
+(#tab:input plot rscript_girc)<b>Table: Improvemnt of Insulin Response Pattern in OGTT</b>
 </caption>
 <thead>
 <tr>
@@ -5199,22 +5215,22 @@ Sum
 Pattern I
 </td>
 <td style="text-align:center;">
-15 (42.86%)
+16 (42.11%)
 </td>
 <td style="text-align:center;">
-12 (34.29%)
+14 (36.84%)
 </td>
 <td style="text-align:center;">
-5 (14.29%)
+5 (13.16%)
 </td>
 <td style="text-align:center;">
-1 (2.86%)
+1 (2.63%)
 </td>
 <td style="text-align:center;">
-2 (5.71%)
+2 (5.26%)
 </td>
 <td style="text-align:center;">
-35 (100%)
+38 (100%)
 </td>
 </tr>
 <tr>
@@ -5222,22 +5238,22 @@ Pattern I
 Pattern II
 </td>
 <td style="text-align:center;">
-40 (25.97%)
+41 (25.47%)
 </td>
 <td style="text-align:center;">
-88 (57.14%)
+92 (57.14%)
 </td>
 <td style="text-align:center;">
-17 (11.04%)
+19 (11.8%)
 </td>
 <td style="text-align:center;">
-7 (4.55%)
+7 (4.35%)
 </td>
 <td style="text-align:center;">
-2 (1.3%)
+2 (1.24%)
 </td>
 <td style="text-align:center;">
-154 (100%)
+161 (100%)
 </td>
 </tr>
 <tr>
@@ -5245,22 +5261,22 @@ Pattern II
 Pattern III
 </td>
 <td style="text-align:center;">
-12 (14.12%)
+13 (14.94%)
 </td>
 <td style="text-align:center;">
-44 (51.76%)
+45 (51.72%)
 </td>
 <td style="text-align:center;">
-25 (29.41%)
+25 (28.74%)
 </td>
 <td style="text-align:center;">
-3 (3.53%)
+3 (3.45%)
 </td>
 <td style="text-align:center;">
-1 (1.18%)
+1 (1.15%)
 </td>
 <td style="text-align:center;">
-85 (100%)
+87 (100%)
 </td>
 </tr>
 <tr>
@@ -5268,22 +5284,22 @@ Pattern III
 Pattern IV
 </td>
 <td style="text-align:center;">
-2 (7.14%)
+2 (6.67%)
 </td>
 <td style="text-align:center;">
-17 (60.71%)
+17 (56.67%)
 </td>
 <td style="text-align:center;">
-3 (10.71%)
+3 (10%)
 </td>
 <td style="text-align:center;">
-6 (21.43%)
+8 (26.67%)
 </td>
 <td style="text-align:center;">
 0 (0%)
 </td>
 <td style="text-align:center;">
-28 (100%)
+30 (100%)
 </td>
 </tr>
 <tr>
@@ -5314,22 +5330,22 @@ Pattern V
 Total
 </td>
 <td style="text-align:center;">
-72
+75
 </td>
 <td style="text-align:center;">
-164
+171
 </td>
 <td style="text-align:center;">
-51
+53
 </td>
 <td style="text-align:center;">
-17
+19
 </td>
 <td style="text-align:center;">
 5
 </td>
 <td style="text-align:center;">
-309
+323
 </td>
 </tr>
 </tbody>
@@ -5351,9 +5367,13 @@ Total
 for (let i = 0; i < tables.length; i++) {
     let table = tables[i];
     table.innerHTML = table.innerHTML.replace(/\(#tab:input rscript\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_global\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_test\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_sua\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_girc\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_flc\)/g, "");
 }
 </script>
-
 
 
 

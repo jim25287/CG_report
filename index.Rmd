@@ -38,6 +38,7 @@ output:
 
 ```{r setup, include=FALSE}
 library(googleVis)
+Sys.setenv(R_BENCHMARK=TRUE)
 knitr::opts_chunk$set(echo = FALSE, comment = NA, results = 'asis', warning = FALSE, error = FALSE, message = FALSE, fig.align = 'center')
 options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 ```
@@ -94,13 +95,47 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00_vars_vector.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.1-venns.R")
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.2-global_treatment.R")
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.3-testosterone_effectiveness.R")
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/02.girc.R")
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/03.sua_0.R")
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/03.sua.R")
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/04.cofit_flc.R")
 
+```
+
+
+```{r input plot rscript_global, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#   使用者     系統     流逝 
+# 2239.010   26.456 2268.609 
+
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.2-global_treatment.R")
+
+```
+
+```{r input plot rscript_test, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+# 使用者   系統   流逝 
+# 42.664  0.705 43.546 
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.3-testosterone_effectiveness.R")
+
+```
+
+```{r input plot rscript_girc, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#  使用者    系統    流逝 
+# 230.912   3.230 234.972
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/02.girc.R")
+
+```
+
+```{r input plot rscript_sua, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#  使用者    系統    流逝 
+# 295.218   3.983 299.993 
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/03.sua_0.R")
+
+#  使用者    系統    流逝 
+# 319.686   4.806 326.727 
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/03.sua.R")
+
+```
+
+```{r input plot rscript_flc, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+# 使用者   系統   流逝 
+# 30.482  0.672 31.304 
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/04.cofit_flc.R")
 ```
 
 

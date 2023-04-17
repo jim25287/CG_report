@@ -51,6 +51,21 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.1/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.27/datatables.js"></script>
+<link href="libs/dt-core-1.12.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.12.1/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.12.1/js/jquery.dataTables.min.js"></script>
+<link href="libs/dt-ext-buttons-1.12.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="libs/dt-ext-buttons-1.12.1/js/dataTables.buttons.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.html5.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.colVis.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.print.min.js"></script>
+<link href="libs/dt-ext-fixedcolumns-1.12.1/css/fixedColumns.dataTables.min.css" rel="stylesheet" />
+<script src="libs/dt-ext-fixedcolumns-1.12.1/js/dataTables.fixedColumns.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <!-- Google tag (gtag.js) -->
@@ -91,7 +106,8 @@
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#baseline_ob"><i class="fa fa-check"></i>初始狀態(Baseline)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#endpoint_ob"><i class="fa fa-check"></i>介入後狀態(Endpoint)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#diet_ob"><i class="fa fa-check"></i>飲食(Diet)</a></li>
-<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#effectiveness_ob"><i class="fa fa-check"></i>成效(Effectiveness)</a></li>
+<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#delta_ob"><i class="fa fa-check"></i>∆成效(Effectiveness)</a></li>
+<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#delta_p_ob"><i class="fa fa-check"></i>∆成效(%)(Effectiveness)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#Summary_ob"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
 <li class="chapter" data-level="1.6" data-path="strat_1_testosterone.html"><a href="strat_1_testosterone.html"><i class="fa fa-check"></i><b>1.6</b> 分層分析-2: 男性:睪固酮(Testosterone)</a>
@@ -166,12 +182,12 @@
 <p>在女性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近27％表現超乎預期(降幅&gt;15%)，46%表現優異(降幅&gt;8%)，16%表現良好(降幅4~8%)。</p>
 <p>在男性客戶中，高達97%在療程中實現減脂目的(目標設定不同)。其中將近52％表現超乎預期(降幅&gt;15%)，29%表現優異(降幅&gt;8%)，11%表現良好(降幅4~8%)。</p>
 <!-- ColumnChart generated in R 4.2.1 by googleVis 0.7.0 package -->
-<!-- Wed Apr  5 11:31:32 2023 -->
+<!-- Mon Apr 17 13:51:22 2023 -->
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataColumnChartID1ac61b8306b2 () {
+function gvisDataColumnChartID15b9248c7c6c1 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -181,27 +197,27 @@ var datajson =
 0,
 8,
 104,
-289,
-203,
+296,
+208,
 1
 ],
 [
 "Fat",
 2,
 5,
-15,
-52,
-97,
-274,
-160
+16,
+51,
+100,
+280,
+163
 ],
 [
 "Muscle",
 1,
 3,
-55,
+54,
+250,
 244,
-237,
 62,
 3
 ] 
@@ -220,7 +236,7 @@ return(data);
 
 
 // jsData 
-function gvisDataColumnChartID1ac6372c9e3a () {
+function gvisDataColumnChartID15b9233c9ce3b () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -228,9 +244,9 @@ var datajson =
 "Weight",
 0,
 0,
-0,
-16,
-45,
+1,
+19,
+46,
 43,
 1
 ],
@@ -238,19 +254,19 @@ var datajson =
 "Fat",
 0,
 0,
-3,
-6,
-11,
-29,
+4,
+7,
+12,
+31,
 56
 ],
 [
 "Muscle",
 0,
 1,
-8,
-52,
-35,
+10,
+54,
+36,
 9,
 0
 ] 
@@ -268,8 +284,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartColumnChartID1ac61b8306b2() {
-var data = gvisDataColumnChartID1ac61b8306b2();
+function drawChartColumnChartID15b9248c7c6c1() {
+var data = gvisDataColumnChartID15b9248c7c6c1();
 var options = {};
 options["allowHtml"] = true;
 options["isStacked"] = "percent";
@@ -282,7 +298,7 @@ options["width"] = "600";
 options["height"] = "600";
 
     var chart = new google.visualization.ColumnChart(
-    document.getElementById('ColumnChartID1ac61b8306b2')
+    document.getElementById('ColumnChartID15b9248c7c6c1')
     );
     chart.draw(data,options);
     
@@ -292,8 +308,8 @@ options["height"] = "600";
 
 
 // jsDrawChart
-function drawChartColumnChartID1ac6372c9e3a() {
-var data = gvisDataColumnChartID1ac6372c9e3a();
+function drawChartColumnChartID15b9233c9ce3b() {
+var data = gvisDataColumnChartID15b9233c9ce3b();
 var options = {};
 options["allowHtml"] = true;
 options["isStacked"] = "percent";
@@ -306,7 +322,7 @@ options["width"] = "600";
 options["height"] = "600";
 
     var chart = new google.visualization.ColumnChart(
-    document.getElementById('ColumnChartID1ac6372c9e3a')
+    document.getElementById('ColumnChartID15b9233c9ce3b')
     );
     chart.draw(data,options);
     
@@ -330,9 +346,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartColumnChartID1ac61b8306b2);
+callbacks.push(drawChartColumnChartID15b9248c7c6c1);
 })();
-function displayChartColumnChartID1ac61b8306b2() {
+function displayChartColumnChartID15b9248c7c6c1() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -369,9 +385,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartColumnChartID1ac6372c9e3a);
+callbacks.push(drawChartColumnChartID15b9233c9ce3b);
 })();
-function displayChartColumnChartID1ac6372c9e3a() {
+function displayChartColumnChartID15b9233c9ce3b() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -394,20 +410,20 @@ callbacks.shift()();
 // jsFooter
 </script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartColumnChartID1ac61b8306b2"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartColumnChartID15b9248c7c6c1"></script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartColumnChartID1ac6372c9e3a"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartColumnChartID15b9233c9ce3b"></script>
 <table cellspacing="5" bgcolor="#AABBCC">
 <tr>
 <td>
 <!-- divChart -->
-<div id="ColumnChartID1ac61b8306b2" style="width: 600; height: 600;">
+<div id="ColumnChartID15b9248c7c6c1" style="width: 600; height: 600;">
 
 </div>
 </td>
 <td>
 <!-- divChart -->
-<div id="ColumnChartID1ac6372c9e3a" style="width: 600; height: 600;">
+<div id="ColumnChartID15b9233c9ce3b" style="width: 600; height: 600;">
 
 </div>
 </td>
@@ -427,9 +443,13 @@ callbacks.shift()();
 for (let i = 0; i < tables.length; i++) {
     let table = tables[i];
     table.innerHTML = table.innerHTML.replace(/\(#tab:input rscript\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_global\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_test\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_sua\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_girc\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_flc\)/g, "");
 }
 </script>
-
 
 
 

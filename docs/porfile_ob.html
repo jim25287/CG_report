@@ -51,6 +51,21 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.1/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.27/datatables.js"></script>
+<link href="libs/dt-core-1.12.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.12.1/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.12.1/js/jquery.dataTables.min.js"></script>
+<link href="libs/dt-ext-buttons-1.12.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="libs/dt-ext-buttons-1.12.1/js/dataTables.buttons.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.html5.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.colVis.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.print.min.js"></script>
+<link href="libs/dt-ext-fixedcolumns-1.12.1/css/fixedColumns.dataTables.min.css" rel="stylesheet" />
+<script src="libs/dt-ext-fixedcolumns-1.12.1/js/dataTables.fixedColumns.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <!-- Google tag (gtag.js) -->
@@ -91,7 +106,8 @@
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#baseline_ob"><i class="fa fa-check"></i>初始狀態(Baseline)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#endpoint_ob"><i class="fa fa-check"></i>介入後狀態(Endpoint)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#diet_ob"><i class="fa fa-check"></i>飲食(Diet)</a></li>
-<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#effectiveness_ob"><i class="fa fa-check"></i>成效(Effectiveness)</a></li>
+<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#delta_ob"><i class="fa fa-check"></i>∆成效(Effectiveness)</a></li>
+<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#delta_p_ob"><i class="fa fa-check"></i>∆成效(%)(Effectiveness)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#Summary_ob"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
 <li class="chapter" data-level="1.6" data-path="strat_1_testosterone.html"><a href="strat_1_testosterone.html"><i class="fa fa-check"></i><b>1.6</b> 分層分析-2: 男性:睪固酮(Testosterone)</a>
@@ -160,18 +176,18 @@
 <h2><span class="header-section-number">1.2</span> 客戶輪廓分析<a href="porfile_ob.html#porfile_ob" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><strong>Subjects Distribution:</strong> 年齡(Age) &amp; 性別(Gender)分佈</p>
 <!-- PieChart generated in R 4.2.1 by googleVis 0.7.0 package -->
-<!-- Wed Apr  5 11:12:05 2023 -->
+<!-- Mon Apr 17 13:51:21 2023 -->
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataPieChartID1ac6656d9228 () {
+function gvisDataPieChartID15b927dc7462c () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
 "<25",
-47
+49
 ],
 [
 "25-29",
@@ -179,19 +195,19 @@ var datajson =
 ],
 [
 "30-34",
-132
+135
 ],
 [
 "35-39",
-144
+149
 ],
 [
 "40-44",
-119
+120
 ],
 [
 "45-49",
-84
+86
 ],
 [
 "50-54",
@@ -199,7 +215,7 @@ var datajson =
 ],
 [
 "55-59",
-28
+30
 ],
 [
 "60-64",
@@ -207,7 +223,7 @@ var datajson =
 ],
 [
 "65-69",
-13
+15
 ],
 [
 ">70",
@@ -222,17 +238,17 @@ return(data);
 
 
 // jsData 
-function gvisDataPieChartID1ac67c96b41d () {
+function gvisDataPieChartID15b9225d03337 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
 "female",
-605
+617
 ],
 [
 "male",
-105
+110
 ] 
 ];
 data.addColumn('string','gender');
@@ -242,8 +258,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartPieChartID1ac6656d9228() {
-var data = gvisDataPieChartID1ac6656d9228();
+function drawChartPieChartID15b927dc7462c() {
+var data = gvisDataPieChartID15b927dc7462c();
 var options = {};
 options["allowHtml"] = true;
 options["title"] = "Age";
@@ -254,7 +270,7 @@ options["width"] = "600";
 options["height"] = "400";
 
     var chart = new google.visualization.PieChart(
-    document.getElementById('PieChartID1ac6656d9228')
+    document.getElementById('PieChartID15b927dc7462c')
     );
     chart.draw(data,options);
     
@@ -264,8 +280,8 @@ options["height"] = "400";
 
 
 // jsDrawChart
-function drawChartPieChartID1ac67c96b41d() {
-var data = gvisDataPieChartID1ac67c96b41d();
+function drawChartPieChartID15b9225d03337() {
+var data = gvisDataPieChartID15b9225d03337();
 var options = {};
 options["allowHtml"] = true;
 options["title"] = "Gender";
@@ -277,7 +293,7 @@ options["width"] = "600";
 options["height"] = "400";
 
     var chart = new google.visualization.PieChart(
-    document.getElementById('PieChartID1ac67c96b41d')
+    document.getElementById('PieChartID15b9225d03337')
     );
     chart.draw(data,options);
     
@@ -301,9 +317,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartPieChartID1ac6656d9228);
+callbacks.push(drawChartPieChartID15b927dc7462c);
 })();
-function displayChartPieChartID1ac6656d9228() {
+function displayChartPieChartID15b927dc7462c() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -340,9 +356,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartPieChartID1ac67c96b41d);
+callbacks.push(drawChartPieChartID15b9225d03337);
 })();
-function displayChartPieChartID1ac67c96b41d() {
+function displayChartPieChartID15b9225d03337() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -365,20 +381,20 @@ callbacks.shift()();
 // jsFooter
 </script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID1ac6656d9228"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID15b927dc7462c"></script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID1ac67c96b41d"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID15b9225d03337"></script>
 <table cellspacing="5" bgcolor="#AABBCC">
 <tr>
 <td>
 <!-- divChart -->
-<div id="PieChartID1ac6656d9228" style="width: 600; height: 400;">
+<div id="PieChartID15b927dc7462c" style="width: 600; height: 400;">
 
 </div>
 </td>
 <td>
 <!-- divChart -->
-<div id="PieChartID1ac67c96b41d" style="width: 600; height: 400;">
+<div id="PieChartID15b9225d03337" style="width: 600; height: 400;">
 
 </div>
 </td>
@@ -386,12 +402,12 @@ callbacks.shift()();
 </table>
 <p><strong>Subjects Distribution:</strong> 身體質量指數(BMI)分佈</p>
 <!-- PieChart generated in R 4.2.1 by googleVis 0.7.0 package -->
-<!-- Wed Apr  5 11:12:05 2023 -->
+<!-- Mon Apr 17 13:51:21 2023 -->
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataPieChartID1ac6a0b1bd2 () {
+function gvisDataPieChartID15b927d27346 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -401,11 +417,11 @@ var datajson =
 ],
 [
 "overweight",
-17
+19
 ],
 [
 "obesity",
-87
+90
 ] 
 ];
 data.addColumn('string','bmi_gp');
@@ -416,21 +432,21 @@ return(data);
 
 
 // jsData 
-function gvisDataPieChartID1ac65f4f7d24 () {
+function gvisDataPieChartID15b9298dfcad () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
  [
 "normal",
-120
+122
 ],
 [
 "overweight",
-160
+162
 ],
 [
 "obesity",
-325
+333
 ] 
 ];
 data.addColumn('string','bmi_gp');
@@ -440,8 +456,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartPieChartID1ac6a0b1bd2() {
-var data = gvisDataPieChartID1ac6a0b1bd2();
+function drawChartPieChartID15b927d27346() {
+var data = gvisDataPieChartID15b927d27346();
 var options = {};
 options["allowHtml"] = true;
 options["title"] = "Male";
@@ -452,7 +468,7 @@ options["width"] = "600";
 options["height"] = "400";
 
     var chart = new google.visualization.PieChart(
-    document.getElementById('PieChartID1ac6a0b1bd2')
+    document.getElementById('PieChartID15b927d27346')
     );
     chart.draw(data,options);
     
@@ -462,8 +478,8 @@ options["height"] = "400";
 
 
 // jsDrawChart
-function drawChartPieChartID1ac65f4f7d24() {
-var data = gvisDataPieChartID1ac65f4f7d24();
+function drawChartPieChartID15b9298dfcad() {
+var data = gvisDataPieChartID15b9298dfcad();
 var options = {};
 options["allowHtml"] = true;
 options["title"] = "Female";
@@ -474,7 +490,7 @@ options["width"] = "600";
 options["height"] = "400";
 
     var chart = new google.visualization.PieChart(
-    document.getElementById('PieChartID1ac65f4f7d24')
+    document.getElementById('PieChartID15b9298dfcad')
     );
     chart.draw(data,options);
     
@@ -498,9 +514,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartPieChartID1ac6a0b1bd2);
+callbacks.push(drawChartPieChartID15b927d27346);
 })();
-function displayChartPieChartID1ac6a0b1bd2() {
+function displayChartPieChartID15b927d27346() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -537,9 +553,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartPieChartID1ac65f4f7d24);
+callbacks.push(drawChartPieChartID15b9298dfcad);
 })();
-function displayChartPieChartID1ac65f4f7d24() {
+function displayChartPieChartID15b9298dfcad() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -562,20 +578,20 @@ callbacks.shift()();
 // jsFooter
 </script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID1ac6a0b1bd2"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID15b927d27346"></script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID1ac65f4f7d24"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartPieChartID15b9298dfcad"></script>
 <table cellspacing="5" bgcolor="#AABBCC">
 <tr>
 <td>
 <!-- divChart -->
-<div id="PieChartID1ac6a0b1bd2" style="width: 600; height: 400;">
+<div id="PieChartID15b927d27346" style="width: 600; height: 400;">
 
 </div>
 </td>
 <td>
 <!-- divChart -->
-<div id="PieChartID1ac65f4f7d24" style="width: 600; height: 400;">
+<div id="PieChartID15b9298dfcad" style="width: 600; height: 400;">
 
 </div>
 </td>
@@ -588,9 +604,13 @@ callbacks.shift()();
 for (let i = 0; i < tables.length; i++) {
     let table = tables[i];
     table.innerHTML = table.innerHTML.replace(/\(#tab:input rscript\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_global\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_test\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_sua\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_girc\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_flc\)/g, "");
 }
 </script>
-
 
 
 

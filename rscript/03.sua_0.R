@@ -39,7 +39,7 @@ table_freq_sua0_ob <- table(a$gender, a$delta_sua0_gp) %>% addmargins() %>%
 
 stat_table_1st_ob$delta_sua0_gp
 
-datasets_target_issue <- stat_table_1st_ob %>% rename(gp = delta_sua0_gp)
+datasets_target_issue <- stat_table_1st_ob %>% dplyr::rename(gp = delta_sua0_gp)
 datasets_target_issue <- datasets_target_issue %>% filter(gp %in% levels(datasets_target_issue$gp))
 
 #profile

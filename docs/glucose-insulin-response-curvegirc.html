@@ -51,6 +51,21 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.1/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.27/datatables.js"></script>
+<link href="libs/dt-core-1.12.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.12.1/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.12.1/js/jquery.dataTables.min.js"></script>
+<link href="libs/dt-ext-buttons-1.12.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="libs/dt-ext-buttons-1.12.1/js/dataTables.buttons.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.html5.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.colVis.min.js"></script>
+<script src="libs/dt-ext-buttons-1.12.1/js/buttons.print.min.js"></script>
+<link href="libs/dt-ext-fixedcolumns-1.12.1/css/fixedColumns.dataTables.min.css" rel="stylesheet" />
+<script src="libs/dt-ext-fixedcolumns-1.12.1/js/dataTables.fixedColumns.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <!-- Google tag (gtag.js) -->
@@ -91,7 +106,8 @@
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#baseline_ob"><i class="fa fa-check"></i>初始狀態(Baseline)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#endpoint_ob"><i class="fa fa-check"></i>介入後狀態(Endpoint)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#diet_ob"><i class="fa fa-check"></i>飲食(Diet)</a></li>
-<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#effectiveness_ob"><i class="fa fa-check"></i>成效(Effectiveness)</a></li>
+<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#delta_ob"><i class="fa fa-check"></i>∆成效(Effectiveness)</a></li>
+<li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#delta_p_ob"><i class="fa fa-check"></i>∆成效(%)(Effectiveness)</a></li>
 <li class="chapter" data-level="" data-path="strat_1_ob.html"><a href="strat_1_ob.html#Summary_ob"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
 <li class="chapter" data-level="1.6" data-path="strat_1_testosterone.html"><a href="strat_1_testosterone.html"><i class="fa fa-check"></i><b>1.6</b> 分層分析-2: 男性:睪固酮(Testosterone)</a>
@@ -163,7 +179,7 @@
 <p><strong>Pattern分佈：</strong></p>
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption style="font-size: 12pt !important;">
-<b>Categorization: Insulin Response Pattern</b>
+(#tab:input plot rscript_girc)<b>Categorization: Insulin Response Pattern</b>
 </caption>
 <thead>
 <tr>
@@ -190,16 +206,16 @@ N
 Pattern I
 </td>
 <td style="text-align:center;">
-7.52 ± 0.47
+7.46 ± 0.47
 </td>
 <td style="text-align:center;">
-94.5 ± 6.79
+93.64 ± 6.74
 </td>
 <td style="text-align:center;">
-26.26 ± 1.1
+26.27 ± 1.08
 </td>
 <td style="text-align:center;">
-67
+68
 </td>
 </tr>
 <tr>
@@ -207,16 +223,16 @@ Pattern I
 Pattern II
 </td>
 <td style="text-align:center;">
-11.37 ± 0.32
+11.47 ± 0.31
 </td>
 <td style="text-align:center;">
-161.72 ± 5.63
+162.23 ± 5.51
 </td>
 <td style="text-align:center;">
-97.14 ± 3.57
+97.35 ± 3.49
 </td>
 <td style="text-align:center;">
-300
+310
 </td>
 </tr>
 <tr>
@@ -224,16 +240,16 @@ Pattern II
 Pattern III
 </td>
 <td style="text-align:center;">
-11.04 ± 0.35
+11.03 ± 0.35
 </td>
 <td style="text-align:center;">
-111.75 ± 4.5
+111.53 ± 4.43
 </td>
 <td style="text-align:center;">
-167.33 ± 6.87
+166.38 ± 6.74
 </td>
 <td style="text-align:center;">
-248
+254
 </td>
 </tr>
 <tr>
@@ -306,10 +322,10 @@ NA
 </tr>
 </tbody>
 </table>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-65-1.svg" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-98-1.svg" width="672" style="display: block; margin: auto;" /></p>
 <table class="table table-striped table-hover table-condensed" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;">
 <caption style="font-size: 12pt !important;">
-<b>Categorization: Insulin Response Pattern</b>
+(#tab:input plot rscript_girc)<b>Categorization: Insulin Response Pattern</b>
 </caption>
 <thead>
 <tr>
@@ -336,16 +352,16 @@ N
 Pattern I (Low)
 </td>
 <td style="text-align:center;">
-5.36 ± 0.38
+5.31 ± 0.37
 </td>
 <td style="text-align:center;">
-61.52 ± 2.33
+60.82 ± 2.38
 </td>
 <td style="text-align:center;">
-25.52 ± 1.53
+25.55 ± 1.49
 </td>
 <td style="text-align:center;">
-35
+36
 </td>
 </tr>
 <tr>
@@ -421,16 +437,16 @@ Pattern II (Low)
 Pattern II (High.0)
 </td>
 <td style="text-align:center;">
-13.32 ± 0.63
+13.19 ± 0.6
 </td>
 <td style="text-align:center;">
-70.78 ± 3.23
+71.79 ± 3.16
 </td>
 <td style="text-align:center;">
-57.23 ± 4.07
+59.19 ± 4.25
 </td>
 <td style="text-align:center;">
-13
+14
 </td>
 </tr>
 <tr>
@@ -438,16 +454,16 @@ Pattern II (High.0)
 Pattern II (High.1)
 </td>
 <td style="text-align:center;">
-7.05 ± 0.19
+7.04 ± 0.19
 </td>
 <td style="text-align:center;">
-141.06 ± 5.74
+140.57 ± 5.7
 </td>
 <td style="text-align:center;">
-80.79 ± 3.61
+80.79 ± 3.57
 </td>
 <td style="text-align:center;">
-101
+102
 </td>
 </tr>
 <tr>
@@ -455,16 +471,16 @@ Pattern II (High.1)
 Pattern II (High.B)
 </td>
 <td style="text-align:center;">
-15.79 ± 0.37
+15.8 ± 0.36
 </td>
 <td style="text-align:center;">
-212.4 ± 9.04
+211.73 ± 8.68
 </td>
 <td style="text-align:center;">
-126.53 ± 6.1
+125.58 ± 5.86
 </td>
 <td style="text-align:center;">
-142
+150
 </td>
 </tr>
 <tr>
@@ -472,16 +488,16 @@ Pattern II (High.B)
 Pattern III (Low)
 </td>
 <td style="text-align:center;">
-5.99 ± 0.25
+5.95 ± 0.25
 </td>
 <td style="text-align:center;">
-55.28 ± 2.11
+54.98 ± 2.11
 </td>
 <td style="text-align:center;">
-87 ± 4.11
+86.5 ± 4.09
 </td>
 <td style="text-align:center;">
-77
+78
 </td>
 </tr>
 <tr>
@@ -489,16 +505,16 @@ Pattern III (Low)
 Pattern III (High.0)
 </td>
 <td style="text-align:center;">
-14.05 ± 0.67
+13.86 ± 0.65
 </td>
 <td style="text-align:center;">
-62.25 ± 3.54
+61.49 ± 3.6
 </td>
 <td style="text-align:center;">
-110.18 ± 6.92
+108.66 ± 6.89
 </td>
 <td style="text-align:center;">
-33
+34
 </td>
 </tr>
 <tr>
@@ -506,16 +522,16 @@ Pattern III (High.0)
 Pattern III (High.1)
 </td>
 <td style="text-align:center;">
-6.99 ± 0.27
+7.12 ± 0.27
 </td>
 <td style="text-align:center;">
-127.66 ± 6.18
+128.58 ± 5.99
 </td>
 <td style="text-align:center;">
-189.06 ± 12.25
+187.83 ± 11.58
 </td>
 <td style="text-align:center;">
-45
+48
 </td>
 </tr>
 <tr>
@@ -523,16 +539,16 @@ Pattern III (High.1)
 Pattern III (High.B)
 </td>
 <td style="text-align:center;">
-16.12 ± 0.38
+16.21 ± 0.39
 </td>
 <td style="text-align:center;">
-168.36 ± 7.58
+167.85 ± 7.52
 </td>
 <td style="text-align:center;">
-243.61 ± 12.21
+242.6 ± 12.12
 </td>
 <td style="text-align:center;">
-93
+94
 </td>
 </tr>
 <tr>
@@ -673,7 +689,7 @@ Unclassified
 </tr>
 </tbody>
 </table>
-<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-66-1.svg" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="Cofit_Genesis_annual_report_files/figure-html/unnamed-chunk-99-1.svg" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <!-- table string rm (string_rm.js) -->
 <script>
@@ -681,9 +697,13 @@ Unclassified
 for (let i = 0; i < tables.length; i++) {
     let table = tables[i];
     table.innerHTML = table.innerHTML.replace(/\(#tab:input rscript\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_global\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_test\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_sua\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_girc\)/g, "");
+    table.innerHTML = table.innerHTML.replace(/\(#tab:input plot rscript_flc\)/g, "");
 }
 </script>
-
 
 
 

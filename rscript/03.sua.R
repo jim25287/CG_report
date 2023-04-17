@@ -301,7 +301,7 @@ cor_table_02_sua <- M2_df %>% gvisTable(options=list(frozenColumns = 2,
 
 stat_table_1st_ob$delta_sua_gp
 
-datasets_target_issue <- stat_table_1st_ob %>% rename(gp = delta_sua_gp)
+datasets_target_issue <- stat_table_1st_ob %>% dplyr::rename(gp = delta_sua_gp)
 datasets_target_issue <- datasets_target_issue %>% filter(gp %in% levels(datasets_target_issue$gp))
 
 #profile

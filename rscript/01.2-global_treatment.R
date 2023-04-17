@@ -2,7 +2,6 @@
 # ## Analysis - 1: Baseline 分布 (Pie-chart) --------------------------------
 
 
-
 #[Pie chart] 1. cut (cluster) 2. call pie chart
 #Age
 stat_table_1st_ob$age_gp <- cut(stat_table_1st_ob$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
@@ -624,20 +623,21 @@ names(QQ1_stat_table_1st) <- lin_ch_en_format(x = names(QQ1_stat_table_1st), for
 
 
 #Setting improvement direction
-
 QQ1_stat_table_1st_a <- QQ1_stat_table_1st %>% select(-grep("∆", names(QQ1_stat_table_1st)))
+QQ1_stat_table_1st_a$calorie_deficit_day <- QQ1_stat_table_1st_a$calorie_deficit_day %>% multiply_by(-1)
+QQ1_stat_table_1st_a$calorie_deficit_sum <- QQ1_stat_table_1st_a$calorie_deficit_sum %>% multiply_by(-1)
 
 ##Improvement: negative (減少越多，越往上長)
 QQ1_stat_table_1st_b <- QQ1_stat_table_1st %>% select(grep("∆", names(QQ1_stat_table_1st), value = TRUE) %>% 
                                                         grep(paste(c("weight", "bmi", "bf", "pbf", "vfa_level", "wc", "ffm", "hba1c", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., value = TRUE)) %>% multiply_by(-1)
-##Improvement: default (減少越多，越往上長)
+##Improvement: default 
 QQ1_stat_table_1st_c <- QQ1_stat_table_1st %>% select(grep("∆", names(QQ1_stat_table_1st), value = TRUE) %>% 
-                                                        grep(paste(c("weight", "bmi", "bf", "pbf", "vfa_level", "wc", "ffm", "hba1c", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., invert = TRUE, value = TRUE)) %>% multiply_by(-1)
-
+                                                        grep(paste(c("weight", "bmi", "bf", "pbf", "vfa_level", "wc", "ffm", "hba1c", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., invert = TRUE, value = TRUE)) %>% multiply_by(1)
+ 
 QQ1_stat_table_1st <- Reduce(cbind,list(QQ1_stat_table_1st_a, QQ1_stat_table_1st_b,QQ1_stat_table_1st_c), accumulate =FALSE) 
 
 rm(list = c("QQ1_stat_table_1st_a","QQ1_stat_table_1st_b","QQ1_stat_table_1st_c"))
-
+ 
 #order again!!
 QQ1_stat_table_1st <- QQ1_stat_table_1st %>% select(vars_en)
 
@@ -663,43 +663,42 @@ var_vector <- c(vars_en_adj %>% grep("baseline$", .),
 
 for (i in c(1:4)) {
   if (i == 1) {
-    myplot_table <- data.frame(num = seq(1, length(vars_en_adj)),
+    myplot_table_global <- data.frame(num = seq(1, length(vars_en_adj)),
                                vars_ch = lin_ch_en_format(x = vars_en_adj, format = "ch", origin = "en"))
-    myplot_table <- lin_mapping(myplot_table, vars_en_adj, vars_ch, vars_table, en, ch)
-    myplot_table <- lin_mapping(myplot_table, field, vars_ch, vars_table, field, ch)
-    
-    myplot_table <- myplot_table[var_vector,]
-    myplot_table$num <- seq(1, length(myplot_table$num))
-    
-    myplot_table$block <- NA
+    myplot_table_global <- lin_mapping(myplot_table_global, vars_en_adj, vars_ch, vars_table, en, ch)
+    myplot_table_global <- lin_mapping(myplot_table_global, field, vars_ch, vars_table, field, ch)
+
+    myplot_table_global <- myplot_table_global[var_vector,]
+    myplot_table_global$num <- seq(1, length(myplot_table_global$num))
+
+    myplot_table_global$block <- NA
     x0 <- c("t0","t1","delta","delta_p")
-    x1 <- (myplot_table[["vars_en_adj"]] %>% grep("^[∆]?weight",.))
-    x2 <- (myplot_table[["vars_en_adj"]] %>% grep("wepa50",.))
-    x3 <- (myplot_table[["vars_en_adj"]] %>% grep("ecw_ratio",.))
-    x4 <- which(myplot_table[["vars_en_adj"]] %in% (myplot_table[["vars_en_adj"]] %>% grep("left_arm_fat",., value = TRUE) %>% grep("percent",., invert = TRUE, value = TRUE)))
-    x5 <- (myplot_table[["vars_en_adj"]] %>% grep("water_weight_left_arm",.))
-    x6 <- (myplot_table[["vars_en_adj"]] %>% grep("hba1c",.))
-    x7 <- (myplot_table[["vars_en_adj"]] %>% grep("tg",.))
-    x8 <- (myplot_table[["vars_en_adj"]] %>% grep("egfr",.))
-    x9 <- (myplot_table[["vars_en_adj"]] %>% grep("tsh",.))
-    x10 <- (myplot_table[["vars_en_adj"]] %>% grep("wbc",.))
-    x11 <- (myplot_table[["vars_en_adj"]] %>% grep("lipase",.))
-    x12 <- (myplot_table[["vars_en_adj"]] %>% grep("^age",.))
-    x13 <- (myplot_table[["vars_en_adj"]] %>% grep("calorie_deficit_sum",.))
+    x1 <- (myplot_table_global[["vars_en_adj"]] %>% grep("^[∆]?weight",.))
+    x2 <- (myplot_table_global[["vars_en_adj"]] %>% grep("wepa50",.))
+    x3 <- (myplot_table_global[["vars_en_adj"]] %>% grep("ecw_ratio",.))
+    x4 <- which(myplot_table_global[["vars_en_adj"]] %in% (myplot_table_global[["vars_en_adj"]] %>% grep("left_arm_fat",., value = TRUE) %>% grep("percent",., invert = TRUE, value = TRUE)))
+    x5 <- (myplot_table_global[["vars_en_adj"]] %>% grep("water_weight_left_arm",.))
+    x6 <- (myplot_table_global[["vars_en_adj"]] %>% grep("hba1c",.))
+    x7 <- (myplot_table_global[["vars_en_adj"]] %>% grep("tg",.))
+    x8 <- (myplot_table_global[["vars_en_adj"]] %>% grep("egfr",.))
+    x9 <- (myplot_table_global[["vars_en_adj"]] %>% grep("tsh",.))
+    x10 <- (myplot_table_global[["vars_en_adj"]] %>% grep("wbc",.))
+    x11 <- (myplot_table_global[["vars_en_adj"]] %>% grep("lipase",.))
+    x12 <- (myplot_table_global[["vars_en_adj"]] %>% grep("^age",.))
+    x13 <- (myplot_table_global[["vars_en_adj"]] %>% grep("calorie_deficit_sum",.))
   }
   for (j in c(1:10)) {
     if (j != 10) {
-      myplot_table$block[(eval(parse(text = paste0("x", j))))[i]:((eval(parse(text = paste0("x", j+1))))[i]-1)] <- paste(x0[i], j, sep = "_")
-    }else{
-      myplot_table$block[x10[i]:x11[i]] <- paste(x0[i], j, sep = "_")
-    }
+      myplot_table_global$block[(eval(parse(text = paste0("x", j))))[i]:((eval(parse(text = paste0("x", j+1))))[i]-1)] <- paste(x0[i], j, sep = "_")
+      }else{
+        myplot_table_global$block[x10[i]:x11[i]] <- paste(x0[i], j, sep = "_")
+      }
   }
   
   if ((i == 4) & (j == 10)) {
-    myplot_table$block[x12:x13] <- "diet"
+    myplot_table_global$block[x12:x13] <- "diet"
     rm(list = paste0("x", seq(0,13)))
   }
-  
 }
 
 
@@ -714,7 +713,7 @@ for (i in c(var_vector)) {
   }
   
   a <- QQ1_stat_table_1st_for_plot %>% colnames() %>% head(i) %>% tail(1)
-  a_title <- myplot_table[myplot_table$num == j, "vars_ch"]
+  a_title <- myplot_table_global[myplot_table_global$num == j, "vars_ch"]
   #observation not less than 3: count >= 3
   
   #Poor: male >= 3
@@ -804,7 +803,7 @@ summary_table <-
 summary_table <- cbind(summary_table %>% as.data.frame() %>% select(-c("gender", "gp")) %>% t(), as.data.frame(vector_pvalue)) 
 
 names(summary_table) <- c(rep(c("Poor", "Medium", "Good"), 2), "顯著差異")
-rownames(summary_table) <- myplot_table$vars_ch
+rownames(summary_table) <- myplot_table_global$vars_ch
 
 table_02 <- 
   summary_table %>% 

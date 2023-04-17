@@ -55,8 +55,8 @@ var_diet <- c(#Obedience
               "carb_E%","protein_E%","fat_E%",
               "fruits","vegetables","grains","meat_bean","milk","oil",
               #Calorie
-              "calorie_day","calorie_deficit_day","calorie_deficit_sum")
-
+              "calorie_day", "calorie_target","calorie_deficit_day","calorie_deficit_sum")
+ 
 vars_en <- 
 Reduce(append, list(var_profile,
                     paste0(var_inbody, "_baseline"),

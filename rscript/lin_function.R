@@ -1202,3 +1202,28 @@ lin_astrological_type <- function(df, variables){
   return(df)
   
 }      
+
+
+
+
+# [Function 12:] chisq -------------------------------------------------------------------
+
+
+lin_chisq.test <- function(df, cate1, cate2){
+  #Step(cut 2 category) has to be done first.
+  library(stats)
+  var1_chr <- deparse(substitute(cate1))
+  var2_chr <- deparse(substitute(cate2))
+  
+  chi_input <- table(df[[var1_chr]], df[[var2_chr]])
+  chisq <- chi_input %>% chisq.test()
+  
+  print(chi_input %>% addmargins())
+  cat("[Chi-square]", "\n",
+      "X-squared = ", chisq$statistic %>% round(3), "\n",
+      "p-value = ", chisq$p.value %>% signif(3), "\n",
+      "Cramer's V = ", chi_input %>% DescTools::CramerV() %>% round(3), "\n",
+      paste0("(",paste(c(rbind(c(0, 0.1, 0.3, 0.5), c("None","Low","Medium","Strong"))), collapse = " "), ")"), "\n",
+      "col_predict = ", paste0(chi_input %>% DescTools::GoodmanKruskalTau(direction = "row") %>% multiply_by(100) %>% round(3),"%"),"\n",
+      "row_predict = ", paste0(chi_input %>% DescTools::GoodmanKruskalTau(direction = "column") %>% multiply_by(100) %>% round(3),"%"))
+}

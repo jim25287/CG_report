@@ -749,7 +749,7 @@ df06_Diet_day_tmp <- lin_mapping(df06_Diet_day_tmp, date_t1, client_id, stat_tab
 
 df06_Diet_day_tmp <- df06_Diet_day_tmp %>% filter((date_diet >= date_t0) & (date_diet <= date_t1))
 
-
+ 
 df06_Diet_day_tmp <- 
 df06_Diet_day_tmp %>% 
   group_by(client_id) %>% 
@@ -772,6 +772,7 @@ df06_Diet_day_tmp %>%
     protein_ep = (sum(protein, na.rm = TRUE)*4*100 / sum(calorie, na.rm = TRUE)) %>% round(2),
     fat_ep = (sum(fat, na.rm = TRUE)*9*100 / sum(calorie, na.rm = TRUE)) %>% round(2),
     calorie = (sum(calorie, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2), 
+    calorie_target = (sum(calorie_target, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2), 
     calorie_deficit_day = (sum(calorie_deficit, na.rm = TRUE) / (as.numeric((unique(date_t1) - unique(date_t0) + 1)))) %>% round(2), 
     calorie_deficit_sum = sum(calorie_deficit, na.rm = TRUE) %>% round(2),
     

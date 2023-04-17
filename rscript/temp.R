@@ -1,5 +1,66 @@
 # save.image("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/WSpace_preproc.RData")
 
+count_rds <- as.integer(seq.int(1, 470, length.out = 6))
+# each one costs
+# 使用者    系統    流逝 
+# 208.510   1.426 210.175 
+saveRDS(myplots[seq(count_rds[1],count_rds[2])], file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_1.rds")
+saveRDS(myplots[seq(count_rds[2],count_rds[3])], file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_2.rds")
+saveRDS(myplots[seq(count_rds[3],count_rds[4])], file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_3.rds")
+saveRDS(myplots[seq(count_rds[4],count_rds[5])], file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_4.rds")
+saveRDS(myplots[seq(count_rds[5],count_rds[6])], file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_5.rds")
+
+count_rds <- as.integer(seq.int(1, 470, length.out = 6))
+for (i in seq_along(count_rds[-1])) {
+  saveRDS(
+    myplots[seq(count_rds[i], count_rds[i + 1])],
+    file = paste0("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_", i, ".rds"))
+}
+
+
+# saveRDS(myplots, file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots.rds")
+# 使用者   系統   流逝 
+# 82.361  1.326 84.892 
+saveRDS(myplots_girc, file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_girc.rds") %>% system.time()
+# 使用者   系統   流逝 
+# 7.071  0.099  7.463 
+saveRDS(myplots_plot_testosterone, file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_plot_testosterone.rds") %>% system.time()
+# 使用者   系統   流逝 
+# 53.779  0.658 56.215 
+saveRDS(myplots_flc, file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_flc.rds") %>% system.time()
+
+# 30 sec / each
+count_rds <- as.integer(seq.int(1, 470, length.out = 6))
+myplots <- list()
+myplots[seq(count_rds[1],count_rds[2])] <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_1.rds")
+myplots[seq(count_rds[2],count_rds[3])] <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_2.rds")
+myplots[seq(count_rds[3],count_rds[4])] <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_3.rds")
+myplots[seq(count_rds[4],count_rds[5])] <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_4.rds")
+myplots[seq(count_rds[5],count_rds[6])] <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_5.rds")
+
+
+
+x1 <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_1.rds")
+x2 <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_2.rds")
+x3 <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_3.rds")
+x4 <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_4.rds")
+x5 <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_5.rds")
+
+myplots <- list()
+for (i in seq_along(count_rds[-1])) {
+  paste0("x",i) <- readRDS(paste0("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_", i, ".rds"))
+}
+
+
+# myplots <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots.rds")
+# myplots_girc <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_girc.rds")
+# myplots_plot_testosterone <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_plot_testosterone.rds")
+# myplots_flc <- readRDS(file = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/myplots_flc.rds"))
+
+
+
+
+
 
 #身體維度資料 e.g., wc 改用 3D data ##**缺date 欄位
 
@@ -1037,5 +1098,225 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         
       } 
       
+      
+
+# uric acid ---------------------------------------------------------------
+
+
+      # 尿酸：完成度*綠燈率 >80, 尿酸變化（no change, slightly increase, normal to high) 這三組減重成效是否有不同？
+      # 額外篩選條件：similar  bmi pbf age
+      # 尿酸變化是否影響減重效果（minor factor?)
+      
+      stat_table_1st_ob$`light_G_%`
+      
+      
+      
+      stat_table_1st_ob %>% 
+        mutate(obediance_score = (`upload_day_%` * `light_G_%` /100 ) %>% round(2))%>% 
+        filter(obediance_score >= 70) %>% 
+        select(gender, delta_sua_gp) %>% table()
+      
+      a <- 
+      stat_table_1st_ob %>% 
+        mutate(obediance_score = (`upload_day_%` * `light_G_%` /100 ) %>% round(2))%>% 
+        filter(obediance_score >= 80) %>% 
+        filter(age >= mean(age , na.rm = T) -7 & age <= mean(age , na.rm = T) +7) %>% 
+        filter(bmi_baseline >= mean(bmi_baseline , na.rm = T)  & bmi_baseline <= mean(bmi_baseline , na.rm = T) +10) %>% 
+        filter(pbf_baseline >= mean(pbf_baseline , na.rm = T) *0.5 & pbf_baseline <= mean(pbf_baseline , na.rm = T) *1.5) %>% 
+        filter(calorie_day >= mean(calorie_day , na.rm = T) *0.7 & calorie_day <= mean(calorie_day , na.rm = T) *1.3)
+      
+      # filter(var >= mean(var , na.rm = T) *0.7 & var <= mean(var , na.rm = T) *1.3)
+      
+      a %>% 
+        group_by(gender) %>% 
+        summarise(
+          age = paste0(age %>% mean(na.rm = T) %>% round(1), "(", age %>% max(na.rm = T) %>% round(1),"~", age %>% min(na.rm = T) %>% round(1),")"),
+          bmi = paste0(bmi_baseline %>% mean(na.rm = T) %>% round(1), "(", bmi_baseline %>% max(na.rm = T) %>% round(1),"~", bmi_baseline %>% min(na.rm = T) %>% round(1),")"),
+          pbf = paste0(pbf_baseline %>% mean(na.rm = T) %>% round(1), "(", pbf_baseline %>% max(na.rm = T) %>% round(1),"~", pbf_baseline %>% min(na.rm = T) %>% round(1),")"),
+          calorie_day = paste0(calorie_day %>% mean(na.rm = T) %>% round(1), "(", calorie_day %>% max(na.rm = T) %>% round(1),"~", calorie_day %>% min(na.rm = T) %>% round(1),")"),
+          n = n()
+        ) %>% 
+        view()
+      
+      table(a$delta_sua_gp, a$gender)
+      
+      
+      
+      datasets_target_issue <- a %>% dplyr::rename(gp = delta_sua_gp)
+      datasets_target_issue <- datasets_target_issue %>% filter(gp %in% levels(datasets_target_issue$gp))
+      
+      #profile
+      vars_en <- c("id","client_type","age","gender","date_t0","date_t1",
+                   #inbody - baseline
+                   "weight_baseline","bmi_baseline","bf_baseline","pbf_baseline","bsmi_baseline","pbm_baseline","vfa_baseline","wc_baseline","ffm_baseline","bmr_baseline",
+                   #blood- baseline
+                   "hba1c_baseline","glucose_ac_baseline","insulin_baseline","homa_ir_baseline","homa_beta_baseline","tg_baseline","tc_baseline","hdl_baseline","ldl_baseline", "uric_acid_baseline", "amylase_baseline","lipase_baseline",
+                   #inbody - endpoint
+                   "weight_endpoint","bmi_endpoint","bf_endpoint","pbf_endpoint","bsmi_endpoint","pbm_endpoint","vfa_endpoint","wc_endpoint","ffm_endpoint","bmr_endpoint",
+                   #blood- endpoint
+                   "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint", "uric_acid_endpoint", "amylase_endpoint","lipase_endpoint",
+                   #diet
+                   "upload_day_%","note_count","pic_counts","carb_E%","protein_E%","fat_E%","calorie_day","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
+                   #others
+                   "gp",
+                   #inbody - ∆
+                   "∆weight","∆bmi","∆bf","∆pbf","∆bsmi","∆bm","∆vfa","∆wc","∆ffm","∆bmr",
+                   #blood - ∆
+                   "∆hba1c","∆glucose_ac","∆insulin","∆homa_ir","∆homa_beta","∆tg","∆tc","∆hdl","∆ldl","∆uric_acid","∆amylase","∆lipase",
+                   #inbody - ∆%
+                   "∆weight%","∆bmi%","∆bf%","∆pbf%","∆bsmi%","∆bm%","∆vfa%","∆wc%","∆ffm%","∆bmr%",
+                   #blood - ∆%
+                   "∆hba1c%","∆glucose_ac%","∆insulin%","∆homa_ir%","∆homa_beta%","∆tg%","∆tc%","∆hdl%","∆ldl%","∆uric_acid%","∆amylase%","∆lipase%"
+      )
+      
+      datasets_target_issue <- datasets_target_issue %>% select(vars_en)
+      
+      vars_en <- lin_ch_en_format(x = vars_en, format = "en", origin = "raw_en")
+      names(datasets_target_issue) <- lin_ch_en_format(x = names(datasets_target_issue), format = "en", origin = "raw_en")
+      
+      
+      #Setting improvement direction
+      
+      datasets_target_issue_a <- datasets_target_issue %>% select(-grep("∆", names(datasets_target_issue)))
+      
+      ##Improvement: Uncertain, default setting
+      datasets_target_issue_b <- datasets_target_issue %>% select(grep("∆", names(datasets_target_issue), value = TRUE) %>% 
+                                                                    grep(paste(c("bmr", "uric_acid", "amylase", "lipase"), collapse = "|"), ., value = TRUE))
+      ##Improvement: negative (減少越多，越往上長)
+      datasets_target_issue_c <- datasets_target_issue %>% select(grep("∆", names(datasets_target_issue), value = TRUE) %>% 
+                                                                    grep(paste(c("weight", "bmi", "bf", "pbf", "vfa", "wc", "ffm", "hba1c", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., value = TRUE)) %>% multiply_by(-1)
+      ##Improvement: positive
+      datasets_target_issue_d <- datasets_target_issue %>% select(grep("∆", names(datasets_target_issue), value = TRUE) %>% 
+                                                                    grep(paste(c("bsmi", "bm$", "bm%", "homa_beta", "hdl", "homa_beta"), collapse = "|"), ., value = TRUE)) %>% multiply_by(-1)
+      
+      datasets_target_issue <- Reduce(cbind,list(datasets_target_issue_a, datasets_target_issue_b, datasets_target_issue_c, datasets_target_issue_d), accumulate =FALSE) 
+      
+      #order again!!
+      datasets_target_issue <- datasets_target_issue %>% select(vars_en)
+      
+      #change colname to run plot
+      datasets_target_issue_for_plot <- datasets_target_issue
+      
+      names(datasets_target_issue_for_plot) <- gsub("∆", "delta_", names(datasets_target_issue_for_plot))
+      names(datasets_target_issue_for_plot) <- gsub("%", "_percent", names(datasets_target_issue_for_plot))
+      
+      #set output plot order
+      var_vector <- c(vars_en %>% grep("baseline$", .),
+                      vars_en %>% grep("endpoint$", .),
+                      vars_en %>% grep("baseline$|endpoint$|[∆]|id|client|gender|gp|date", ., invert = TRUE),
+                      setdiff(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .)),
+                      intersect(vars_en %>% grep("[∆]", .), vars_en %>% grep("[%]", .))
+      )
+      
+      
+      #Establish vars_table for visualization
+      myplot_table <- data.frame(num = seq(1, length(vars_en)),
+                                 vars_ch = lin_ch_en_format(x = vars_en, format = "ch", origin = "en"))
+      myplot_table <- lin_mapping(myplot_table, vars_en, vars_ch, vars_table, en, ch)
+      myplot_table <- lin_mapping(myplot_table, field, vars_ch, vars_table, field, ch)
+      
+      myplot_table <- myplot_table[var_vector,]
+      myplot_table$num <- seq(1, length(myplot_table$num))
+      
+      i=90
+      j=84
+      
+        a <- datasets_target_issue_for_plot %>% colnames() %>% head(i) %>% tail(1)
+        a_title <- myplot_table[myplot_table$num == j, "vars_ch"]
+        
+        
+        #p.sign?
+        stat.test <- 
+          datasets_target_issue_for_plot %>%
+          group_by(gender) %>%
+          rstatix::t_test(as.formula(paste(a, "gp", sep = " ~ "))) 
+        stat.test <- stat.test %>% rstatix::add_xy_position(x = "gender", fun = "mean_se", dodge = 0.8)
+        
+        
+          datasets_target_issue_for_plot %>% 
+          ggbarplot(x = "gender", y = a, fill = "gp", alpha = 0.5,
+                    add = "mean_se", add.params = list(group = "gp"),
+                    position = position_dodge(0.8), legend = "right", legend.title = "") +
+          scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+          labs(x = "", y = "Mean ± SE", title = a_title) +
+          theme(
+            plot.title = element_text(face = "bold", hjust = 0.5, size = 15)
+          ) +
+          stat_pvalue_manual(
+            stat.test, label = "p.adj.signif", tip.length = 0.0,
+            bracket.nudge.y = 1, step.increase = 0.01, hide.ns = TRUE 
+          )
+      
+      rm(list = c("datasets_target_issue_a", "datasets_target_issue_b", "datasets_target_issue_c", "datasets_target_issue_d"))
+      
+      
+      
+      
+      
+      
+
+# 0415_conference_use -----------------------------------------------------
+
+
+      
+      #cor
+      stat_table_1st_ob %>% 
+        mutate(x_value = `testosterone_baseline` %>% multiply_by(1)) %>% 
+        mutate(y_value = `∆bf%` %>% multiply_by(-1)) %>% 
+        ggscatter(x = "x_value", y = "y_value",
+                  color = "black",
+                  fill = "red",
+                  shape = 21,
+                  size = 1, 
+                  add = "reg.line",  # Add regressin line
+                  add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+                  conf.int = TRUE, # Add confidence interval
+                  title = "Correlation(Weight x SUA):Baseline",
+                  xlab = "uric_acid(mg/dL)",
+                  ylab = "Weight(kg)",
+                  # xlim = c(0, 13),
+                  # ylim = c(0, 180),
+        ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        # geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
+        # annotate("text", x=5.3, y=155, label="Cutoff = 5.5 mg/dL", angle=90) +
+        stat_cor(method = "pearson", size = 5, label.x = 0,
+                 # label.y = 45
+                 ) # Add correlation coefficient)
+      
+      # plot sample size
+      table(QQ1_stat_table_1st$gender, SHBG = !is.na(QQ1_stat_table_1st$shbg_baseline), gp = QQ1_stat_table_1st$gp) %>% ftable()
+      table_02
+            
+      
+      #datasets range
+      stat_table_1st_ob %>% 
+        group_by(gender) %>% 
+        summarise(
+          age = paste0(age %>% mean(na.rm = T) %>% round(1), "(", age %>% max(na.rm = T) %>% round(1),"~", age %>% min(na.rm = T) %>% round(1),")"),
+          bmi = paste0(bmi_baseline %>% mean(na.rm = T) %>% round(1), "(", bmi_baseline %>% max(na.rm = T) %>% round(1),"~", bmi_baseline %>% min(na.rm = T) %>% round(1),")"),
+          pbf = paste0(pbf_baseline %>% mean(na.rm = T) %>% round(1), "(", pbf_baseline %>% max(na.rm = T) %>% round(1),"~", pbf_baseline %>% min(na.rm = T) %>% round(1),")"),
+          calorie_day = paste0(calorie_day %>% mean(na.rm = T) %>% round(1), "(", calorie_day %>% max(na.rm = T) %>% round(1),"~", calorie_day %>% min(na.rm = T) %>% round(1),")"),
+          n = n()
+        ) %>% 
+        view()
+      
+      
+      #BMI_gp, gender, ∆weight_bp
+      (table(stat_table_1st_ob$gender, stat_table_1st_ob$bmi_gp, stat_table_1st_ob$`∆weight_gp`) %>% addmargins() %>%  ftable()) %>% prop.table(margin = 1) %>% multiply_by(200) %>% round(2) %>%
+        as.matrix() %>% 
+        kable(format = "html", caption = "<b>Table: BMI x Weight Loss</b>", align = "c") %>%
+        kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                                  full_width = FALSE, font_size = 15) %>% 
+        footnote(general_title = c(""), general = c(rbind("", c(""))),
+                 footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
+        )%>% 
+        gsub("font-size: initial !important;", 
+             "font-size: 15pt !important;", 
+             .)
       
       

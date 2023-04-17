@@ -109,4 +109,4 @@ WHERE member_type = 'Client'
 --  and data->>'pulse' IS NOt NULL
   
 
-select *, equip_brand from measurements where data->>'extracelluar_water_ratio_left_leg' is not null
+-- SELECT *, equip_brand from measurements where data->>'extracelluar_water_ratio_left_leg' is not null

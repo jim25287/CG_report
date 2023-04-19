@@ -535,7 +535,7 @@ a <- stat_table_1st_ob %>% select_if(is.numeric) %>%
   select(-c(id, class_freq, class_order)) %>% 
   select_if(~ sd(., na.rm = TRUE) %>% is.nan() %>% not() & is.na(sd(., na.rm = TRUE)) %>% not()) %>% 
   select_if(~ sum(!is.na(.)) >= 60)
-
+ 
 #SELECT 770 in order to analyze
 # a <- a %>% filter(!is.na(wepa50_baseline))
 
@@ -777,7 +777,7 @@ for (i in c(var_vector)) {
 #(2.)gender x Group table
 table_01 <- 
   table(QQ1_stat_table_1st$gender, QQ1_stat_table_1st$gp) %>% addmargins() %>% 
-  kable(format = "html", caption = "<b>Table: Stuty Group</b>", align = "c") %>%
+  kable(format = "html", caption = "<b>Table: Study Group</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
                             full_width = FALSE, font_size = 15) %>% 
   footnote(general_title = c("Categorization:  ∆weight(%)"), general = c(rbind("\n", c("- Poor: Less than 3%", "- Medium: Between 5~10%", "- Good: More than 10%"))),

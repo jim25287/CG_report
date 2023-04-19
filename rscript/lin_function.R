@@ -1209,8 +1209,9 @@ lin_astrological_type <- function(df, variables){
 # [Function 12:] chisq -------------------------------------------------------------------
 
 
-lin_chisq.test <- function(df, cate1, cate2){
+lin_chisq.test <- function(df, cate1, cate2, output=F){
   #Step(cut 2 category) has to be done first.
+  result <- list()
   library(stats)
   var1_chr <- deparse(substitute(cate1))
   var2_chr <- deparse(substitute(cate2))
@@ -1226,4 +1227,6 @@ lin_chisq.test <- function(df, cate1, cate2){
       paste0("(",paste(c(rbind(c(0, 0.1, 0.3, 0.5), c("None","Low","Medium","Strong"))), collapse = " "), ")"), "\n",
       "col_predict = ", paste0(chi_input %>% DescTools::GoodmanKruskalTau(direction = "row") %>% multiply_by(100) %>% round(3),"%"),"\n",
       "row_predict = ", paste0(chi_input %>% DescTools::GoodmanKruskalTau(direction = "column") %>% multiply_by(100) %>% round(3),"%"))
+  
+
 }

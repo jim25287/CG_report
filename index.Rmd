@@ -133,6 +133,7 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 # 30.482  0.672 31.304 
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/04.cofit_flc.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/05.urine_ketone.R")
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/06.prediction.R")
 
 
 ```
@@ -165,12 +166,17 @@ gvisMerge(plot_stack_col_female,plot_stack_col_male, horizontal = TRUE,
 
 <!-- The information in this report is provided ...(editing). -->
 
-`r Sys.Date()`版本更新：
+版本更新：
 
 [新增]
 
-1.  全變數 - Pearson Correlation Table
+2023-04-20
 
-2.  尿酮體 x 空腹胰島素分析
+1.  單因子預測力&切點分析([Link](#predict_cutoff_roc))
+
+2023-04-19
+
+1.  全變數 - Pearson Correlation Table([Link](#cor_ob_var_all))
+2.  尿酮體 x 空腹胰島素分析([Link](#ketone_response))
 
 [(識別碼：`r lin_timestamp()`)]{style="float:right"}

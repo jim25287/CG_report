@@ -839,19 +839,19 @@ table_02_sua0
 ### Chisq分析 
 #### Endpoint {.unnumbered}
 Fasting Insulin Cutoff = 6
-```{r, results='asis'}
+```{r, results='hold'}
 lin_chisq.test(ketone_endpoint, ins_gp, urine_ketones_endpoint)
 
 
 ```
 
 #### Baseline {.unnumbered}
-```{r, results='asis'}
+```{r, results='hold'}
 lin_chisq.test(ketone_baseline, ins_gp, urine_ketones_baseline)
 ```
 
 #### Pooled {.unnumbered}
-```{r, results='asis'}
+```{r, results='hold'}
 lin_chisq.test(ketone_all, ins_gp, ketone)
 ```
 

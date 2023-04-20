@@ -1,0 +1,7 @@
+# Prediction(研究中)
+
+## 單因子預測力&切點分析 {#predict_cutoff_roc}
+```{r}
+table_global_cutoff
+```
+

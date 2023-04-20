@@ -291,6 +291,10 @@
 <li class="chapter" data-level="" data-path="girc_analysis_.html"><a href="girc_analysis_.html#girc_improvemnt_path"><i class="fa fa-check"></i>Pattern改善分析</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="3" data-path="prediction研究中.html"><a href="prediction研究中.html"><i class="fa fa-check"></i><b>3</b> Prediction(研究中)</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="predict_cutoff_roc.html"><a href="predict_cutoff_roc.html"><i class="fa fa-check"></i><b>3.1</b> 單因子預測力&amp;切點分析</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -315,45 +319,48 @@
 <div id="endpoint" class="section level4 unnumbered hasAnchor">
 <h4>Endpoint<a href="ketone_response.html#endpoint" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Fasting Insulin Cutoff = 6</p>
-<pre><code>     + (&gt;=5 mg/dL) - (&lt;5 mg/dL) Sum</code></pre>
-<p>Ins&lt;=6 215 40 255
-Ins&gt;6 291 166 457
-Sum 506 206 712
-[Chi-square]
-X-squared = 32.907
-p-value = 9.67e-09
-Cramer’s V = 0.218
-(0 None 0.1 Low 0.3 Medium 0.5 Strong)
-col_predict = 4.762%
-row_predict = 4.762%</p>
+<pre><code>        
+         + (&gt;=5 mg/dL) - (&lt;5 mg/dL) Sum
+  Ins&lt;=6           215           40 255
+  Ins&gt;6            291          166 457
+  Sum              506          206 712
+[Chi-square] 
+ X-squared =  32.907 
+ p-value =  9.67e-09 
+ Cramer&#39;s V =  0.218 
+ (0 None 0.1 Low 0.3 Medium 0.5 Strong) 
+ col_predict =  4.762% 
+ row_predict =  4.762%</code></pre>
 </div>
 <div id="baseline" class="section level4 unnumbered hasAnchor">
 <h4>Baseline<a href="ketone_response.html#baseline" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<pre><code>     - (&lt;5 mg/dL) + (&gt;=5 mg/dL) Sum</code></pre>
-<p>Ins&lt;=6 84 49 133
-Ins&gt;6 476 106 582
-Sum 560 155 715
-[Chi-square]
-X-squared = 21.044
-p-value = 4.49e-06
-Cramer’s V = 0.176
-(0 None 0.1 Low 0.3 Medium 0.5 Strong)
-col_predict = 3.095%
-row_predict = 3.095%</p>
+<pre><code>        
+         - (&lt;5 mg/dL) + (&gt;=5 mg/dL) Sum
+  Ins&lt;=6           84            49 133
+  Ins&gt;6           476           106 582
+  Sum             560           155 715
+[Chi-square] 
+ X-squared =  21.044 
+ p-value =  4.49e-06 
+ Cramer&#39;s V =  0.176 
+ (0 None 0.1 Low 0.3 Medium 0.5 Strong) 
+ col_predict =  3.095% 
+ row_predict =  3.095%</code></pre>
 </div>
 <div id="pooled" class="section level4 unnumbered hasAnchor">
 <h4>Pooled<a href="ketone_response.html#pooled" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<pre><code>     - (&lt;5 mg/dL) + (&gt;=5 mg/dL)  Sum</code></pre>
-<p>Ins&lt;=6 124 264 388
-Ins&gt;6 642 397 1039
-Sum 766 661 1427
-[Chi-square]
-X-squared = 99.913
-p-value = 1.59e-23
-Cramer’s V = 0.266
-(0 None 0.1 Low 0.3 Medium 0.5 Strong)
-col_predict = 7.085%
-row_predict = 7.085%</p>
+<pre><code>        
+         - (&lt;5 mg/dL) + (&gt;=5 mg/dL)  Sum
+  Ins&lt;=6          124           264  388
+  Ins&gt;6           642           397 1039
+  Sum             766           661 1427
+[Chi-square] 
+ X-squared =  99.913 
+ p-value =  1.59e-23 
+ Cramer&#39;s V =  0.266 
+ (0 None 0.1 Low 0.3 Medium 0.5 Strong) 
+ col_predict =  7.085% 
+ row_predict =  7.085%</code></pre>
 </div>
 </div>
 <div id="敏感度分析" class="section level3 hasAnchor" number="1.8.2">

@@ -105,7 +105,7 @@ plot_ketone_auc_endpoint <-
                      cowplot::plot_grid(cowplot::plot_grid(plot_sensitivity_specificity(cp) + xlim(0,15), plot_metric(cp) + xlim(0,15), nrow = 2),
                                         plot_roc(cp),
                                         ncol = 2, labels = "AUTO"),
-                     nrow = 2, rel_heights = c(0.13, 1))
+                     nrow = 2, rel_heights = c(0.11, 1))
 
 
 
@@ -205,7 +205,7 @@ plot_ketone_auc_baseline <-
                      cowplot::plot_grid(cowplot::plot_grid(plot_sensitivity_specificity(cp) + xlim(0,15), plot_metric(cp) + xlim(0,15), nrow = 2),
                                         plot_roc(cp),
                                         ncol = 2, labels = "AUTO"),
-                     nrow = 2, rel_heights = c(0.13, 1))
+                     nrow = 2, rel_heights = c(0.11, 1))
 
 
 
@@ -303,7 +303,7 @@ plot_ketone_auc_all <-
                      cowplot::plot_grid(cowplot::plot_grid(plot_sensitivity_specificity(cp) + xlim(0,15), plot_metric(cp) + xlim(0,15), nrow = 2),
                                         plot_roc(cp),
                                         ncol = 2, labels = "AUTO"),
-                     nrow = 2, rel_heights = c(0.13, 1))
+                     nrow = 2, rel_heights = c(0.11, 1))
 
 
 

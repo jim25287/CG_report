@@ -44,7 +44,7 @@ library(DT)
 table_var_cutoff <- table_var_cutoff[with(table_var_cutoff, order(AUC, decreasing = T)),]
 table_global_cutoff <-
   table_var_cutoff %>% datatable(extensions = c('Buttons',"FixedColumns"),
-                                 width = '60%',
+                                 width = '80%',
                           options = list(
                             # fixedColumns = list(leftColumns = 1),
                             fixedHeader = TRUE,

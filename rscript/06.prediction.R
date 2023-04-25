@@ -2,8 +2,9 @@
 # 01.Global vars optimal cutoff analysis ----------------------------------------------------------------
 library(cutpointr)
 
-# Def: weight loss fail: > -4
-stat_table_1st_ob$gp_weight_loss <- stat_table_1st_ob$`∆weight%` %>% cut(c(-Inf, -4, Inf), c("success", "fail"))
+# Def: weight loss fail: > -8
+cutoff <- -8
+stat_table_1st_ob$gp_weight_loss <- stat_table_1st_ob$`∆weight%` %>% cut(c(-Inf, cutoff, Inf), c("success", "fail"))
 
 # Select numeric vars
 vars <- stat_table_1st_ob %>% 

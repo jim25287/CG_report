@@ -100,6 +100,7 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 # 2239.010   26.456 2268.609 
 
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.2-global_treatment.R")
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.2.1-global_exclude_record_factor.R")
 
 ```
 
@@ -168,8 +169,16 @@ gvisMerge(plot_stack_col_female,plot_stack_col_male, horizontal = TRUE,
 
 版本更新：
 
+[更新]
+
+-   2023-04-27
+    1.  尿酮體 x 空腹胰島素分析(分群:介入前後Ketone變化)([Link](#ketone_response))
+    2.  單因子預測力&切點分析(篩選:飲食紀律佳)([Link](#predict_cutoff_roc_filtered))
+
 [新增]
 
+-   2023-04-27
+    1.  體重成效分層分析(篩選:飲食紀律佳)([Link](#strat_1_ob_filtered))
 -   2023-04-20
     1.  單因子預測力&切點分析([Link](#predict_cutoff_roc))
 -   2023-04-19

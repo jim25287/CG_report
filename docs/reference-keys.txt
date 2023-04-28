@@ -1,14 +1,15 @@
 tab:unnamed-chunk-10
 tab:unnamed-chunk-12
-tab:unnamed-chunk-59
-tab:unnamed-chunk-72
-tab:unnamed-chunk-74
+tab:unnamed-chunk-102
+tab:unnamed-chunk-115
+tab:unnamed-chunk-117
 減重成效---單次療程
 vens_grap_ob
 porfile_ob
 global_result_ob
 cor_ob
 strat_1_ob
+strat_1_ob_filtered
 strat_1_testosterone
 strat_2_sua
 cor_sua
@@ -29,3 +30,4 @@ pattern-v
 girc_analysis_
 prediction研究中
 predict_cutoff_roc
+predict_cutoff_roc_filtered

@@ -71,21 +71,21 @@ table_tmp$cutoff <- table_tmp$cutoff %>% round(1)
 table_tmp$score <- table_tmp$score %>% round(3)
 library(DT)
 plot_ketone_auc_table_endpoint <- 
-table_tmp %>% datatable(extensions = c('Buttons',"FixedColumns"),
-                        options = list(
-                          # fixedColumns = list(leftColumns = 1),
-                          dom = 'Blfrtip',
-                          # buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-                          initComplete = JS("function(settings, json) {","$(this.api().table().header()).css({'font-size': '12px'});","}"),
-                          scrollX = TRUE, 
-                          # autoWidth = TRUE,
-                          columnDefs = list(list(width = '10px', targets = c(1))),
-                          order = list(list(4, 'desc')),
-                          lengthMenu = list(c(10,25,50,-1),
-                                            c(10,25,50,"All"))))
+  table_tmp %>% datatable(extensions = c('Buttons',"FixedColumns"),
+                          options = list(
+                            # fixedColumns = list(leftColumns = 1),
+                            dom = 'Blfrtip',
+                            # buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                            initComplete = JS("function(settings, json) {","$(this.api().table().header()).css({'font-size': '12px'});","}"),
+                            scrollX = TRUE, 
+                            # autoWidth = TRUE,
+                            columnDefs = list(list(width = '10px', targets = c(1))),
+                            order = list(list(4, 'desc')),
+                            lengthMenu = list(c(10,25,50,-1),
+                                              c(10,25,50,"All"))))
 
 
- 
+
 library(cutpointr)
 cp <- cutpointr(a, insulin_endpoint, urine_ketones_endpoint, gender,
                 method = maximize_metric, metric = sum_sens_spec, 
@@ -105,7 +105,7 @@ plot_ketone_auc_endpoint <-
                      cowplot::plot_grid(cowplot::plot_grid(plot_sensitivity_specificity(cp) + xlim(0,15), plot_metric(cp) + xlim(0,15), nrow = 2),
                                         plot_roc(cp),
                                         ncol = 2, labels = "AUTO"),
-                     nrow = 2, rel_heights = c(0.11, 1))
+                     nrow = 2, rel_heights = c(0.13, 1))
 
 
 
@@ -172,18 +172,18 @@ table_tmp$score <- table_tmp$score %>% round(3)
 
 library(DT)
 plot_ketone_auc_table_baseline <- 
-table_tmp %>% datatable(extensions = c('Buttons',"FixedColumns"),
-                        options = list(
-                          # fixedColumns = list(leftColumns = 1),
-                          dom = 'Blfrtip',
-                          # buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-                          initComplete = JS("function(settings, json) {","$(this.api().table().header()).css({'font-size': '12px'});","}"),
-                          scrollX = TRUE, 
-                          # autoWidth = TRUE,
-                          columnDefs = list(list(width = '10px', targets = c(1))),
-                          order = list(list(4, 'desc')),
-                          lengthMenu = list(c(10,25,50,-1),
-                                            c(10,25,50,"All"))))
+  table_tmp %>% datatable(extensions = c('Buttons',"FixedColumns"),
+                          options = list(
+                            # fixedColumns = list(leftColumns = 1),
+                            dom = 'Blfrtip',
+                            # buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                            initComplete = JS("function(settings, json) {","$(this.api().table().header()).css({'font-size': '12px'});","}"),
+                            scrollX = TRUE, 
+                            # autoWidth = TRUE,
+                            columnDefs = list(list(width = '10px', targets = c(1))),
+                            order = list(list(4, 'desc')),
+                            lengthMenu = list(c(10,25,50,-1),
+                                              c(10,25,50,"All"))))
 
 
 
@@ -201,11 +201,11 @@ summary(cp)
 plot_ketone_auc_baseline <- 
   cowplot::plot_grid(ggplot() + 
                        labs(title = "Optimal Cutoff Analysis", subtitle = paste0("Urine Ketone x Fasting Insulin - Baseline",
-                            "  (Female: ",cp$optimal_cutpoint[1], "/ Male: ",cp$optimal_cutpoint[2],")")),
+                                                                                 "  (Female: ",cp$optimal_cutpoint[1], "/ Male: ",cp$optimal_cutpoint[2],")")),
                      cowplot::plot_grid(cowplot::plot_grid(plot_sensitivity_specificity(cp) + xlim(0,15), plot_metric(cp) + xlim(0,15), nrow = 2),
                                         plot_roc(cp),
                                         ncol = 2, labels = "AUTO"),
-                     nrow = 2, rel_heights = c(0.11, 1))
+                     nrow = 2, rel_heights = c(0.13, 1))
 
 
 
@@ -273,18 +273,18 @@ table_tmp$cutoff <- table_tmp$cutoff %>% round(1)
 table_tmp$score <- table_tmp$score %>% round(3)
 library(DT)
 plot_ketone_auc_table_all <-
-table_tmp %>% datatable(extensions = c('Buttons',"FixedColumns"),
-                        options = list(
-                          # fixedColumns = list(leftColumns = 1),
-                          dom = 'Blfrtip',
-                          # buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-                          initComplete = JS("function(settings, json) {","$(this.api().table().header()).css({'font-size': '12px'});","}"),
-                          scrollX = TRUE, 
-                          # autoWidth = TRUE,
-                          columnDefs = list(list(width = '10px', targets = c(1))),
-                          order = list(list(4, 'desc')),
-                          lengthMenu = list(c(10,25,50,-1),
-                                            c(10,25,50,"All"))))
+  table_tmp %>% datatable(extensions = c('Buttons',"FixedColumns"),
+                          options = list(
+                            # fixedColumns = list(leftColumns = 1),
+                            dom = 'Blfrtip',
+                            # buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                            initComplete = JS("function(settings, json) {","$(this.api().table().header()).css({'font-size': '12px'});","}"),
+                            scrollX = TRUE, 
+                            # autoWidth = TRUE,
+                            columnDefs = list(list(width = '10px', targets = c(1))),
+                            order = list(list(4, 'desc')),
+                            lengthMenu = list(c(10,25,50,-1),
+                                              c(10,25,50,"All"))))
 
 
 library(cutpointr)
@@ -303,7 +303,7 @@ plot_ketone_auc_all <-
                      cowplot::plot_grid(cowplot::plot_grid(plot_sensitivity_specificity(cp) + xlim(0,15), plot_metric(cp) + xlim(0,15), nrow = 2),
                                         plot_roc(cp),
                                         ncol = 2, labels = "AUTO"),
-                     nrow = 2, rel_heights = c(0.11, 1))
+                     nrow = 2, rel_heights = c(0.13, 1))
 
 
 
@@ -312,15 +312,18 @@ plot_ketone_auc_all <-
 
 # plot --------------------------------------------------------------------
 
-a <- stat_table_1st_ob %>% filter(urine_ketones_endpoint != "缺")
-a$ins_gp <- a$insulin_endpoint %>% cut(c(-Inf, 6, Inf), c("Ins<=6", "Ins>6"))
-a$urine_ketones_endpoint %>% unique()
+a <- stat_table_1st_ob %>% filter(urine_ketones_endpoint != "缺" & urine_ketones_baseline != "缺")
+# a$ins_gp <- a$insulin_endpoint %>% cut(c(-Inf, 6, Inf), c("Ins<=6", "Ins>6"))
+# a$urine_ketones_endpoint %>% unique()
 a[a[["urine_ketones_endpoint"]] != "- (<5 mg/dL)", "urine_ketones_endpoint"] <- "+ (>=5 mg/dL)"
+a[a[["urine_ketones_baseline"]] != "- (<5 mg/dL)", "urine_ketones_baseline"] <- "+ (>=5 mg/dL)"
+a$urine_ketones_baseline <-  ifelse(a$urine_ketones_baseline == "- (<5 mg/dL)", "Neg.", "Pos.")
+a$urine_ketones_endpoint <-  ifelse(a$urine_ketones_endpoint == "- (<5 mg/dL)", "Neg.", "Pos.")
 
+a$gp_kt <- paste(a$urine_ketones_baseline, a$urine_ketones_endpoint, sep = ">")
 
-
-datasets_target_issue <- a %>% dplyr::rename(gp = urine_ketones_endpoint)
-datasets_target_issue$gp <- factor(datasets_target_issue$gp, levels = c("- (<5 mg/dL)", "+ (>=5 mg/dL)"))
+datasets_target_issue <- a %>% dplyr::rename(gp = gp_kt)
+datasets_target_issue$gp <- factor(datasets_target_issue$gp, levels = c("Neg.>Neg.","Neg.>Pos.","Pos.>Neg.","Pos.>Pos."))
 
 datasets_target_issue <- datasets_target_issue %>% filter(gp %in% levels(datasets_target_issue$gp))
 
@@ -360,23 +363,24 @@ names(datasets_target_issue) <- lin_ch_en_format(x = names(datasets_target_issue
 datasets_target_issue_a <- datasets_target_issue %>% select(-grep("∆", names(datasets_target_issue)))
 
 ##Improvement: Uncertain, default setting
-datasets_target_issue_b <- datasets_target_issue %>% select(grep("∆", names(datasets_target_issue), value = TRUE) %>% 
+datasets_target_issue_b <- datasets_target_issue %>% select(grep("∆", names(datasets_target_issue), value = TRUE) %>%
                                                               grep(paste(c("bmr", "uric_acid", "amylase", "lipase"), collapse = "|"), ., value = TRUE))
 ##Improvement: negative (減少越多，越往上長)
-datasets_target_issue_c <- datasets_target_issue %>% select(grep("∆", names(datasets_target_issue), value = TRUE) %>% 
+datasets_target_issue_c <- datasets_target_issue %>% select(grep("∆", names(datasets_target_issue), value = TRUE) %>%
                                                               grep(paste(c("weight", "bmi", "bf", "pbf", "vfa", "wc", "ffm", "hba1c", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., value = TRUE)) %>% multiply_by(-1)
 ##Improvement: positive
-datasets_target_issue_d <- datasets_target_issue %>% select(grep("∆", names(datasets_target_issue), value = TRUE) %>% 
+datasets_target_issue_d <- datasets_target_issue %>% select(grep("∆", names(datasets_target_issue), value = TRUE) %>%
                                                               grep(paste(c("bsmi", "bm$", "bm%", "homa_beta", "hdl", "homa_beta"), collapse = "|"), ., value = TRUE)) %>% multiply_by(1)
 
-datasets_target_issue <- Reduce(cbind,list(datasets_target_issue_a, datasets_target_issue_b, datasets_target_issue_c, datasets_target_issue_d), accumulate =FALSE) 
+datasets_target_issue <- Reduce(cbind,list(datasets_target_issue_a, datasets_target_issue_b, datasets_target_issue_c, datasets_target_issue_d), accumulate =FALSE)
 
 #order again!!
 datasets_target_issue <- datasets_target_issue %>% select(vars_en)
 
 #change colname to run plot
-#**[exlude gender gp = 1, which is male & pattern V]
-datasets_target_issue_for_plot <- datasets_target_issue %>% filter(!((gender == "male") & (gp == "Pattern V")))
+# #**[exlude gender gp = 1, which is male & pattern V]
+# datasets_target_issue_for_plot <- datasets_target_issue %>% filter(!((gender == "male") & (gp == "Pattern V")))
+datasets_target_issue_for_plot <- datasets_target_issue
 
 names(datasets_target_issue_for_plot) <- gsub("∆", "delta_", names(datasets_target_issue_for_plot))
 names(datasets_target_issue_for_plot) <- gsub("%", "_percent", names(datasets_target_issue_for_plot))
@@ -414,7 +418,7 @@ for (i in c(var_vector)) {
   
   
   #p.sign?
-  stat.test <- 
+  stat.test <-
     datasets_target_issue_for_plot %>%
     group_by(gender) %>%
     #[customized part!!!]
@@ -422,24 +426,24 @@ for (i in c(var_vector)) {
   stat.test <- stat.test %>% rstatix::add_xy_position(x = "gender", fun = "mean_se", dodge = 0.8)
   
   #for customed summary table - part 1/4 [p value]
-  vector_pvalue <- append(vector_pvalue, 
-                          stat.test %>% select(p.signif) %>% pull() %>% head(2) %>% tail(1)
+  vector_pvalue <- append(vector_pvalue,
+                          stat.test %>% select(p.adj.signif) %>% pull() %>% head(2) %>% tail(1)
   )
   
   #plot
-  plot <- 
-    datasets_target_issue_for_plot %>% 
-    ggbarplot(x = "gender", y = a, fill = "gp",  alpha = .5,
+  plot <-
+    datasets_target_issue_for_plot %>%
+    ggbarplot(x = "gender", y = a, fill = "gp",  alpha = .5, 
               add = "mean_se", add.params = list(group = "gp"),
-              position = position_dodge(), legend = "right", legend.title = "") +
+              position = position_dodge(0.8), legend = "right", legend.title = "") +
     scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
     labs(x = "", y = "Mean ± SE", title = a_title) +
     theme(
       plot.title = element_text(face = "bold", hjust = 0.5, size = 15)
     ) +
     stat_pvalue_manual(
-      stat.test, label = "p.signif", tip.length = 0.0,
-      bracket.nudge.y = 1, step.increase = 0.01, hide.ns = TRUE 
+      stat.test, label = "p.adj.signif", tip.length = 0.0,
+      bracket.nudge.y = 1, step.increase = 0.01, hide.ns = TRUE
     )
   
   #[customized part!!!]
@@ -455,25 +459,25 @@ rm(list = c("datasets_target_issue_a", "datasets_target_issue_b", "datasets_targ
 
 #(2.)gender x Group table
 #[customized part!!!]
-table_01_qqqq <- 
-  table(datasets_target_issue$gender, datasets_target_issue$gp) %>% addmargins() %>% 
+table_01_qqqq <-
+  table(datasets_target_issue$gender, datasets_target_issue$gp) %>% addmargins() %>%
   kable(format = "html", caption = "<b>Table: Population(OB.)</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                            full_width = FALSE, font_size = 15) %>% 
+                            full_width = FALSE, font_size = 15) %>%
   footnote(general_title = c("Note:"), general = c(rbind("", c(" "))),
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
-  )%>% 
-  gsub("font-size: initial !important;", 
-       "font-size: 15pt !important;", 
+  )%>%
+  gsub("font-size: initial !important;",
+       "font-size: 15pt !important;",
        .)
 
 
 #(3.)output statistics table
 #for customed summary table [summary table]
 #[customized part!!!]
-summary_table_qqqq <- 
-  datasets_target_issue %>% 
-  group_by(gender, gp) %>% 
+summary_table_qqqq <-
+  datasets_target_issue %>%
+  group_by(gender, gp) %>%
   summarize_at(vars_en[var_vector],
                function(x) paste(mean(x, na.rm = TRUE) %>% round(2), (sd(x, na.rm = TRUE)/sqrt(n())) %>% round(2), sep = " ± ")
   )
@@ -481,31 +485,26 @@ summary_table_qqqq <-
 
 
 #rbind: summary_table, p.adj.sign, dif, improvement
-# summary_table_sua <- cbind(summary_table_sua %>% as.data.frame() %>% select(-c("gender", "gp")) %>% t(), as.data.frame(vector_pvalue)) 
-summary_table_qqqq <- summary_table_qqqq %>% as.data.frame() %>% select(-c("gender", "gp")) %>% t() %>% cbind(as.data.frame(vector_pvalue))
+# summary_table_sua <- cbind(summary_table_sua %>% as.data.frame() %>% select(-c("gender", "gp")) %>% t(), as.data.frame(vector_pvalue))
+# summary_table_qqqq <- summary_table_qqqq %>% as.data.frame() %>% select(-c("gender", "gp")) %>% t() %>% cbind(as.data.frame(vector_pvalue))
+summary_table_qqqq <- summary_table_qqqq %>% as.data.frame() %>% select(-c("gender", "gp")) %>% t()
 
 # names(summary_table_sua) <- c(rep(levels((datasets_target_issue$gp)), 2), "顯著差異")
-# colnames(summary_table_qqqq) <- c(rep(levels((datasets_target_issue$gp)), 2))
-colnames(summary_table_qqqq) <- c(rep(levels((datasets_target_issue$gp)), 2), "顯著差異")
+colnames(summary_table_qqqq) <- c(rep(levels((datasets_target_issue$gp)), 2))
+# colnames(summary_table_qqqq) <- c(rep(levels((datasets_target_issue$gp)), 2), "顯著差異")
 rownames(summary_table_qqqq) <- myplot_table$vars_ch
 
 #[customized part!!!]
-table_02_qqqq <- 
-  summary_table_qqqq %>% 
+table_02_qqqq <-
+  summary_table_qqqq %>%
   kbl(format = "html", caption = "<b>Statistics:</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                            full_width = FALSE, font_size = 15) %>% 
-  add_header_above(c(" " = 1, "Female" = length(levels(datasets_target_issue$gp)), "Male" = length(levels(datasets_target_issue$gp))," " = 1)) %>% 
+                            full_width = FALSE, font_size = 15) %>%
+  add_header_above(c(" " = 1, "Female" = length(levels(datasets_target_issue$gp)), "Male" = length(levels(datasets_target_issue$gp)))) %>%
   footnote(general_title = c("Significance:"), general = "\n ",
            footnote_as_chunk = T, title_format = c("italic", "underline", "bold")
-  )%>% 
-  gsub("font-size: initial !important;", 
-       "font-size: 15pt !important;", 
-       .) %>% 
+  )%>%
+  gsub("font-size: initial !important;",
+       "font-size: 15pt !important;",
+       .) %>%
   scroll_box(height = "500px", width = "100%")
-
-
-
-
-
-

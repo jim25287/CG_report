@@ -1,0 +1,9 @@
+# Publication(1)
+
+## Figure 1. Genesis Pattern Categorization {#p1-1}
+![](https://raw.githubusercontent.com/jim25287/CG_report/main/image/girc_class.png){width="1200"}
+
+```{r}
+ 
+```
+

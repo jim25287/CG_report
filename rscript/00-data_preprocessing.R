@@ -145,7 +145,9 @@ df02_inbody <- df02_inbody[-which(df02_inbody$bmi >100),]
 
 df03_FLC_self_report <- tmp_03
 
-#tmp
+#adjust
+df03_FLC_self_report <- df03_FLC_self_report %>% filter(program %in% c("宋醫師專班 -FLC班","經典八週","2023 FLC-2個助教","診所八週(週一開班)-宋醫師班/初日班","宋醫師進階計畫","診所進階計畫","診所八週(週四啟動)-初日班","進階計畫","經典八週（202109新版）享瘦班"))
+
 df03_FLC_self_report <- df03_FLC_self_report %>% select(-c(age, measurement_after_program_date, measurement_before_program_date))
 
 #C1. col_names
@@ -218,7 +220,7 @@ df03_FLC_self_report <- df03_FLC_self_report %>% mutate(diet_compliance = (`uplo
 
 # 02.4 - [Data Preprocessing] 04_non_FLC_self_report --------------------------------------------------
 
-df04_non_FLC_self_report <- tmp_04
+df04_non_FLC_self_report <- tmp_04 %>% select(-mobile)
 
 # intersect(tmp_03$id, df04_non_FLC_self_report$client_id)  #ensure no FLC client within
 #C1. col_name

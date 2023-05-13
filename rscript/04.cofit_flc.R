@@ -1,8 +1,6 @@
-# pie_chart:age, gender, bmi (by gender)
-# correlation matrix
-# description table.1
-# Strate_01: Effectiveness
-# Effectiveness table.2
+
+
+# 01. Pie chart -----------------------------------------------------------
 
 
 #Age
@@ -57,6 +55,9 @@ pie_flc_04 <-
 
 
 
+# 02. Cor ---------------------------------------------------------------------
+
+
 #[Create profile]  Efficacy, Baseline, Diet table
 profile_efficacy <- df03_FLC_self_report %>% 
   select(c("∆weight","∆weight%","∆BMI","∆BMI%","∆Fat","∆Fat%","∆wc","∆wc%"))
@@ -98,7 +99,12 @@ corrplot(M1_flc,
 for (i in c(1:length(colnames(M1_flc)))) {
   if (i == 1) {
     M1_flc_value <- M1_flc %>% round(2) 
-    M1_flc_sign <- M_test1_flc$p %>% stats::symnum(corr = FALSE, na = FALSE, cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), symbols = c("***", "**", "*", ".", "ns")) %>% as.data.frame.matrix()
+    M1_flc_sign <- M_test1_flc$p %>% apply(c(1,2), function(x) {
+      stats::symnum(x, corr = FALSE, na = FALSE, 
+                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+                    symbols = c("***", "**", "*", ".", "ns"))
+    })
+    
     M1_flc_df <- M1_flc_value
     M1_flc_df[,] <- NA
   }
@@ -114,18 +120,11 @@ for (i in c(1:length(colnames(M1_flc)))) {
 } 
 
 cor_table_flc_01 <- M1_flc_df %>% gvisTable(options=list(frozenColumns = 2,
-                                                 width="150%",height=300
-))
+                                                 width="150%",height=300))
 
 
 
-
-
-
-
-
-
-
+# 03.  Strat.  Weight loss% -----------------------------------------------
 
 
 ##T0,T1,∆ plot
@@ -134,6 +133,7 @@ df03_FLC_self_report$`∆weight%` %>% summary()
 
 # Method 1: 按照data散佈百分比. e.g., Q1~Q4
 df03_FLC_self_report$gp <- df03_FLC_self_report$`∆weight%` %>% cut(breaks = 3, labels = c("Good","Medium","Poor"))
+df03_FLC_self_report$`∆weight%` %>% cut(breaks = 3, labels = c())
 # Method 2: makes n groups with (approximately) equal numbers of observations;
 # df03_FLC_self_report$gp <- df03_FLC_self_report$`∆weight%` %>% cut_number(3, labels = c("Good","Medium","Poor"))
 df03_FLC_self_report$gp %>% table()
@@ -282,10 +282,13 @@ summary_table_flc <-
 
 
 
+
 #rbind: summary_table, p.adj.sign, dif, improvement
 summary_table_flc <- cbind(summary_table_flc %>% as.data.frame() %>% select(-c("gender", "gp")) %>% t(), as.data.frame(vector_pvalue))
 
-names(summary_table_flc) <- c(rep(levels((datasets_target_issue$gp)), 2), "顯著差異")
+colnames(summary_table_flc) <-
+  c(paste0((levels(datasets_target_issue_for_plot$gp) %>% as.character())[-6],
+         paste0("\n(n=",table(datasets_target_issue_for_plot$gp, datasets_target_issue_for_plot$gender) %>% as.numeric(),")")), "顯著差異")
 rownames(summary_table_flc) <- myplot_table$vars_ch
 
 #[customized part!!!]
@@ -304,6 +307,9 @@ table_02_flc <-
   scroll_box(height = "500px", width = "100%")
 
 
+
+
+# 04.  Importance of diet record & "Cofit Weight Loss Strategy" -----------
 
 
 df03_FLC_self_report <- df03_FLC_self_report %>% filter((diet_compliance >= 0) & (diet_compliance <= 100))
@@ -341,7 +347,7 @@ rbind(df03_FLC_self_report %>% select(c("id","gender","weight(T0)","BMI(T0)","Fa
         mutate(gp = "free_user")
       )
 a$gp_diet_compliance <- a$`upload_day_%` %>% cut_number(n = 3, c("Low", "Medium", "High"))
-a$gp_diet_compliance <- a$`upload_day_%` %>% cut_number(n = 3, )
+# a$gp_diet_compliance <- a$`upload_day_%` %>% cut_number(n = 3, )
 # a$gp_diet_compliance <- a$`upload_day_%` %>% cut_number(n = 3, )
 
 b <- 
@@ -373,13 +379,17 @@ stat.test <-
   rstatix::t_test(as.formula(paste("x", "gp_diet_compliance", sep = " ~ "))) 
 stat.test <- stat.test %>% rstatix::add_xy_position(x = "gp", fun = "mean_se", dodge = 0.8)
 
+
+
 #plot
+plot_flc_ctrl_comparison <- 
 a %>% mutate(x = `∆weight%` %>% multiply_by(-1)) %>% 
   ggbarplot(x = "gp", y = "x", fill = "gp_diet_compliance", alpha = .5,
             add = "mean_se", add.params = list(group = "gp_diet_compliance"),
-            position = position_dodge(0.8), legend = "right", legend.title = "Diet Compliance",
+            position = position_dodge(0.8), legend = "right", legend.title = "Diet Score",
             label = TRUE, lab.nb.digits = 2, lab.vjust = -1.5
             ) +
+  scale_x_discrete(labels = c("Cofit", "Others")) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
   labs(x = "", y = "Mean ± SE", title = "Weight Loss(%)") +
   theme(
@@ -396,28 +406,242 @@ rm(list = c("a", "b"))
 
  
 
+# df03_FLC_self_report %>% 
+#   mutate(delta_weight_p = `∆weight%` %>% multiply_by(-1)) %>%
+#   mutate(light_G_p = `light_G_%` %>% multiply_by(1)) %>%
+#   ggscatter(x = "light_G_p", y = "delta_weight_p",
+#             color = "black",
+#             fill = "red",
+#             shape = 21,
+#             size = 1, 
+#             add = "reg.line",  # Add regressin line
+#             add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+#             conf.int = TRUE, # Add confidence interval
+#             title = "Correlation(Weight x Compliance)",
+#             xlab = "Diet Compliance Score",
+#             ylab = "Weight(%)",
+#             # xlim = c(0, 13),
+#             # ylim = c(0, 180),
+#   ) +
+#   theme(
+#     plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
+#     axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+#     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+#   ) +
+#   # geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
+#   # annotate("text", x=5.3, y=155, label="Cutoff = 5.5 mg/dL", angle=90) +
+#   stat_cor(method = "pearson", size = 5, label.x = 0, label.y = 10) # Add correlation coefficient)
+# 
+
+
+# 05. MainPage ----------------------------------------------------------------
+
+##main page of cofit
+cofit_stat_category <- factor(levels = (c("Total", "Completed", "In Progress")))
+
+cofit_main_pagedf <- df01_profile %>% filter((org_name %in% c("cofit")))
+
+cofit_main_pagedf <- cofit_main_pagedf %>% mutate(date_cate = date_t0 %>% lubridate::floor_date(unit = "month"))
+cofit_main_pagedf <- cofit_main_pagedf %>% mutate(date_finish = date_t1 %>% lubridate::floor_date(unit = "month"))
+
+cofit_client_stat_df_tmp <- data.frame(date = rep(seq(as.Date(cofit_main_pagedf$date_cate %>% unique() %>% min()), as.Date(cofit_main_pagedf$date_cate %>% unique() %>% max()), by = "month")))
+
+cofit_client_stat_df <- 
+  left_join(cofit_main_pagedf %>% 
+              group_by(date_cate, .drop = FALSE) %>% 
+              summarise(
+                n = n()
+              ) %>% dplyr::rename(date = date_cate),
+            cofit_main_pagedf %>% 
+              group_by(date_finish, .drop = FALSE) %>% 
+              summarise(
+                n = n()
+              ) %>% dplyr::rename(date = date_finish),
+            by = c("date"),
+  ) %>% lin_exclude_NA_col(., variables = c("date"))
+
+cofit_client_stat_df <- cofit_client_stat_df %>% dplyr::rename(class_buy = n.x, class_finish = n.y)
+
+cofit_client_stat_df <- merge(cofit_client_stat_df, cofit_client_stat_df_tmp, by.y = c("date"), all.y = TRUE) 
+cofit_client_stat_df[is.na(cofit_client_stat_df)] <- 0
+rm(cofit_client_stat_df_tmp)
+
+
+
+#Establish auxiliary df
+cofit_client_stat_df$class_buy_cumsum_all <- cofit_client_stat_df$class_buy %>% cumsum()
+cofit_client_stat_df$class_finish_cumsum_all <- cofit_client_stat_df$class_finish %>% cumsum()
+cofit_client_stat_df <- cofit_client_stat_df %>% mutate(class_ongoing_all = class_buy_cumsum_all - class_finish_cumsum_all)
+
+cofit_client_stat_df$class_buy_cumsum_sub <- c(cofit_client_stat_df %>%  select(class_buy) %>% pull() %>% cumsum())
+
+cofit_client_stat_df$class_finish_cumsum_sub <- c(cofit_client_stat_df %>%  select(class_finish) %>% pull() %>% cumsum())
+cofit_client_stat_df <- cofit_client_stat_df %>% mutate(class_ongoing_sub = class_buy_cumsum_sub - class_finish_cumsum_sub)
+
+
+#Establish dashboard df
+cofit_accum_client_df <- data.frame(date = rep(seq(as.Date(cofit_main_pagedf$date_cate %>% unique() %>% min()), as.Date(cofit_main_pagedf$date_cate %>% unique() %>% max()), by = "month"), each = levels(cofit_stat_category) %>% length()), 
+                              category = rep(levels(cofit_stat_category), seq(as.Date(cofit_main_pagedf$date_cate %>% unique() %>% min()), as.Date(cofit_main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length()),
+                              value = rep(NA, (seq(as.Date(cofit_main_pagedf$date_cate %>% unique() %>% min()), as.Date(cofit_main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(cofit_stat_category) %>% length())),
+                              anno_title = rep(NA, (seq(as.Date(cofit_main_pagedf$date_cate %>% unique() %>% min()), as.Date(cofit_main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(cofit_stat_category) %>% length())),
+                              anno_text = rep(NA, (seq(as.Date(cofit_main_pagedf$date_cate %>% unique() %>% min()), as.Date(cofit_main_pagedf$date_cate %>% unique() %>% max()), by = "month") %>% length())*(levels(cofit_stat_category) %>% length())))
+
+#fill in cofit_accum_client_df
+cofit_accum_client_df[cofit_accum_client_df$category == "Total", "value"] <- cofit_client_stat_df[["class_buy_cumsum_all"]]
+cofit_accum_client_df[cofit_accum_client_df$category == "Completed", "value"] <- cofit_client_stat_df[["class_finish_cumsum_sub"]]
+cofit_accum_client_df[cofit_accum_client_df$category == "In Progress", "value"] <- cofit_client_stat_df[["class_ongoing_sub"]]
+
+
+rm(list = c("cofit_stat_category", "cofit_client_stat_df"))
+
+cofit_client_monthly_stat_report_total_client <- cofit_accum_client_df %>% filter(category == "Total") %>% select(value) %>% max(na.rm = TRUE)
+cofit_client_monthly_stat_report <- googleVis::gvisAnnotationChart(cofit_accum_client_df,
+                                                             datevar = "date",
+                                                             numvar = "value",
+                                                             idvar = "category",
+                                                             titlevar = "anno_title",
+                                                             annotation = "anno_text",
+                                                             date.format = "%Y/%m/%d",
+                                                             options=list(
+                                                               displayAnnotations = TRUE,
+                                                               #chart = "{chartArea:{backgroundColor:'#003b70'}}",
+                                                               legendPosition='newRow',
+                                                               # width = 800, height = 350,
+                                                               width = "100%", height = 350,
+                                                               gvis.editor = "[選項]:圖表轉換", displayAnnotations = FALSE
+                                                             ))
+#output
+##cofit_client_monthly_stat_report %>% plot()
+
+
+
+# 06.  Marketing Effectiveness Number -------------------------------------
+
+## Establish dataset focus on ∆weight -----------------------------------------------------------------------
+marketing_df <- tmp_03
+
+#tmp
+marketing_df <- marketing_df %>% select(-c(age, measurement_after_program_date, measurement_before_program_date))
+
+#C1. col_names
+names(marketing_df) <- names(marketing_df) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+#C1-2. filter by program not "^診所"
+marketing_df <- marketing_df[marketing_df[["program"]] %>% grepl("^診所",.) %>% not(),]
+
+marketing_df <- marketing_df[with(marketing_df, order(date_flc_T0, id)),]
+
+#C2. age: btd - date_t0 年齡(療程起始當天計算)
+marketing_df$age <- (lubridate::ymd(marketing_df$date_flc_T0) - lubridate::ymd(marketing_df$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
+#C2-2. carb/protein/fat E%:
+marketing_df <- marketing_df %>% mutate(carb_ep = (carbohydrate*4 / (carbohydrate*4 + protein*4 + fat*9) ))
+marketing_df <- marketing_df %>% mutate(protein_ep = (protein*4 / (carbohydrate*4 + protein*4 + fat*9) ))
+marketing_df <- marketing_df %>% mutate(fat_ep = (fat*9 / (carbohydrate*4 + protein*4 + fat*9) ))
+#C2-3. upload_day_%:
+marketing_df <- marketing_df %>% mutate(upload_day_p = (as.numeric(day_count) / as.numeric((lubridate::ymd(date_flc_T1) - (lubridate::ymd(date_flc_T0)) + 1))))
+names(marketing_df) <- names(marketing_df) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+#C2-3. BMI
+marketing_df$height <- marketing_df$height %>% as.numeric()
+marketing_df$`BMI(T0)` <- (marketing_df$`weight(T0)`/ (marketing_df$height/100)^2) %>% round(1)
+marketing_df$`BMI(T1)` <- (marketing_df$`weight(T1)`/ (marketing_df$height/100)^2) %>% round(1)
+marketing_df$`∆BMI` <- (marketing_df$`BMI(T1)` - marketing_df$`BMI(T0)`)
+marketing_df$`∆BMI%` <- (marketing_df$`BMI(T1)` - marketing_df$`BMI(T0)`)/marketing_df$`BMI(T0)`
+#C2-4. calorie
+marketing_df <- marketing_df %>% mutate(calorie_day = ((carbohydrate*4 + protein*4 + fat*9) / day_count ))
+
+
+#C3. (1.) (%) *100  (2.) numeric %>% round(2)
+marketing_df[,grep("%", names(marketing_df))] <- marketing_df[,grep("%", names(marketing_df))] %>% multiply_by(100) %>% round(2)
+marketing_df[c("weight(T0)","weight(T1)","∆weight","∆weight%","BMI(T0)","BMI(T1)","∆BMI","∆BMI%","Fat(T0)","Fat(T1)","∆Fat","∆Fat%","wc(T0)","wc(T1)","∆wc","∆wc%")] %<>% round(2)
+  
+# #C3-2. exclude vars
+# marketing_df <- marketing_df %>% select(-c(light_G_count, carbohydrate, protein, fat))
+# 
+# #C3-3. exclude missing value
+# marketing_df <- marketing_df %>% lin_exclude_NA_col(c("light_G_%", "∆weight", "carb_E%"))
+# #C3-4. exclude upload_day_p = 0
+# marketing_df <- marketing_df %>% filter(`upload_day_%` != 0)
+
+#C4-1. class_freq by org_name
+marketing_df <- marketing_df %>% full_join(marketing_df %>% group_by(id) %>% summarise(class_freq = n()), by = c("id"))
+#C4-2. class_order
+for (i in unique(marketing_df$id)) {
+  if (i == head(unique(marketing_df$id), 1)) {
+    j = 1
+    marketing_df$class_order <- NA
+    start_time <- Sys.time()
+  }
+  marketing_df[which(marketing_df[["id"]] == i), "class_order"] <- which(marketing_df[["id"]] == i) %>% order()
+  progress(j, unique(marketing_df$id) %>% length())
+  j = j + 1
+  if (i == tail(unique(marketing_df$id), 1)){
+    print("[Completed!]")
+  }
+}
+
+
+#C5. rm outliers w/ mean
+marketing_df[["∆weight%"]] <- ifelse((marketing_df[["∆weight%"]] < quantile(marketing_df[["∆weight%"]], 0.01, na.rm = TRUE)) | (marketing_df[["∆weight%"]] > quantile(marketing_df[["∆weight%"]], 0.95, na.rm = TRUE)),
+                                             marketing_df[["∆weight%"]] %>% mean(),
+                                             marketing_df[["∆weight%"]])
+# marketing_df[["∆weight%"]] <- ifelse((marketing_df[["∆weight%"]] < quantile(marketing_df[["∆weight%"]], 0.01, na.rm = TRUE)) | (marketing_df[["∆weight%"]] > quantile(marketing_df[["∆weight%"]], 0.95, na.rm = TRUE)),
+#                                              NA,
+#                                              marketing_df[["∆weight%"]])
+
+
+marketing_df <- marketing_df %>% mutate(diet_compliance = (`upload_day_%` * `light_G_%` / 100) %>% round(2))
+
+
+
+## Calculate result --------------------------------------------------------
+
+
+# 總共減多少體重(脂) -  by 人次, by 人
 df03_FLC_self_report %>% 
-  mutate(delta_weight_p = `∆weight%` %>% multiply_by(-1)) %>%
-  mutate(light_G_p = `light_G_%` %>% multiply_by(1)) %>%
-  ggscatter(x = "light_G_p", y = "delta_weight_p",
-            color = "black",
-            fill = "red",
-            shape = 21,
-            size = 1, 
-            add = "reg.line",  # Add regressin line
-            add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
-            conf.int = TRUE, # Add confidence interval
-            title = "Correlation(Weight x Compliance)",
-            xlab = "Diet Compliance Score",
-            ylab = "Weight(%)",
-            # xlim = c(0, 13),
-            # ylim = c(0, 180),
-  ) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 17), 
-    axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
-    axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
-  ) +
-  # geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
-  # annotate("text", x=5.3, y=155, label="Cutoff = 5.5 mg/dL", angle=90) +
-  stat_cor(method = "pearson", size = 5, label.x = 0, label.y = 10) # Add correlation coefficient)
+  summarise(
+    weight_total = sum(`∆weight`, na.rm = TRUE),
+    weight_mean = mean(`∆weight`, na.rm = TRUE),
+    weight_mean_p = mean(`∆weight%`, na.rm = TRUE),
+    fat_total = sum(`∆Fat`, na.rm = TRUE),
+    fat_mean = mean(`∆Fat`, na.rm = TRUE),
+    n = n()
+  )
+marketing_df %>% 
+  summarise(
+    weight_total = sum(`∆weight`, na.rm = TRUE),
+    weight_mean = mean(`∆weight`, na.rm = TRUE),
+    weight_mean_p = mean(`∆weight%`, na.rm = TRUE),
+    fat_total = sum(`∆Fat`, na.rm = TRUE),
+    fat_mean = mean(`∆Fat`, na.rm = TRUE),
+    n = n()
+  )
+
+marketing_stat_tbl <- marketing_df %>% 
+  summarise(
+    weight_total = sum(`∆weight`, na.rm = TRUE),
+    weight_mean = mean(`∆weight`, na.rm = TRUE),
+    weight_mean_p = mean(`∆weight%`, na.rm = TRUE),
+    fat_total = sum(`∆Fat`, na.rm = TRUE),
+    fat_mean = mean(`∆Fat`, na.rm = TRUE),
+    n = n()
+  )
+
+
+
+# == 幾隻牛 from Van.
+# 1年就減了kg
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

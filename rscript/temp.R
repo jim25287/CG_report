@@ -1320,3 +1320,502 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
              .)
       
       
+      
+
+# 0512 - cofit analysis ---------------------------------------------------
+      
+      # Trouble shooting & Debug -------------------------------------------------------------------
+      df03_FLC_mod_df %>% filter(`∆weight%` == 0) %>%  view()
+      df03_FLC_mod_df %>% filter(`∆weight%` == 0) %>% select(c(2:7, diet_compliance, `∆weight%`, 13:17)) %>%  view()
+      
+      table(!is.na(df03_FLC_mod_df$`∆weight%`))
+      
+      
+      
+      
+      
+      # 00. Build Prediction-Model-Used df --------------------------------------
+      
+      df03_FLC_self_report <- tmp_03
+      
+      #adjust
+      df03_FLC_self_report <- df03_FLC_self_report %>% filter(program %in% c("經典八週", "經典八週（202109新版）享瘦班", "進階計畫",
+                                                                             "宋醫師專班 -FLC班", "2023 FLC-2個助教", "宋醫師進階計畫"))
+      df03_FLC_self_report$program <- df03_FLC_self_report$program %>% factor(levels = c("經典八週", "經典八週（202109新版）享瘦班", "進階計畫",
+                                                                                         "宋醫師專班 -FLC班", "2023 FLC-2個助教", "宋醫師進階計畫"))
+      
+      
+      df03_FLC_self_report <- df03_FLC_self_report %>% filter(date_flc_t1 - date_flc_t0 > 50)
+      
+      df03_FLC_self_report <- df03_FLC_self_report %>% select(-c(age, measurement_after_program_date, measurement_before_program_date))
+      
+      #C1. col_names
+      names(df03_FLC_self_report) <- names(df03_FLC_self_report) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+      #C1-2. filter by program not "^診所"
+      df03_FLC_self_report <- df03_FLC_self_report[df03_FLC_self_report[["program"]] %>% grepl("^診所",.) %>% not(),]
+      
+      df03_FLC_self_report <- df03_FLC_self_report[with(df03_FLC_self_report, order(date_flc_T0, id)),]
+      
+      #C2. age: btd - date_t0 年齡(療程起始當天計算)
+      df03_FLC_self_report$age <- (lubridate::ymd(df03_FLC_self_report$date_flc_T0) - lubridate::ymd(df03_FLC_self_report$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
+      #C2-2. carb/protein/fat E%:
+      df03_FLC_self_report <- df03_FLC_self_report %>% mutate(carb_ep = (carbohydrate*4 / (carbohydrate*4 + protein*4 + fat*9) ))
+      df03_FLC_self_report <- df03_FLC_self_report %>% mutate(protein_ep = (protein*4 / (carbohydrate*4 + protein*4 + fat*9) ))
+      df03_FLC_self_report <- df03_FLC_self_report %>% mutate(fat_ep = (fat*9 / (carbohydrate*4 + protein*4 + fat*9) ))
+      #C2-3. upload_day_%:
+      df03_FLC_self_report <- df03_FLC_self_report %>% mutate(upload_day_p = (as.numeric(day_count) / as.numeric((lubridate::ymd(date_flc_T1) - (lubridate::ymd(date_flc_T0)) + 1))))
+      names(df03_FLC_self_report) <- names(df03_FLC_self_report) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+      #C2-3. BMI
+      df03_FLC_self_report$height <- df03_FLC_self_report$height %>% as.numeric()
+      df03_FLC_self_report$`BMI(T0)` <- (df03_FLC_self_report$`weight(T0)`/ (df03_FLC_self_report$height/100)^2) %>% round(1)
+      df03_FLC_self_report$`BMI(T1)` <- (df03_FLC_self_report$`weight(T1)`/ (df03_FLC_self_report$height/100)^2) %>% round(1)
+      df03_FLC_self_report$`∆BMI` <- (df03_FLC_self_report$`BMI(T1)` - df03_FLC_self_report$`BMI(T0)`)
+      df03_FLC_self_report$`∆BMI%` <- (df03_FLC_self_report$`BMI(T1)` - df03_FLC_self_report$`BMI(T0)`)/df03_FLC_self_report$`BMI(T0)`
+      #C2-4. calorie
+      df03_FLC_self_report <- df03_FLC_self_report %>% mutate(calorie_day = ((carbohydrate*4 + protein*4 + fat*9) / day_count ))
+      
+      
+      #C3. (1.) (%) *100  (2.) numeric %>% round(2)
+      df03_FLC_self_report[,grep("%", names(df03_FLC_self_report))] <- df03_FLC_self_report[,grep("%", names(df03_FLC_self_report))] %>% multiply_by(100) %>% round(2)
+      df03_FLC_self_report[c("weight(T0)","weight(T1)","∆weight","∆weight%","BMI(T0)","BMI(T1)","∆BMI","∆BMI%","Fat(T0)","Fat(T1)","∆Fat","∆Fat%","wc(T0)","wc(T1)","∆wc","∆wc%")] %<>% round(2)
+      
+      #C3-2. exclude vars
+      df03_FLC_self_report <- df03_FLC_self_report %>% select(-c(light_G_count, carbohydrate, protein, fat))
+      
+      #C3-3. exclude missing value
+      df03_FLC_self_report <- df03_FLC_self_report %>% lin_exclude_NA_col(c("light_G_%", "∆weight", "carb_E%"))
+      #C3-4. exclude upload_day_p = 0
+      df03_FLC_self_report <- df03_FLC_self_report %>% filter(`upload_day_%` != 0)
+      
+      #C4-1. class_freq by org_name
+      df03_FLC_self_report <- df03_FLC_self_report %>% full_join(df03_FLC_self_report %>% group_by(id) %>% summarise(class_freq = n()), by = c("id"))
+      #C4-2. class_order
+      for (i in unique(df03_FLC_self_report$id)) {
+        if (i == head(unique(df03_FLC_self_report$id), 1)) {
+          j = 1
+          df03_FLC_self_report$class_order <- NA
+          start_time <- Sys.time()
+        }
+        df03_FLC_self_report[which(df03_FLC_self_report[["id"]] == i), "class_order"] <- which(df03_FLC_self_report[["id"]] == i) %>% order()
+        progress(j, unique(df03_FLC_self_report$id) %>% length())
+        j = j + 1
+        if (i == tail(unique(df03_FLC_self_report$id), 1)){
+          print("[Completed!]")
+        }
+      }
+      
+      
+      #*** [Model-used df step]
+      df03_FLC_mod_df <- df03_FLC_self_report
+      
+      
+      #C5. rm outliers
+      # df03_FLC_self_report[["∆weight%"]] <- ifelse((df03_FLC_self_report[["∆weight%"]] < quantile(df03_FLC_self_report[["∆weight%"]], 0.01, na.rm = TRUE)) | (df03_FLC_self_report[["∆weight%"]] > quantile(df03_FLC_self_report[["∆weight%"]], 0.95, na.rm = TRUE)),
+      #                                              df03_FLC_self_report[["∆weight%"]] %>% mean(),
+      #                                              df03_FLC_self_report[["∆weight%"]])
+      df03_FLC_mod_df[["∆weight%"]] <- ifelse((df03_FLC_mod_df[["∆weight%"]] < quantile(df03_FLC_mod_df[["∆weight%"]], 0.01, na.rm = TRUE)) | (df03_FLC_mod_df[["∆weight%"]] > quantile(df03_FLC_mod_df[["∆weight%"]], 0.95, na.rm = TRUE)),
+                                              NA,
+                                              df03_FLC_mod_df[["∆weight%"]])
+      
+      df03_FLC_mod_df <- df03_FLC_mod_df %>% lin_exclude_NA_col(c("∆weight%"))
+      
+      
+      df03_FLC_mod_df <- df03_FLC_mod_df %>% mutate(diet_compliance = (`upload_day_%` * `light_G_%` / 100) %>% round(2))
+      
+      #Adjust outliers
+      ## Cut diet_compliance into groups
+      df03_FLC_mod_df$gp_diet_score <- cut(df03_FLC_mod_df$diet_compliance, breaks = seq(-1, 100, 1), seq(0, 10, 0.1),include.lowest = TRUE)
+      
+      ## Define the code to apply to each group
+      a <- df03_FLC_mod_df %>%
+        group_by(gp_diet_score) %>%
+        filter(gp_diet_score %in% (levels(df03_FLC_mod_df$gp_diet_score)[1:34])) %>%
+        mutate(
+          `∆weight%` = ifelse(
+            (`∆weight%` < quantile(`∆weight%`, 0.15, na.rm = TRUE)) |
+              (`∆weight%` > quantile(`∆weight%`, 0.99, na.rm = TRUE)),
+            NA,
+            `∆weight%`
+          )
+        ) %>%
+        ungroup()
+      
+      b <- df03_FLC_mod_df %>%
+        group_by(gp_diet_score) %>%
+        filter(gp_diet_score %in% (levels(df03_FLC_mod_df$gp_diet_score)[35:67])) %>%
+        mutate(
+          `∆weight%` = ifelse(
+            (`∆weight%` < quantile(`∆weight%`, 0.10, na.rm = TRUE)) |
+              (`∆weight%` > quantile(`∆weight%`, 0.96, na.rm = TRUE)),
+            NA,
+            `∆weight%`
+          )
+        ) %>%
+        ungroup()
+      
+      c <- df03_FLC_mod_df %>%
+        group_by(gp_diet_score) %>%
+        filter(gp_diet_score %in% (levels(df03_FLC_mod_df$gp_diet_score)[68:101])) %>%
+        mutate(
+          `∆weight%` = ifelse(
+            (`∆weight%` < quantile(`∆weight%`, 0.01, na.rm = TRUE)) |
+              (`∆weight%` > quantile(`∆weight%`, 0.90, na.rm = TRUE)),
+            NA,
+            `∆weight%`
+          )
+        ) %>%
+        ungroup()
+      
+      
+      df03_FLC_mod_df <- Reduce(rbind, list(a, b, c))
+      rm(list = c("a", "b", "c"))
+      
+      
+      # 01. Correlation --------------------------------------------------------------------
+      
+      
+      df03_FLC_mod_df %>% 
+        mutate(delta_weight_p = `∆weight%` %>% multiply_by(-1)) %>%
+        ggscatter(x = "diet_compliance", y = "delta_weight_p",
+                  color = "black",
+                  fill = "red",
+                  shape = 21,
+                  size = 1,
+                  add = "reg.line",  # Add regressin line
+                  add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+                  conf.int = TRUE, # Add confidence interval
+                  title = "Correlation(Weight x Compliance)",
+                  xlab = "Diet Score",
+                  ylab = "Weight Loss(%)",
+                  # xlim = c(0, 13),
+                  # ylim = c(0, 180),
+        ) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) +
+        # geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
+        # annotate("text", x=5.3, y=155, label="Cutoff = 5.5 mg/dL", angle=90) +
+        stat_cor(method = "pearson", size = 5, label.x = 0, label.y = 10) # Add correlation coefficient)
+      
+      
+      
+      
+      # 01. Setting -------------------------------------------------------------
+      
+      #构建模型评价函数
+      ## 首先构建mpc函数，通过MSE,RMSE,Rsquare,MAE,MAPE,RASE,AIC,BIC8个指标来用来评价和筛选模型。
+      library(modelr)
+      mpc<-function(model,data){
+        MSE<-modelr::mse(model=model,data=data)
+        RMSE<-modelr::rmse(model=model,data=data)
+        Rsquare<-modelr::rsquare(model=model,data=data)
+        MAE<-modelr::mae(model=model,data=data)
+        MAPE<-modelr::mape(model=model,data=data)
+        RASE<-modelr::rsae(model=model,data=data)
+        AIC=AIC(object=model)
+        BIC=AIC(object=model)
+        return(data.frame(MSE=MSE,RMSE=RMSE,Rsquare=Rsquare, MAE=MAE,MAPE=MAPE,RASE=RASE,
+                          AIC=AIC,BIC=BIC))
+      }
+      
+      dataset <- df03_FLC_mod_df %>% 
+        mutate(delta_weight_p = `∆weight%` %>% multiply_by(-1)) %>% 
+        mutate(BMI_baseline = `BMI(T0)`) %>% 
+        filter(!is.na(delta_weight_p))
+      
+      library(caret)
+      # Set train, test datasets
+      set.seed(303)
+      training.samples <- seq(1, nrow(dataset)) %>%
+        createDataPartition(p = 0.8, list = FALSE)
+      train.data  <- dataset[training.samples, ]
+      test.data <- dataset[-training.samples, ]
+      
+      
+      
+      # plot
+      train.data %>% 
+        ggscatter(x = "diet_compliance", y = "delta_weight_p",
+                  color = "black",
+                  fill = "red",
+                  shape = 21,
+                  size = 1,
+                  add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+                  conf.int = TRUE, # Add confidence interval
+                  title = "",
+                  xlab = "Diet Score",
+                  ylab = "Weight Loss(%)",
+                  # xlim = c(0, 13),
+                  # ylim = c(0, 180),
+        ) +
+        stat_smooth() +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        )  
+      
+      
+      
+      # 03. LM ----------------------------------------------------------------------
+      
+      mod.lm<-lm(delta_weight_p ~ age + BMI_baseline + diet_compliance, data = dataset)
+      mod.lm %>% summary()
+      dataset %>% mpc(mod.lm, .) 
+      
+      # 04. Non-LM --------------------------------------------------------------
+      
+      # library(mgcv)
+      # mod.nlm <- gam(delta_weight_p ~ age + BMI_baseline + diet_compliance, data = dataset)
+      # mod.nlm %>% summary()
+      # dataset %>% mpc(mod.nlm, .) 
+      
+      
+      # mod.lm<-lm(delta_weight_p ~ I(age^2) + I(BMI_baseline^1) + I(diet_compliance^2), data = dataset)
+      mod.lm<-lm(delta_weight_p ~ I(age^2) + I(BMI_baseline^1) + I(diet_compliance^2), data = dataset)
+      mod.lm %>% summary()
+      dataset %>% mpc(mod.lm, .) 
+      
+      
+      
+      # 05.  Evaluation ---------------------------------------------------------
+      # dataset$nutritionist_online
+      
+      mod.lm<-lm(delta_weight_p ~ I(age^1) + I(BMI_baseline^1) + gender + nutritionist_online + I(diet_compliance^2), data = dataset)
+      
+      
+      # model effectiveness
+      mod.lm %>% summary()
+      dataset %>% mpc(mod.lm, .) 
+      
+      ##* [Highlight 1: Diet score] 
+      
+        #01. individual input
+      i=8
+      look_up_profile <- data.frame(id = dataset$id[i], diet_compliance = dataset$diet_compliance[i], delta_weight_p = dataset$delta_weight_p[i],
+                                    predict = mod.lm %>% predict(dataset[i,]) %>% as.numeric() %>% round(2),
+                                    RMSE = dataset %>% mpc(mod.lm, .) %>% select(RMSE) %>% pull(),
+                                    z_score = scale(actual, predict, RMSE) %>% round(2),
+                                    PR = ((scale(actual, predict, RMSE) %>% round(2) %>% pnorm())[1]*100) %>% round(0)
+                                    )
+      # test.data[i,"diet_compliance"] %>% pull()
+      actual <- test.data[i,"delta_weight_p"] %>% pull()
+      predict <- mod.lm %>% predict(test.data[i,]) %>% as.numeric()
+      
+        #02. model: count PR value 
+      RMSE <- dataset %>% mpc(mod.lm, .) %>% select(RMSE) %>% pull()
+      # 1 x SD(σ)
+      range <- (predict + c(-RMSE, +RMSE)) %>% round(2)
+      
+      # z score
+      paste0("z score= ", scale(actual, predict, RMSE) %>% round(2))
+      # PR value, rank in 100
+      paste0("PR", ((scale(actual, predict, RMSE) %>% round(2) %>% pnorm())[1]*100) %>% round(0))
+      # ((scale(actual, predict, RMSE) %>% round(2) %>% pnorm())[1]*100) %>% round(0)
+      
+      
+      
+      ###* [Diet score plot]
+      dataset$predicted <- predict(mod.lm)
+      dataset$sd <- sd(residuals(mod.lm))
+      
+      #1SD
+      ggplot(dataset, aes(x = diet_compliance/10, y = predicted)) +
+        geom_ribbon(aes(ymin = predicted - 1*sd, ymax = predicted + 1*sd, fill = "1SD"), alpha = 0.2) +
+        geom_ribbon(aes(ymin = predicted - 2*sd, ymax = predicted + 2*sd, fill = "2SD"), alpha = 0.3) +
+        scale_fill_manual(values = c("lightgreen", "lightpink"), labels = c("1SD", "2SD")) +
+        geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = FALSE) +
+        xlab("Diet score") +
+        ylab("Weight Loss(%)") +
+        labs(fill = "Area") +
+        ggtitle("") + 
+        annotate("text", x = min(dataset$diet_compliance/10), y = 15:14, label = c("my label", "label 2")) +
+        # theme_pubr() 
+        theme_bw()
+       
+      
+      #0.5SD
+      ggplot(dataset, aes(x = diet_compliance/10, y = predicted)) +
+        geom_ribbon(aes(ymin = predicted - 0.5*sd, ymax = predicted + 0.5*sd, fill = "1SD"), alpha = 0.2) +
+        geom_ribbon(aes(ymin = predicted - 1*sd, ymax = predicted + 1*sd, fill = "2SD"), alpha = 0.3) +
+        scale_fill_manual(values = c("lightgreen", "lightpink"), labels = c("1SD", "2SD")) +
+        geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = FALSE) +
+        xlab("Diet score") +
+        ylab("Weight Loss(%)") +
+        labs(fill = "Area") +
+        ggtitle("") + 
+        annotate("text", x = min(dataset$diet_compliance/10), y = 15:14, label = c("my label", "label 2")) +
+        # theme_pubr() 
+        theme_bw()
+      
+      ###* [Diet score plot + client data]
+      ggplot(dataset, aes(x = diet_compliance/10, y = predicted)) +
+        geom_ribbon(aes(ymin = predicted - 1*sd, ymax = predicted + 1*sd, fill = "1SD"), alpha = 0.2) +
+        geom_ribbon(aes(ymin = predicted - 2*sd, ymax = predicted + 2*sd, fill = "2SD"), alpha = 0.5) +
+        scale_fill_manual(values = c("lightgreen", "honeydew"), labels = c("1SD", "2SD")) +
+        geom_line(aes(diet_compliance/10, predicted - 1*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
+        geom_line(aes(diet_compliance/10, predicted + 1*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
+        geom_line(aes(diet_compliance/10, predicted - 2*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
+        geom_line(aes(diet_compliance/10, predicted + 2*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
+        geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = FALSE, color = "firebrick", lwd = 1) +
+        xlab("Diet score") +
+        ylab("Weight Loss(%)") +
+        labs(fill = "Area") +
+        ggtitle("") + 
+        annotate("text", x = min(dataset$diet_compliance/10), y = 15:12, hjust = 0, fontface = "bold",
+                 label = c(paste0("ID: ", look_up_profile$id), 
+                           paste0("Diet score: ", round(look_up_profile$diet_compliance/10, 1), " /10"),
+                           paste0("Weight Loss: ", look_up_profile$delta_weight_p, " (%)"),
+                           paste0("PR", look_up_profile$PR))
+        ) +
+        theme_bw() +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
+          axis.title.x = element_text(hjust = 0.5, face = "bold", size = 14),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14),
+          legend.background = element_rect(fill = "white", color = "grey", linewidth = .2),
+          legend.position = c(.99, .99),
+          legend.justification = c("right", "top"),
+          legend.box.just = "right",
+          legend.margin = margin(6, 6, 6, 6)
+        ) +
+        # input data point
+        geom_point(data = look_up_profile, aes(x = diet_compliance/10, y = delta_weight_p),
+                   shape = 23, fill = "red", color = "black", size = 2, stroke = 2)
+      
+      
+      
+      ##* [Highlight 2: Program] FLC outperform Cofit
+      dataset$gp_tmp <- cut(dataset$diet_compliance, breaks = 5, paste(seq(0, 8, 2), seq(2, 10, 2), sep = "-"),include.lowest = TRUE)
+      dataset %>% 
+        group_by(program, gp_tmp) %>% 
+        summarise(
+          `weight loss` = paste(mean(delta_weight_p, na.rm = T) %>% round(2),
+                                (sd(delta_weight_p, na.rm = T)/sqrt(n())) %>% round(2),
+                                # (sd(delta_weight_p, na.rm = T)) %>% round(2),
+                                sep = " ± "),
+          n = n()
+        ) %>% view()
+      
+      dataset %>% 
+        group_by(program, gp_tmp) %>% 
+        summarise(
+          weight_mean = mean(delta_weight_p, na.rm = T) %>% round(2),
+          weight_sd = sd(delta_weight_p, na.rm = T) %>% round(2),
+          weight_se = (sd(delta_weight_p, na.rm = T)/sqrt(n())) %>% round(2),
+          n = n()
+        ) %>% 
+        ggplot(aes(x = gp_tmp, y = weight_mean, fill = program, width = 0.8)) + 
+        geom_bar(stat = "identity", position = position_dodge(0.8)) +
+        geom_errorbar(aes(ymin = weight_mean - weight_se, ymax = weight_mean + weight_se), width = 0.2, position = position_dodge(0.8)) +
+        scale_fill_manual(values = RColorBrewer::brewer.pal(6, "RdBu")) +
+        xlab("Diet score") +
+        ylab("Weight Loss(%)") +
+        labs(fill = "Program") +
+        ggtitle("") +
+        theme_bw() +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
+          axis.title.x = element_text(hjust = 0.5, face = "bold", size = 14),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14),
+        )
+      
+      ##* [Highlight 2: nutritionist_online] 
+      library(DT)
+      rbind(cbind(nutritionist_online = "All", 
+                  dataset %>% 
+                    summarise(
+                      weight_mean = mean(delta_weight_p, na.rm = T) %>% round(2),
+                      weight_sd = sd(delta_weight_p, na.rm = T) %>% round(2),
+                      weight_se = (sd(delta_weight_p, na.rm = T)/sqrt(n())) %>% round(2),
+                      n = n()
+                    )),
+            dataset %>% 
+              group_by(nutritionist_online) %>% 
+              summarise(
+                weight_mean = mean(delta_weight_p, na.rm = T) %>% round(2),
+                weight_sd = sd(delta_weight_p, na.rm = T) %>% round(2),
+                weight_se = (sd(delta_weight_p, na.rm = T)/sqrt(n())) %>% round(2),
+                n = n()
+              )
+      ) %>%  
+        # arrange(desc(weight_mean)) %>% 
+        datatable(extensions = c('Buttons',"FixedColumns"),
+                  options = list(fixedColumns = list(leftColumns = 1),
+                                 dom = 'Blfrtip',
+                                 buttons = c('copy', 'csv', 'excel', 'print'),
+                                 scrollX = TRUE,
+                                 # autoWidth = TRUE,
+                                 lengthMenu = list(c(10,25,50,-1),
+                                                   c(10,25,50,"All")),
+                                 searchHighlight = TRUE),
+                  filter = 'top')
+
+      
+      rbind(cbind(nutritionist_online = "All", 
+                  dataset %>% 
+                    summarise(
+                      weight_mean = mean(delta_weight_p, na.rm = T) %>% round(2),
+                      weight_sd = sd(delta_weight_p, na.rm = T) %>% round(2),
+                      weight_se = (sd(delta_weight_p, na.rm = T)/sqrt(n())) %>% round(2),
+                      n = n()
+                    )),
+            dataset %>% 
+              group_by(nutritionist_online) %>% 
+              summarise(
+                weight_mean = mean(delta_weight_p, na.rm = T) %>% round(2),
+                weight_sd = sd(delta_weight_p, na.rm = T) %>% round(2),
+                weight_se = (sd(delta_weight_p, na.rm = T)/sqrt(n())) %>% round(2),
+                n = n()
+              )
+      )  %>% 
+        ggplot(aes(x = reorder(nutritionist_online, -weight_mean), y = weight_mean, width = 0.8)) + 
+        geom_bar(aes(fill = nutritionist_online == "All"), stat = "identity", position = position_dodge(0.8)) +
+        scale_fill_manual(guide = "none", breaks = c(FALSE, TRUE), values=c("grey30", "gold")) +  
+        # geom_errorbar(aes(ymin = weight_mean - weight_se, ymax = weight_mean + weight_se), width = 0.2, position = position_dodge(0.8)) +
+        # xlab("") +
+        ylab("Weight Loss(%)") +
+        # labs(fill = "") +
+        ggtitle("") +
+        theme_bw() +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
+          axis.title.x = element_text(hjust = 0.5, face = "bold", size = 14),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14),
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 5, angle = 90)
+        ) 
+        # coord_flip()  
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      

@@ -35,4 +35,4 @@ LEFT JOIN LATERAL (
  AND client_diet_by_date.date_diet BETWEEN client_targets.begin_date AND client_targets.end_date
 
 
-加上目標 protein, fat, carbohydrate, calorie
+-- 加上目標 protein, fat, carbohydrate, calorie

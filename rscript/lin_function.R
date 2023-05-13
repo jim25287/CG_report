@@ -92,9 +92,9 @@ lin_mapping <- function(mapping_df, mapping_variable,mapping_ref,
 lin_print_colname = function(data){
   if (is.vector(data)) {
     cat("Format: \"text\" \n")
-    cat(paste0("c(","\"", paste(names(data), collapse = "\",\""),"\"",")"))
+    cat(paste0("c(","\"", paste(data, collapse = "\",\""),"\"",")"))
     cat("\nFormat: \`text\` \n")
-    cat(paste0("c(","\`", paste(names(data), collapse = "\`,\`"),"\`",")"))
+    cat(paste0("c(","\`", paste(data, collapse = "\`,\`"),"\`",")"))
   }else{
   data <- as.data.frame(data)
   cat("Format: \"text\" \n")

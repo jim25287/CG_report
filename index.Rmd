@@ -46,7 +46,7 @@ options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 ```{r input df from PostgreSQL, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 # source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
 # 
-# #Does source() rscript need to move to the same project dir??
+#Does source() rscript need to move to the same project dir??
 # lin_connect_db("connect")
 # path_sql <- "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/sql/"
 # 
@@ -61,8 +61,8 @@ options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 # tmp_08 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "08_3D_scanner.sql")))
 # tmp_09 <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "09_hormone.sql")))
 # 
-#   lin_connect_db("exit")
-#   rm(path_sql)
+  # lin_connect_db("exit")
+  # rm(path_sql)
 
   
 ```
@@ -135,6 +135,7 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/04.cofit_flc.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/05.urine_ketone.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/06.prediction.R")
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/91.publication.R")
 
 
 ```

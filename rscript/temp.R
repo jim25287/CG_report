@@ -1500,6 +1500,36 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         stat_cor(method = "pearson", size = 5, label.x = 0, label.y = 10) # Add correlation coefficient)
       
       
+      df03_FLC_mod_df %>% 
+        mutate(delta_weight_p = `∆weight%` %>% multiply_by(-1)) %>%
+        mutate(light_g = `light_G_%` %>% multiply_by(1)) %>%
+        mutate(upload_day_p = `upload_day_%` %>% multiply_by(1)) %>%
+        ggscatter(x = "upload_day_p", y = "light_g",
+                  color = "black",
+                  fill = "red",
+                  shape = 21,
+                  size = 1,
+                  # add = "reg.line",  # Add regressin line
+                  add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+                  conf.int = TRUE, # Add confidence interval
+                  title = "Correlation(上傳完成度 x 綠燈率)",
+                  xlab = "上傳完成度(%)",
+                  ylab = "綠燈率(%)",
+                  # xlim = c(0, 13),
+                  # ylim = c(0, 180),
+        ) +
+        # geom_vline(xintercept = 50, lwd = 1) +
+        # geom_hline(yintercept = 50, lwd = 1) +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14)
+        ) 
+        # geom_vline(xintercept = c(5.5),linetype ="dashed", ) +
+        # annotate("text", x=5.3, y=155, label="Cutoff = 5.5 mg/dL", angle=90) +
+        # stat_cor(method = "pearson", size = 5, label.x = 0, label.y = 10) # Add correlation coefficient)
+      
+      
       
       
       # 01. Setting -------------------------------------------------------------
@@ -1574,16 +1604,19 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       
       
       # mod.lm<-lm(delta_weight_p ~ I(age^2) + I(BMI_baseline^1) + I(diet_compliance^2), data = dataset)
-      mod.lm<-lm(delta_weight_p ~ I(age^2) + I(BMI_baseline^1) + I(diet_compliance^2), data = dataset)
+      # mod.lm<-lm(delta_weight_p ~ I(age^1) + I(BMI_baseline^1) + I(diet_compliance^2), data = dataset)
+      mod.lm<-lm(delta_weight_p ~ gender + I(age^1) + I(BMI_baseline^1) + I(diet_compliance^2), data = dataset)
       mod.lm %>% summary()
       dataset %>% mpc(mod.lm, .) 
       
+      library(MASS)
+      model_equation(mod.lm, digits = 3, trim = TRUE)
       
       
       # 05.  Evaluation ---------------------------------------------------------
       # dataset$nutritionist_online
       
-      mod.lm<-lm(delta_weight_p ~ I(age^1) + I(BMI_baseline^1) + gender + nutritionist_online + I(diet_compliance^2), data = dataset)
+      # mod.lm<-lm(delta_weight_p ~ I(age^1) + I(BMI_baseline^1) + gender + nutritionist_online + I(diet_compliance^2), data = dataset)
       
       
       # model effectiveness
@@ -1775,7 +1808,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         geom_bar(aes(fill = nutritionist_online == "All"), stat = "identity", position = position_dodge(0.8)) +
         scale_fill_manual(guide = "none", breaks = c(FALSE, TRUE), values=c("grey30", "gold")) +  
         # geom_errorbar(aes(ymin = weight_mean - weight_se, ymax = weight_mean + weight_se), width = 0.2, position = position_dodge(0.8)) +
-        # xlab("") +
+        xlab("營養師") +
         ylab("Weight Loss(%)") +
         # labs(fill = "") +
         ggtitle("") +
@@ -1784,9 +1817,9 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
           plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
           axis.title.x = element_text(hjust = 0.5, face = "bold", size = 14),
           axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14),
-          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 5, angle = 90)
-        ) 
-        # coord_flip()  
+          axis.text.x = element_text(hjust = 0.5, face = "bold", size = 7, angle = 90)
+        ) + 
+        coord_flip()
       
       
       

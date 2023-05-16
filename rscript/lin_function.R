@@ -150,12 +150,12 @@ lin_pie_chart <- function(df, variable, title, print = FALSE){
       scale_fill_brewer( palette =  "Pastel1", direction = 0.5) +
       geom_label_repel(data = subset(baseline_gp_dist_2, percentage != 0),
                        aes(y = pos, label = paste0(percentage, "%")),
-                       size = 6.5, nudge_x = 1, show.legend = FALSE) +
+                       size = 3.5, nudge_x = 1, show.legend = FALSE) +
       guides(fill = guide_legend(title = "Group")) +
       theme_void()+
-      theme(plot.title = element_text(size=20,face="bold",hjust = 0.5, vjust = 1.0,
-                                      margin = margin(10,0,25,0)),
-            legend.text = element_text(size = 15),
+      theme(plot.title = element_text(size=10,face="bold",hjust = 0.5, vjust = 1.0,
+                                      margin = margin(0,0,0,0)),
+            legend.text = element_text(size = 10),
             plot.margin = margin(1, 1, 1, 1, "cm")
       )+
       ggtitle(x3) 
@@ -167,12 +167,12 @@ lin_pie_chart <- function(df, variable, title, print = FALSE){
       scale_fill_brewer( palette =  "Set3", direction = 0.5) +
       geom_label_repel(data = subset(baseline_gp_dist_2, percentage != 0),
                        aes(y = pos, label = paste0(percentage, "%")),
-                       size = 6.5, nudge_x = 1, show.legend = FALSE) +
+                       size = 3.5, nudge_x = 1, show.legend = FALSE) +
       guides(fill = guide_legend(title = "Group")) +
       theme_void()+
-      theme(plot.title = element_text(size=20,face="bold",hjust = 0.5, vjust = 1.0,
-                                      margin = margin(0,0,25,0)),
-            legend.text = element_text(size = 15),
+      theme(plot.title = element_text(size=10,face="bold",hjust = 0.5, vjust = 1.0,
+                                      margin = margin(0,0,0,0)),
+            legend.text = element_text(size = 10),
             plot.margin = margin(1, 1, 1, 1, "cm")
       )+
       ggtitle(x3) 
@@ -1230,3 +1230,236 @@ lin_chisq.test <- function(df, cate1, cate2, output=F){
   
 
 }
+
+# [999. Hint:] ------------------------------------------------------------
+
+
+lin_help_date<- function(){
+  syntax <- 
+    'library(lubridate)
+library(eeptools)
+as_date(18888, origin = lubridate::origin)
+as.Date(18888, origin = lubridate::origin)
+
+age_calc(ymd("1997-04-21"), ymd("2000-04-21"), units = "years")
+
+(lubridate::ymd("2023-05-14") - lubridate::ymd("2022-05-14")) %>% as.numeric() %>% divide_by(365) %>% floor()'
+  
+  
+  # show syntax:
+  cat(syntax)
+  # run syntax:
+  # eval(parse(text = syntax))
+}
+
+
+
+
+
+lin_help_ggplot<- function(){
+  syntax <- 
+    'df %>%
+  #set x, y, (group)
+  ggplot(aes(x = var_x, y = var_y, group = variable)) + 
+  #A.點
+  geom_point(data = look_up_profile, aes(x = diet_compliance/10, y = delta_weight_p),
+             shape = 23, fill = "red", color = "black", size = 2, stroke = 2) +
+  
+  #B.線：標準差帶geom_ribbon (calculate vars: predicted, sd)
+  geom_ribbon(aes(y = mean, ymin = mean - SD, ymax = mean + SD, fill = variable), alpha = .2) +
+  
+  geom_ribbon(aes(ymin = predicted - 1*sd, ymax = predicted + 1*sd, fill = "1SD"), alpha = 0.2) +
+  geom_ribbon(aes(ymin = predicted - 2*sd, ymax = predicted + 2*sd, fill = "2SD"), alpha = 0.5) +
+  scale_fill_manual(values = c("lightgreen", "honeydew"), labels = c("1SD", "2SD")) +
+  
+  #B.線：線性擬合
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = FALSE, color = "firebrick", lwd = 1) +
+  
+  geom_smooth(aes(x = var_x, y = var_y, linetype = var, color = var)) +
+  
+  #B.線：折線圖geom_line, set y value, color 
+  geom_line(aes(y = mean, color = variable), size = 1) + 
+  
+  geom_line(aes(diet_compliance/10, predicted - 1*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
+  geom_line(aes(diet_compliance/10, predicted + 1*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
+  geom_line(aes(diet_compliance/10, predicted - 2*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
+  geom_line(aes(diet_compliance/10, predicted + 2*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
+  
+  #C. Barplot
+  geom_bar(stat = "identity", position = position_dodge(0.8)) +
+  geom_errorbar(aes(ymin = weight_mean - weight_se, ymax = weight_mean + weight_se), width = 0.2, position = position_dodge(0.8)) +
+  scale_fill_manual(values = RColorBrewer::brewer.pal(6, "RdBu")) +
+
+  geom_bar(aes(fill = nutritionist_online == "All"), stat = "identity", position = position_dodge(0.8)) +
+  scale_fill_manual(guide = "none", breaks = c(FALSE, TRUE), values=c("grey30", "gold")) +  
+  
+  #x axis range
+  xlim(0,25)+
+  #x axis 刻度
+  scale_x_continuous(breaks = seq(8,24,8))+
+  #x axis參考線
+  #geom_vline(xintercept = c(8), colour = c("black"), linetype = "dashed", lwd = 0.2)+
+  #y axis range
+  ylim(-30,20)+
+  #x axis 刻度
+  scale_y_continuous(name = "Glucose(µg/dL)",
+                     sec.axis = sec_axis(~(.-80) ,name = "Insulin(µU/mL)"))+
+  #D.字：文字註解
+  # geom_text(data = subset(a, percentage > 5), aes(label = paste0(percentage,"%")), size = 5, position = position_stack(vjust = 0.8)) +
+  annotate("text", x = min(dataset$diet_compliance/10), y = 15:12, hjust = 0, fontface = "bold",
+           label = c(paste0("ID: ", look_up_profile$id), 
+                     paste0("Diet score: ", round(look_up_profile$diet_compliance/10, 1), " /10"),
+                     paste0("Weight Loss: ", look_up_profile$delta_weight_p, " (%)"),
+                     paste0("PR", look_up_profile$PR))
+  )
+  #四象限
+  # geom_vline(xintercept = 50, lwd = 1) +
+  # geom_hline(yintercept = 50, lwd = 1) +
+  #y axis參考線
+  #geom_hline(yintercept = c(0), colour = c("black"), linetype = "dashed", lwd =0.2)+
+  #分面 facet_grid, facet_null(least use), 及facet_wrap
+  #facet_wrap(vars(client_type ,medication_note_eng), ncol = 2L)+
+  facet_grid(client_type ~ medication_note_eng) +
+  theme_bw()+
+  # 標題   
+  labs(x = "Weeks", y = "difference(∆)", title = "GLP-1 Efficacy: Time Series") +
+  # 文字屬性  
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
+    axis.title.x = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14),
+    
+    
+    # 雙Y軸座標 x 軸線aes
+    # axis.title.y.right = element_text(color="#F8766D", face = "bold"),
+    # axis.line.y.right = element_line(color = "#F8766D"), 
+    # axis.ticks.y.right = element_line(color = "#F8766D"),
+    # axis.text.y.right = element_text(color="#F8766D")
+    
+    #Legend  setting
+    legend.background = element_rect(fill = "white", color = "grey", linewidth = .2),
+    legend.position = c(.99, .99),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6)
+  ) + 
+    coord_flip()'
+  
+  
+  # show syntax:
+  cat(syntax)
+  # run syntax:
+  # eval(parse(text = syntax))
+}
+
+
+lin_help_DataTable<- function(){
+  syntax <- 
+    'library(DT)
+dataset %>% 
+  group_by(nutritionist_online) %>% 
+  summarise(
+    weight_mean = mean(delta_weight_p, na.rm = T) %>% round(2),
+    weight_sd = sd(delta_weight_p, na.rm = T) %>% round(2),
+    weight_se = (sd(delta_weight_p, na.rm = T)/sqrt(n())) %>% round(2),
+    n = n()
+  ) %>%  
+  # arrange(desc(weight_mean)) %>% 
+  datatable(extensions = c("Buttons","FixedColumns"),
+            options = list(fixedColumns = list(leftColumns = 1),
+                           dom = "Blfrtip",
+                           buttons = c("copy", "csv", "excel", "print"),
+                           scrollX = TRUE,
+                           # autoWidth = TRUE,
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All")),
+                           searchHighlight = TRUE),
+            #filter box
+            filter = "top")'
+  
+  
+  # show syntax:
+  cat(syntax)
+  # run syntax:
+  # eval(parse(text = syntax))
+}
+
+
+
+lin_help_seecolor<- function(){
+  syntax <- 
+    'library(seecolor)
+#Highlight objects by cursor to show the contained colors(**不能有note #)
+pick_color()
+#Change output styles, "ribbon" or "mosaic"
+pick_color(type = "r")
+
+RColorBrewer::display.brewer.all()
+RColorBrewer::display.brewer.pal(11, "RdBu")
+RColorBrewer::brewer.pal(11, "RdBu")'
+  
+  
+  # show syntax:
+  cat(syntax)
+  # run syntax:
+  # eval(parse(text = syntax))
+}
+
+
+lin_help_googlevis<- function(){
+  syntax <- 
+    'library(googleVis)
+#pie
+stat_table_1st_ob %>% group_by(age_gp) %>% summarise(n = n()) %>% gvisPieChart(options = list(title = "Age",
+                                                                                              legend = "{position:\'right\'}",
+                                                                                              pieHole = 0.5,
+                                                                                              #slices = "{1:{offset:0.1}}",
+                                                                                              backgroundColor = "#f9fffb",
+                                                                                              width = "600",
+                                                                                              height = "400"))
+
+#column
+gvisColumnChart(b , xvar = "var", yvar = b %>% select(-var) %>% names() %>% rev(),
+                options = list(isStacked = "percent"\
+                               bar="{groupWidth:\'50%\'}",
+                               title = "控糖減重成效-身體組成(Female)",
+                               legend = "{position:\'right\'}",
+                               colors = col_color,
+                               backgroundColor = "#f9fffb",
+                               width = "600",
+                               height = "600"))
+#line
+gvisLineChart(a, xvar = "pre_post", yvar = c("weight", "bf")) %>% plot()
+
+#Table
+cor_table_01 <- M1_df %>% gvisTable(options=list(frozenColumns = 2,
+                                                 width="150%",height=300
+))'
+  
+  
+  # show syntax:
+  cat(syntax)
+  # run syntax:
+  # eval(parse(text = syntax))
+}
+
+
+
+
+
+
+
+
+# lin_help_name<- function(){
+#   syntax <- 
+#     'code'
+#   
+#   
+#   # show syntax:
+#   cat(syntax)
+#   # run syntax:
+#   # eval(parse(text = syntax))
+# }
+
+
+

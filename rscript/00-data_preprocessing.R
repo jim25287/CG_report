@@ -16,6 +16,7 @@ showtext_auto(enable = TRUE)
 
 # 02.0 - input_name_table --------------------------------------------------------
 library(googlesheets4)
+gs4_auth(email = "mr.berlin.lin@gmail.com")
 vars_table <- googlesheets4::read_sheet(ss = 'https://docs.google.com/spreadsheets/d/1T2swdx1cbfmUSUNQCQpbxa4aIJDTLD0oVKj3AuvNAuM/edit?usp=sharing', 
                                         sheet = "vars_table",
                                         col_types = "iccccc")

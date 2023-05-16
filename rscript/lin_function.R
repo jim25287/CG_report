@@ -951,6 +951,7 @@ lin_ch_en_format <- function(x, format, origin){
   #1. input vars_table
   if (exists("vars_table") %>% not()) {
     library(googlesheets4)
+    gs4_auth(email = "mr.berlin.lin@gmail.com")
     vars_table <- googlesheets4::read_sheet(ss = 'https://docs.google.com/spreadsheets/d/1T2swdx1cbfmUSUNQCQpbxa4aIJDTLD0oVKj3AuvNAuM/edit?usp=sharing', 
                                             sheet = "vars_table",
                                             col_types = "icccc")

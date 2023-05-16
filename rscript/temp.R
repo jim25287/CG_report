@@ -1685,14 +1685,14 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       
       ###* [Diet score plot + client data]
       ggplot(dataset, aes(x = diet_compliance/10, y = predicted)) +
-        geom_ribbon(aes(ymin = predicted - 1*sd, ymax = predicted + 1*sd, fill = "1SD"), alpha = 0.2) +
+        geom_ribbon(aes(ymin = predicted - 1*sd, ymax = predicted + 1*sd, fill = "1SD"), alpha = 0.7) +
         geom_ribbon(aes(ymin = predicted - 2*sd, ymax = predicted + 2*sd, fill = "2SD"), alpha = 0.5) +
-        scale_fill_manual(values = c("lightgreen", "honeydew"), labels = c("1SD", "2SD")) +
-        geom_line(aes(diet_compliance/10, predicted - 1*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
-        geom_line(aes(diet_compliance/10, predicted + 1*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
-        geom_line(aes(diet_compliance/10, predicted - 2*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
-        geom_line(aes(diet_compliance/10, predicted + 2*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
-        geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = FALSE, color = "firebrick", lwd = 1) +
+        scale_fill_manual(values = c("#B9D4E6", "#D5E7F0"), labels = c("1SD", "2SD")) +
+        geom_line(aes(diet_compliance/10, predicted - 1*sd), color = "grey30", lwd = 0.1, alpha = 0.1) +
+        geom_line(aes(diet_compliance/10, predicted + 1*sd), color = "grey30", lwd = 0.1, alpha = 0.1) +
+        geom_line(aes(diet_compliance/10, predicted - 2*sd), color = "grey30", lwd = 0.1, alpha = 0.1) +
+        geom_line(aes(diet_compliance/10, predicted + 2*sd), color = "grey30", lwd = 0.1, alpha = 0.1) +
+        geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = FALSE, color = "#FF6551", lwd = 1) +
         xlab("Diet score") +
         ylab("Weight Loss(%)") +
         labs(fill = "Area") +
@@ -1716,7 +1716,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         ) +
         # input data point
         geom_point(data = look_up_profile, aes(x = diet_compliance/10, y = delta_weight_p),
-                   shape = 23, fill = "red", color = "black", size = 2, stroke = 2)
+                   shape = 23, fill = "#FF6551", color = "#293172", size = 2, stroke = 1.5)
       
       
       

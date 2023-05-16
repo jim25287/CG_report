@@ -15,7 +15,7 @@ WITH
         AND group_classes.id NOT IN (8, 24, 28, 34)
   --       AND group_classes.name NOT LIKE '%初日%' AND group_classes.name NOT LIKE '%宋醫師進階%' AND group_classes.name NOT LIKE '%診所進階%'
   --    Temp
-        AND group_classes.created_at > '2023-04-01'
+  --      AND group_classes.created_at > '2023-04-01'
     ),
     group_classes_of_flc_program_join_users_and_clients AS (
       SELECT DISTINCT ON (clients.id, group_class_orders.group_class_id)
@@ -38,7 +38,7 @@ WITH
         ON group_classes_of_flc_program_join_users_and_clients.client_id = notes.client_id
         AND notes.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
       --    Temp
-        WHERE notes.created_at BETWEEN '2023-04-01' AND '2023-05-01'
+      --  WHERE notes.created_at BETWEEN '2023-04-01' AND '2023-05-01'
     ),
     note_assets_of_flc_courses AS (
       SELECT
@@ -50,7 +50,7 @@ WITH
       INNER JOIN notes_of_flc_courses
       ON notes_of_flc_courses.id = note_assets.note_id
       WHERE note_assets.url IS NOT NULL
-      and  note_assets.created_at BETWEEN '2023-04-01' AND '2023-05-01'
+      -- and  note_assets.created_at BETWEEN '2023-04-01' AND '2023-05-01'
     ),
     notes_aggregation_of_flc_courses AS (
       SELECT

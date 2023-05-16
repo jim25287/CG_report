@@ -1232,6 +1232,24 @@ lin_chisq.test <- function(df, cate1, cate2, output=F){
 
 }
 
+
+
+# [Function 13:] Conversion ----------------------------------------------------------------------
+
+lin_conv_GA <- function(df = NULL, hba1c_var = NULL, GA_var_name = NULL){
+  library(dplyr)
+  if (is.null(df)) {
+    cat("Conversion formula: HbA1C = (GA*0.216)+2.978\n")
+    cat("Example: lin_conv_GA(test, hba1c_baseline, GA)\n")
+  } else {
+    hba1c_var_chr <- deparse(substitute(hba1c_var))
+    GA_var_name_chr <- deparse(substitute(GA_var_name))
+    df[[GA_var_name_chr]] <- round((df[[hba1c_var_chr]] -2.978)/0.216, 2)
+    return(df)
+  }
+}
+
+
 # [999. Hint:] ------------------------------------------------------------
 
 

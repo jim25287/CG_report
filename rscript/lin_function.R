@@ -1059,69 +1059,7 @@ lin_timestamp <- function(time = Sys.time()){
 
 
 
-
-# [Function 10:] Insulin Response Pattern Categorization -------------------------------
-lin_DM_diagnosis <- function(df = NULL, variables){
-  
-  
-  if (is.null(df)) {
-    cat("lin_DM_diagnosis(df, variables)","\n",
-        "variables = \n",
-        "1. hba1c\n",
-        "2. glucose_ac\n",
-        "3. glucose_pc_1hr\n",
-        "4. glucose_pc_2hr\n",
-        "try: df %>% names() %>% grep(\"hba1c|glucose\", ., value = TRUE)\n\n"
-        )
-  }
-  
-  
-  # Start the clock!
-  ptm <- proc.time()
-  
-  library(data.table)
-  library(magrittr)
-  
-  
-  df[["DM"]] <- "Unclassified"
-  
-  setDT(df)[
-    ((eval(parse(text = variables[1])) >= 5.7) & (eval(parse(text = variables[1])) < 6.5)) |
-      ((eval(parse(text = variables[2])) >= 100) & (eval(parse(text = variables[2])) < 126)) |
-      ((eval(parse(text = variables[4])) >= 140) & (eval(parse(text = variables[4])) < 200)),
-    DM := "Pre-DM"]
-  
-  setDT(df)[
-    (eval(parse(text = variables[1])) >= 6.5) |
-      (eval(parse(text = variables[2])) >= 126) |
-      (eval(parse(text = variables[4])) >= 200),
-    DM := "DM"]
-  
-  setDT(df)[
-    (eval(parse(text = variables[1])) < 5.7) &
-      (eval(parse(text = variables[2])) < 100) &
-      (eval(parse(text = variables[4])) < 140),
-    DM := "Normal"]
-  
-  
-  df[["DM"]] <- factor(df[["DM"]], levels = (c("Normal","Pre-DM","DM","Unclassified")))
-  
-  cat("\n[Completed!]\n")
-  cat("\n[執行時間]\n")
-  print(proc.time() - ptm)
-  
-  cat("\n[Result]\n")
-  
-  result <- table(df[["DM"]]) %>% addmargins() %>% as.data.frame()
-  
-  print(result)
-  return(df)
-  
-}
-
-
-
-# [Function 11:] Astrological sign -------------------------------------------------------
+# [Function 15:] Astrological sign -------------------------------------------------------
 
 
 lin_astrological_type <- function(df, variables){
@@ -1207,7 +1145,7 @@ lin_astrological_type <- function(df, variables){
 
 
 
-# [Function 12:] chisq -------------------------------------------------------------------
+# [Function 16:] chisq -------------------------------------------------------------------
 
 
 lin_chisq.test <- function(df, cate1, cate2, output=F){
@@ -1234,7 +1172,7 @@ lin_chisq.test <- function(df, cate1, cate2, output=F){
 
 
 
-# [Function 13:] Conversion ----------------------------------------------------------------------
+# [Function 17:] Conversion ----------------------------------------------------------------------
 
 lin_conv_GA <- function(df = NULL, hba1c_var = NULL, GA_var_name = NULL){
   library(dplyr)
@@ -1248,6 +1186,400 @@ lin_conv_GA <- function(df = NULL, hba1c_var = NULL, GA_var_name = NULL){
     return(df)
   }
 }
+
+
+
+lin_conv_eAG <- function(df = NULL, hba1c_var = NULL, eAG_var_name = NULL){
+  library(dplyr)
+  if (is.null(df)) {
+    cat("Conversion formula: eAG = (28.7*HbA1c)-46.7\n")
+    cat("Example: lin_conv_eAG(test, hba1c_baseline, eAG)\n")
+  } else {
+    hba1c_var_chr <- deparse(substitute(hba1c_var))
+    eAG_var_name_chr <- deparse(substitute(eAG_var_name))
+    df[[eAG_var_name_chr]] <- round((28.7 * df[[hba1c_var_chr]] - 46.7), 2)
+    return(df)
+  }
+}
+
+
+
+
+lin_conv_food <- function(df = NULL, variables){
+  # Start the clock!
+  ptm <- proc.time()
+  
+  library(data.table)
+  library(magrittr)
+  
+  if (is.null(df)) {
+    cat("lin_conv_food(df, variables)","\n",
+        "variables = \n",
+        "1. milk_whole_fat\n",
+        "2. milk_low_fat\n",
+        "3. milk_skim\n",
+        "4. meat_beans_low_fat\n",
+        "5. meat_beans_medium_fat\n",
+        "6. meat_beans_high_fat\n",
+        "7. grains\n",
+        "8. vegetables\n",
+        "9. fruits\n",
+        "10. oil\n",
+        "try: \n",
+        "(1) patterns <- c(\"milk_whole_fat\", \"milk_low_fat\", \"milk_skim\", \"meat_beans_low_fat\", \"meat_beans_medium_fat\", \"meat_beans_high_fat\", \"grains\", \"vegetables\", \"fruits\", \"oil\")\n",
+        "(2) sapply(patterns, function(pattern) { grep(pattern, names(df), value = TRUE) }) %>% as.character() %>% lin_print_colname()\n\n"
+    )
+  }
+  
+  df_tmp <- df
+  
+  # Six Major Food Groups: c(carb, protein, fat)
+  conv_milk_whole_fat = c(12, 8, 8)
+  conv_milk_low_fat = c(12, 8, 4)
+  conv_milk_skim = c(12, 8, 0)
+  
+  conv_meat_beans_low_fat = c(0, 7, 3)
+  conv_meat_beans_medium_fat = c(0, 7, 5)
+  conv_meat_beans_high_fat = c(0, 7, 10)
+  # conv_meat_beans_super_high_fat = c(0, 7, 14)
+  
+  conv_grains = c(15, 2, 0)
+  conv_vegetables = c(5, 1, 0)
+  conv_fruits = c(15, 0, 0)
+  conv_oil = c(0, 0, 5)
+  
+  
+  #01. [6大類份數]
+  df_tmp <- df_tmp %>% dplyr::mutate("milk" = rowSums(df_tmp[, c(variables[1], variables[2], variables[3])], na.rm = TRUE))
+  df_tmp <- df_tmp %>% dplyr::mutate("meat_bean" = rowSums(df_tmp[, c(variables[4], variables[5], variables[6])], na.rm = TRUE))
+  
+  
+  #02. [3大類(g)]
+  for (i in c(1:3)) {
+    total_intake_g_by_MacorNut <- 
+      rowSums(cbind(
+        df_tmp[, variables[1]] * conv_milk_whole_fat[i],
+        df_tmp[, variables[2]] * conv_milk_low_fat[i],
+        df_tmp[, variables[3]] * conv_milk_skim[i],
+        df_tmp[, variables[4]] * conv_meat_beans_low_fat[i],
+        df_tmp[, variables[5]] * conv_meat_beans_medium_fat[i],
+        df_tmp[, variables[6]] * conv_meat_beans_high_fat[i],
+        df_tmp[, variables[7]] * conv_grains[i],
+        df_tmp[, variables[8]] * conv_vegetables[i],
+        df_tmp[, variables[9]] * conv_fruits[i],
+        df_tmp[, variables[10]] * conv_oil[i]
+      ), na.rm = TRUE) %>% round(2)
+    
+    if (i == 1) { df_tmp[["carbohydrate"]] <- total_intake_g_by_MacorNut }
+    if (i == 2) { df_tmp[["protein"]] <- total_intake_g_by_MacorNut }
+    if (i == 3) { df_tmp[["fat"]] <- total_intake_g_by_MacorNut }
+    
+  }
+  #03. 總攝取熱量(E%)
+  df_tmp[["calorie"]] <- (df_tmp[["carbohydrate"]]*4 + df_tmp[["protein"]]*4 + df_tmp[["fat"]]*9) %>% round(2)
+  
+  #04. [3大類(Energy, not E%)]
+    # df_tmp[["carb_ep"]] = (df_tmp[["carbohydrate"]]*4 / df_tmp[["calorie"]] *100) %>% round(2)
+    # df_tmp[["protein_ep"]] = (df_tmp[["protein"]]*4 / df_tmp[["calorie"]] *100) %>% round(2)
+    # df_tmp[["fat_ep"]] = (df_tmp[["fat"]]*9 / df_tmp[["calorie"]] *100) %>% round(2)
+    
+  df_tmp[["carb_e"]] = (df_tmp[["carbohydrate"]]*4) %>% round(2)
+  df_tmp[["protein_e"]] = (df_tmp[["protein"]]*4) %>% round(2)
+  df_tmp[["fat_e"]] = (df_tmp[["fat"]]*9) %>% round(2)
+  
+  
+  if ((variables %>% grepl("target", .) %>% sum()) > 0) {
+    #if vars are targets
+    df_tmp <- df_tmp %>% select("carbohydrate","protein","fat","carb_e","protein_e","fat_e", "calorie", 
+                                "meat_bean", "milk")
+    
+    colnames(df_tmp)[colnames(df_tmp) %>% grep("target", ., invert = TRUE)] <- 
+      paste(colnames(df_tmp)[colnames(df_tmp) %>% grep("target", ., invert = TRUE)], "target", sep = "_")
+    
+    df <- cbind(df, df_tmp)
+  }else{
+    #if vars not targets
+    df <- df_tmp
+  }
+  
+  cat("\n[Completed!]\n")
+  cat("\n[執行時間]\n")
+  print(proc.time() - ptm)
+  
+  return(df)
+  
+}
+
+
+
+
+# [Function 18:] Diagnosis ------------------------------------------------
+
+lin_diagnosis_DM <- function(df = NULL, variables){
+  
+  if (is.null(df)) {
+    cat("lin_diagnosis_DM(df, variables)","\n",
+        "variables = \n",
+        "1. hba1c\n",
+        "2. glucose_ac\n",
+        "3. glucose_pc_1hr\n",
+        "4. glucose_pc_2hr\n",
+        "try: df %>% names() %>% grep(\"hba1c|glucose\", ., value = TRUE)\n\n"
+    )
+  }
+  
+  
+  # Start the clock!
+  ptm <- proc.time()
+  
+  library(data.table)
+  library(magrittr)
+  
+  
+  df[["DM"]] <- "Unclassified"
+  
+  setDT(df)[
+    ((eval(parse(text = variables[1])) >= 5.7) & (eval(parse(text = variables[1])) < 6.5)) |
+      ((eval(parse(text = variables[2])) >= 100) & (eval(parse(text = variables[2])) < 126)) |
+      ((eval(parse(text = variables[4])) >= 140) & (eval(parse(text = variables[4])) < 200)),
+    DM := "Pre-DM"]
+  
+  setDT(df)[
+    (eval(parse(text = variables[1])) >= 6.5) |
+      (eval(parse(text = variables[2])) >= 126) |
+      (eval(parse(text = variables[4])) >= 200),
+    DM := "DM"]
+  
+  setDT(df)[
+    (eval(parse(text = variables[1])) < 5.7) &
+      (eval(parse(text = variables[2])) < 100) &
+      (eval(parse(text = variables[4])) < 140),
+    DM := "Normal"]
+  
+  
+  df[["DM"]] <- factor(df[["DM"]], levels = (c("Normal","Pre-DM","DM","Unclassified")))
+  
+  cat("\n[Completed!]\n")
+  cat("\n[執行時間]\n")
+  print(proc.time() - ptm)
+  
+  cat("\n[Result]\n")
+  
+  result <- table(df[["DM"]]) %>% addmargins() %>% as.data.frame()
+  
+  print(result)
+  return(df)
+  
+}
+
+
+
+
+lin_diagnosis_HTN <- function(df = NULL, variables){
+  
+  if (is.null(df)) {
+    cat("lin_diagnosis_HTN(df, variables)","\n",
+        "variables = \n",
+        "1. sbp\n",
+        "2. dbp\n",
+        "try: df %>% names() %>% grep(\"sbp|dbp\", ., value = TRUE)\n\n"
+    )
+  }
+  
+  # Start the clock!
+  ptm <- proc.time()
+  
+  library(data.table)
+  library(magrittr)
+  
+  df[["HTN"]] <- "Unclassified"
+  
+  setDT(df)[
+    ((eval(parse(text = variables[1])) >= 130) | (eval(parse(text = variables[2])) >= 80)),
+    HTN := "HTN"]
+  
+  setDT(df)[
+    ((eval(parse(text = variables[1])) < 130) & (eval(parse(text = variables[2])) < 80)),
+    HTN := "Normal"]
+  
+  
+  df[["HTN"]] <- factor(df[["HTN"]], levels = (c("Normal","HTN","Unclassified")))
+  
+  cat("\n[Completed!]\n")
+  cat("\n[執行時間]\n")
+  print(proc.time() - ptm)
+  
+  cat("\n[Result]\n")
+  
+  result <- table(df[["HTN"]]) %>% addmargins() %>% as.data.frame()
+  
+  print(result)
+  return(df)
+  
+}
+
+
+
+
+
+lin_diagnosis_HLP <- function(df = NULL, variables){
+  
+  if (is.null(df)) {
+    cat("lin_diagnosis_HLP(df, variables)","\n",
+        "variables = \n",
+        "0. gender\n",
+        "1. tg\n",
+        "2. tc\n",
+        "3. ldl\n",
+        "4. hdl\n",
+        "try: df %>% names() %>% grep(\"gender|tg|tc|ldl|hdl\", ., value = TRUE)\n\n"
+    )
+  }
+  
+  # Start the clock!
+  ptm <- proc.time()
+  
+  library(data.table)
+  library(magrittr)
+  
+  df[["HLP"]] <- "Unclassified"
+  
+  setDT(df)[
+    (eval(parse(text = variables[1])) == "male") &
+      ((eval(parse(text = variables[2])) >= 150) | (eval(parse(text = variables[3])) >= 200) |
+         (eval(parse(text = variables[4])) >= 130) | (eval(parse(text = variables[5])) <= 40)),
+    HLP := "HLP"]
+  
+  
+  setDT(df)[
+    (eval(parse(text = variables[1])) == "male") &
+      (!(eval(parse(text = variables[2])) >= 150) & !(eval(parse(text = variables[3])) >= 200) &
+         !(eval(parse(text = variables[4])) >= 130) & !(eval(parse(text = variables[5])) <= 40)),
+    HLP := "Normal"]
+  
+  
+  setDT(df)[
+    (eval(parse(text = variables[1])) == "female") &
+      ((eval(parse(text = variables[2])) >= 150) | (eval(parse(text = variables[3])) >= 200) |
+         (eval(parse(text = variables[4])) >= 130) | (eval(parse(text = variables[5])) <= 50)),
+    HLP := "HLP"]
+  
+  setDT(df)[
+    (eval(parse(text = variables[1])) == "female") &
+      (!(eval(parse(text = variables[2])) >= 150) & !(eval(parse(text = variables[3])) >= 200) &
+         !(eval(parse(text = variables[4])) >= 130) & !(eval(parse(text = variables[5])) <= 50)),
+    HLP := "Normal"]
+  
+  
+  df[["HLP"]] <- factor(df[["HLP"]], levels = (c("Normal","HLP","Unclassified")))
+  
+  cat("\n[Completed!]\n")
+  cat("\n[執行時間]\n")
+  print(proc.time() - ptm)
+  
+  cat("\n[Result]\n")
+  
+  result <- table(df[["HLP"]]) %>% addmargins() %>% as.data.frame()
+  
+  print(result)
+  return(df)
+  
+}
+
+
+
+
+
+lin_diagnosis_MetaX <- function(df = NULL, variables) {
+  # Start the clock!
+  ptm <- proc.time()
+  
+  library(data.table)
+  library(magrittr)
+  
+  if (is.null(df)) {
+    cat("Metabolic syndrome 
+Def: 3 in 5.
+  (1)wc: Male ≧ 90cm;Female ≧ 80cm
+  (2)Blood Pressure:sbp ≧ 130mmHg or dbp ≧ 80mmHg。
+  (3)Glucose：glucose_ac ≧ 100mg/dL
+  (4)tg：tg ≧ 150mg/dL。
+  (5)HDL：Male < 40mg/dL;Female < 50mg/dL",
+        "\n\nlin_diagnosis_MetaX(df, variables)","\n",
+        "variables = \n",
+        "0. gender\n",
+        "1. wc\n",
+        "2. sbp\n",
+        "3. dbp\n",
+        "4. glucose_ac\n",
+        "5. tg\n",
+        "6. hdl\n",
+        "try: df %>% names() %>% grep(\"gender|wc|sbp|dbp|glucose_ac|tg|hdl\", ., value = TRUE)\n\n"
+        
+    )
+  }
+  
+  #vars
+  gender <- df[[variables[1]]]
+  wc <- df[[variables[2]]]
+  sbp <- df[[variables[3]]]
+  dbp <- df[[variables[4]]]
+  glucose_ac <- df[[variables[5]]]
+  tg <- df[[variables[6]]]
+  hdl <- df[[variables[7]]]
+  
+  
+  
+  df[["MetaX"]] <- "Unclassified"
+  
+  setDT(df)[, score := 0]
+  
+  # Rule 1: wc - Waist Circumference
+  wc_threshold_male <- 90
+  wc_threshold_female <- 80
+  setDT(df)[gender == "male" & wc >= wc_threshold_male, score := score + 1]
+  setDT(df)[gender == "female" & wc >= wc_threshold_female, score := score + 1]
+  
+  # Rule 2: Blood Pressure
+  sbp_threshold <- 130
+  dbp_threshold <- 80
+  setDT(df)[sbp >= sbp_threshold | dbp >= dbp_threshold, score := score + 1]
+  
+  # Rule 3: Glucose_ac
+  glucose_ac_threshold <- 100
+  setDT(df)[glucose_ac >= glucose_ac_threshold, score := score + 1]
+  
+  # Rule 4: Triglycerides
+  tg_threshold <- 150
+  setDT(df)[tg >= tg_threshold, score := score + 1]
+  
+  # Rule 5: HDL
+  hdl_threshold_male <- 40
+  hdl_threshold_female <- 50
+  setDT(df)[gender == "male" & hdl < hdl_threshold_male, score := score + 1]
+  setDT(df)[gender == "female" & hdl < hdl_threshold_female, score := score + 1]
+  
+  # Diagnose metabolic syndrome
+  setDT(df)[score >= 3, MetaX := "Metabolic Syndrome"]
+  setDT(df)[score < 3, MetaX := "Normal"]
+  
+  df <- df %>% dplyr::select(-score)
+  
+  df[["MetaX"]] <- factor(df[["MetaX"]], levels = (c("Normal","Metabolic Syndrome","Unclassified")))
+  
+  cat("\n[Completed!]\n")
+  cat("\n[執行時間]\n")
+  print(proc.time() - ptm)
+  
+  cat("\n[Result]\n")
+  
+  result <- table(df[["MetaX"]]) %>% addmargins() %>% as.data.frame()
+  
+  print(result)
+  return(df)
+}
+
+
 
 
 # [999. Hint:] ------------------------------------------------------------

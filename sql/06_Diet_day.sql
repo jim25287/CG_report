@@ -28,6 +28,7 @@ SELECT DISTINCT ON (client_diet_by_date.client_id, client_diet_by_date.date_diet
   -- client_diet_by_date.*, client_targets.begin_date, client_targets.end_date, client_targets.protein AS protein_target, client_targets.fat AS fat_target, client_targets.carbohydrate AS carbonhyrdate_target, client_targets.calorie AS calorie_target, client_targets.updated_at AS target_updated_at
   client_diet_by_date.*, client_targets.begin_date, client_targets.end_date,
   client_targets.grains AS grains_target,
+  client_targets.fruits AS fruits_target,
   client_targets.vegetables AS vegetables_target,
   client_targets.meat_beans_low_fat AS meat_beans_low_fat_target,
   client_targets.meat_beans_medium_fat AS meat_beans_medium_fat_target,

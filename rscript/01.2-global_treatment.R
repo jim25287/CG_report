@@ -1,7 +1,6 @@
 
 # ## Analysis - 1: Baseline 分布 (Pie-chart) --------------------------------
 
-
 #[Pie chart] 1. cut (cluster) 2. call pie chart
 #Age
 stat_table_1st_ob$age_gp <- cut(stat_table_1st_ob$age, c(0,25,29.5,34.5,39.5,44.5,49.5,54.5,59.5,64.5,69.5,100), c("<25", "25-29", "30-34", "35-39","40-44","45-49","50-54","55-59","60-64","65-69",">70"))
@@ -49,6 +48,68 @@ pie_04 <-
                                                                                                                                width = "600",
                                                                                                                                height = "400"))
 
+# Disease
+  #DM
+pie_05_DM <- 
+  stat_table_1st_ob %>% group_by(DM_baseline) %>%
+  filter(DM_baseline != "Unclassified") %>%
+  summarise(n = n()) %>% gvisPieChart(options = list(title = 'Diabetes',
+                                                     legend = "{position:'right'}",
+                                                     pieHole = 0.5,
+                                                     #slices = "{1:{offset:0.1}}",
+                                                     backgroundColor = "#f9fffb",
+                                                     width = "600",
+                                                     height = "400"))
+
+
+  #HTN
+pie_05_HTN <-
+  stat_table_1st_ob %>% group_by(HTN_baseline) %>%
+  filter(HTN_baseline != "Unclassified") %>%
+  summarise(n = n()) %>% gvisPieChart(options = list(title = 'Hypertension',
+                                                     legend = "{position:'right'}",
+                                                     pieHole = 0.5,
+                                                     #slices = "{1:{offset:0.1}}",
+                                                     backgroundColor = "#f9fffb",
+                                                     width = "600",
+                                                     height = "400"))
+
+  #HLP
+pie_05_HLP <-
+  stat_table_1st_ob %>% group_by(HLP_baseline) %>%
+  filter(HLP_baseline != "Unclassified") %>%
+  summarise(n = n()) %>% gvisPieChart(options = list(title = 'Hyperlipidemia',
+                                                     legend = "{position:'right'}",
+                                                     pieHole = 0.5,
+                                                     #slices = "{1:{offset:0.1}}",
+                                                     backgroundColor = "#f9fffb",
+                                                     width = "600",
+                                                     height = "400"))
+
+  #Metabolic Syndrome
+pie_05_MetX <-
+  stat_table_1st_ob %>% group_by(MetaX_baseline) %>%
+  filter(MetaX_baseline != "Unclassified") %>%
+  summarise(n = n()) %>% gvisPieChart(options = list(title = 'Metabolic Syndrome',
+                                                     legend = "{position:'right'}",
+                                                     pieHole = 0.5,
+                                                     #slices = "{1:{offset:0.1}}",
+                                                     backgroundColor = "#f9fffb",
+                                                     width = "600",
+                                                     height = "400"))
+
+  #Insulin Pattern
+pie_05_Ins <-
+  stat_table_1st_ob %>% group_by(Pattern_major_baseline) %>%
+  filter(Pattern_major_baseline != "Unclassified" | !is.na(Pattern_major_baseline)) %>%
+  summarise(n = n()) %>% gvisPieChart(options = list(title = 'Insulin Response Pattern',
+                                                     legend = "{position:'right'}",
+                                                     pieHole = 0.5,
+                                                     #slices = "{1:{offset:0.1}}",
+                                                     colors="['#628bd6','#f8e05c','#ffc081','#ff834a','#ff5959']",
+                                                     backgroundColor = "#f9fffb",
+                                                     width = "600",
+                                                     height = "400"))
 
 
 
@@ -421,7 +482,14 @@ profile_baseline <- stat_table_1st_ob %>%
 names(profile_baseline) <- names(profile_baseline) %>% lin_ch_en_format(format = "ch", origin = "en")
 
 profile_diet <- stat_table_1st_ob %>% 
-  select(c("upload_day_%", "pic_counts","calorie_day","carb_E%","protein_E%","fat_E%","fruits","vegetables","grains","meat_bean","milk", "oil","light_G_%","light_Y_%","light_R_%"))
+  select(c("upload_day_%", "pic_counts", "light_G_%","light_Y_%","light_R_%",
+           "calorie_day","carb_E%","protein_E%","fat_E%",
+           "calorie_target","carb_ep_target","protein_ep_target","fat_ep_target",
+           "calorie_day_deficit","carb_e_day_deficit","protein_e_day_deficit","fat_e_day_deficit",
+           "calorie_meal_mean","carb_ep_meal","protein_ep_meal","fat_ep_meal",
+           "fruits_day","vegetables_day","grains_day","meat_bean_day","milk_day", "oil_day"))
+
+
 
 names(profile_diet) <- names(profile_diet) %>% lin_ch_en_format(format = "ch", origin = "en")
 
@@ -532,7 +600,7 @@ cor_table_02 <- M2_df %>% gvisTable(options=list(frozenColumns = 2,
 #[Cor: All numeric vars]
 
 a <- stat_table_1st_ob %>% select_if(is.numeric) %>% 
-  select(-c(id, class_freq, class_order)) %>% 
+  select(-c(id, class_freq, class_order, client_type)) %>% 
   select_if(~ sd(., na.rm = TRUE) %>% is.nan() %>% not() & is.na(sd(., na.rm = TRUE)) %>% not()) %>% 
   select_if(~ sum(!is.na(.)) >= 60)
  
@@ -616,7 +684,7 @@ rm(list = c("QQ1_stat_table_1st_bad","QQ1_stat_table_1st_good","QQ1_stat_table_1
 #import "vars_en"
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00_vars_vector.R")
 
-QQ1_stat_table_1st <- QQ1_stat_table_1st %>% select(vars_en)
+QQ1_stat_table_1st <- QQ1_stat_table_1st %>% select(all_of(vars_en))
 
 vars_en <- lin_ch_en_format(x = vars_en, format = "en", origin = "raw_en")
 names(QQ1_stat_table_1st) <- lin_ch_en_format(x = names(QQ1_stat_table_1st), format = "en", origin = "raw_en")
@@ -624,15 +692,15 @@ names(QQ1_stat_table_1st) <- lin_ch_en_format(x = names(QQ1_stat_table_1st), for
 
 #Setting improvement direction
 QQ1_stat_table_1st_a <- QQ1_stat_table_1st %>% select(-grep("∆", names(QQ1_stat_table_1st)))
-QQ1_stat_table_1st_a$calorie_deficit_day <- QQ1_stat_table_1st_a$calorie_deficit_day %>% multiply_by(-1)
-QQ1_stat_table_1st_a$calorie_deficit_sum <- QQ1_stat_table_1st_a$calorie_deficit_sum %>% multiply_by(-1)
+# QQ1_stat_table_1st_a$calorie_deficit_day <- QQ1_stat_table_1st_a$calorie_deficit_day %>% multiply_by(-1)
+# QQ1_stat_table_1st_a$calorie_deficit_sum <- QQ1_stat_table_1st_a$calorie_deficit_sum %>% multiply_by(-1)
 
 ##Improvement: negative (減少越多，越往上長)
 QQ1_stat_table_1st_b <- QQ1_stat_table_1st %>% select(grep("∆", names(QQ1_stat_table_1st), value = TRUE) %>% 
-                                                        grep(paste(c("weight", "bmi", "bf", "pbf", "vfa_level", "wc", "ffm", "hba1c", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., value = TRUE)) %>% multiply_by(-1)
+                                                        grep(paste(c("weight", "bmi", "bf", "pbf", "vfa_level", "wc", "ffm", "hba1c", "GA", "eAG", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., value = TRUE)) %>% multiply_by(-1)
 ##Improvement: default 
 QQ1_stat_table_1st_c <- QQ1_stat_table_1st %>% select(grep("∆", names(QQ1_stat_table_1st), value = TRUE) %>% 
-                                                        grep(paste(c("weight", "bmi", "bf", "pbf", "vfa_level", "wc", "ffm", "hba1c", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., invert = TRUE, value = TRUE)) %>% multiply_by(1)
+                                                        grep(paste(c("weight", "bmi", "bf", "pbf", "vfa_level", "wc", "ffm", "hba1c", "GA", "eAG", "glucose_ac", "insulin", "homa_ir", "tg", "tc", "ldl"), collapse = "|"), ., invert = TRUE, value = TRUE)) %>% multiply_by(1)
  
 QQ1_stat_table_1st <- Reduce(cbind,list(QQ1_stat_table_1st_a, QQ1_stat_table_1st_b,QQ1_stat_table_1st_c), accumulate =FALSE) 
 
@@ -685,7 +753,7 @@ for (i in c(1:4)) {
     x10 <- (myplot_table_global[["vars_en_adj"]] %>% grep("wbc",.))
     x11 <- (myplot_table_global[["vars_en_adj"]] %>% grep("lipase",.))
     x12 <- (myplot_table_global[["vars_en_adj"]] %>% grep("^age",.))
-    x13 <- (myplot_table_global[["vars_en_adj"]] %>% grep("calorie_deficit_sum",.))
+    x13 <- (myplot_table_global[["vars_en_adj"]] %>% grep("oil",.))
   }
   for (j in c(1:10)) {
     if (j != 10) {

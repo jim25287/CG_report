@@ -1821,6 +1821,153 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         ) + 
         coord_flip()
       
+
+# 0519_disease improvement ------------------------------------------------
+
+      
+      
+      
+      
+      
+      library(dplyr)
+      a <- stat_table_1st_ob %>% select(grep("^DM", names(.), value = TRUE))
+      names(a) <- c("before", "after")
+      a <- a %>% filter(across(everything(), ~ . != "Unclassified")) %>% table(exclude = "Unclassified") %>%
+        ftable() %>% as.matrix() %>% as.tibble() %>% 
+        cbind(baseline = levels(a$before)[-length(levels(a$before))])
+      
+      # library(RColorBrewer)
+      # # Generate color palette
+      # colors <- brewer.pal(3, "RdBu")
+      # # Transform into desired format
+      # colors <- paste0("'", colors, "'", collapse = ",")
+      # # Add square brackets
+      # colors <- paste("[", colors, "]", sep = "")
+      
+      
+      gvisBarChart(a , xvar = "baseline", yvar = a %>% select(-baseline) %>% names(),
+                   options = list(isStacked = 'percent',
+                                  bar="{groupWidth:'50%'}",
+                                  title = '減重成效-Diabetes',
+                                  legend = "{position:'right'}",
+                                  colors = "['#d9e3f0','#ffe599','#ff8080']",
+                                  backgroundColor = "#f9fffb",
+                                  width = "600",
+                                  height = "600")) %>% plot()
+      
+      
+      #[OK]MetaX
+      a <- stat_table_1st_ob %>% select(grep("^MetaX", names(.), value = TRUE))
+      names(a) <- c("before", "after")
+      a <- a %>% filter(across(everything(), ~ . != "Unclassified")) %>% table(exclude = "Unclassified") %>%
+        ftable() %>% as.matrix() %>% as.tibble() %>% 
+        cbind(baseline = levels(a$before)[-length(levels(a$before))])
+      
+      gvisBarChart(a , xvar = "baseline", yvar = a %>% select(-baseline) %>% names(),
+                   options = list(isStacked = 'percent',
+                                  bar="{groupWidth:'50%'}",
+                                  title = '減重成效-Metabolic Syndrome',
+                                  legend = "{position:'right'}",
+                                  colors = "['#d9e3f0','#ff8080']",
+                                  backgroundColor = "#f9fffb",
+                                  width = "600",
+                                  height = "600")) %>% plot()
+      
+      
+      #[ok]HTN
+      a <- stat_table_1st_ob %>% select(grep("^HTN", names(.), value = TRUE))
+      names(a) <- c("before", "after")
+      a <- a %>% filter(across(everything(), ~ . != "Unclassified")) %>% table(exclude = "Unclassified") %>%
+        ftable() %>% as.matrix() %>% as.tibble() %>% 
+        cbind(baseline = levels(a$before)[-length(levels(a$before))])
+      
+      gvisBarChart(a , xvar = "baseline", yvar = a %>% select(-baseline) %>% names(),
+                   options = list(isStacked = 'percent',
+                                  bar="{groupWidth:'50%'}",
+                                  title = '減重成效-Hypertension',
+                                  legend = "{position:'right'}",
+                                  colors = "['#d9e3f0','#ff8080']",
+                                  backgroundColor = "#f9fffb",
+                                  width = "600",
+                                  height = "600")) %>% plot()
+      
+      #[ok]HLP
+      a <- stat_table_1st_ob %>% select(grep("^HLP", names(.), value = TRUE))
+      names(a) <- c("before", "after")
+      a <- a %>% filter(across(everything(), ~ . != "Unclassified")) %>% table(exclude = "Unclassified") %>%
+        ftable() %>% as.matrix() %>% as.tibble() %>% 
+        cbind(baseline = levels(a$before)[-length(levels(a$before))])
+      
+      gvisBarChart(a , xvar = "baseline", yvar = a %>% select(-baseline) %>% names(),
+                   options = list(isStacked = 'percent',
+                                  bar="{groupWidth:'50%'}",
+                                  title = '減重成效-Hyperlipidemia',
+                                  legend = "{position:'right'}",
+                                  colors = "['#d9e3f0','#ff8080']",
+                                  backgroundColor = "#f9fffb",
+                                  width = "600",
+                                  height = "600")) %>% plot()
+      
+      
+      #[]BMI Obesity
+      
+      
+      
+      
+      
+      
+      #[v]Insulin Response / DM #fix P1 > P5
+      a <- df05_biochem %>% select(id, date_blood, Pattern_major, DM)
+      a <- a %>% filter((Pattern_major %in% c(levels(a$Pattern_major)[-6]) & (DM %in% c(levels(a$DM)[-4]))))
+      a <- a %>% filter(id %in% (janitor::get_dupes(a, id) %>% select(id) %>% pull))
+      a <- a[with(a, order(id, date_blood)),]
+      
+      a$Pattern_major_after <- NA
+      a$Pattern_major_after[1:nrow(a)-1] <- a[["Pattern_major"]][2:nrow(a)] %>% as.character()
+      a$DM_after <- NA
+      a$DM_after[1:nrow(a)-1] <- a[["DM"]][2:nrow(a)] %>% as.character()
+      
+      
+      library(dplyr)
+      a <- a %>% group_by(id) %>% slice(1:(n()-1))
+      names(a) <- c("id", "date", "I_before", "DM_before", "I_after",  "DM_after")
+      
+      
+      # df05_biochem %>% select(id, date_blood, Pattern_major, DM) %>% view()
+      # exclude DM | include only OB client
+      # a <- a[a$DM_before != "DM" & a$DM_after != "DM",]
+      #filter 1st intervention
+      # a <- a %>% distinct(id, .keep_all = T)
+      
+      #[input] table, all: addmargins(), row:addmargins(t1:2;t2:1,2),rbind RowSum
+      a1 <- table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% 
+        ftable() %>% as.matrix() %>% as.tibble() %>% 
+        cbind(baseline = levels(a$I_before)[-length(levels(a$I_before))])
+      
+      gvisBarChart(a1 , xvar = "baseline", yvar = a1 %>% select(-baseline) %>% names(),
+                   options = list(isStacked = 'percent',
+                                  bar="{groupWidth:'50%'}",
+                                  title = '減重成效-Insulin Resistance',
+                                  legend = "{position:'right'}",
+                                  colors="['#628bd6','#f8e05c','#ffc081','#ff834a','#ff5959']",
+                                  backgroundColor = "#f9fffb",
+                                  width = "600",
+                                  height = "600")) %>% plot()
+      
+      a2 <- table(Origin = a$DM_before, Change = a$DM_after, exclude = "Unclassified") %>% 
+        ftable() %>% as.matrix() %>% as.tibble() %>% 
+        cbind(baseline = levels(a$DM_before)[-length(levels(a$DM_before))])
+      
+      gvisBarChart(a2 , xvar = "baseline", yvar = a2 %>% select(-baseline) %>% names(),
+                   options = list(isStacked = 'percent',
+                                  bar="{groupWidth:'50%'}",
+                                  title = '減重成效-Diabetes',
+                                  legend = "{position:'right'}",
+                                  colors="['#628bd6','#f8e05c','#ffc081','#ff834a','#ff5959']",
+                                  backgroundColor = "#f9fffb",
+                                  width = "600",
+                                  height = "600")) %>% plot()
+      
       
       
       

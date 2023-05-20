@@ -11,8 +11,8 @@
 ```{r}
 plot_venn_0
 cat("\n<br>")
-cat(" 減重門診客戶:", stat_table[stat_table[["client_type"]] == 2, "id"] %>% unique() %>% length(), "位 \n<br>",
-    "控糖門診客戶:", stat_table[stat_table[["client_type"]] == 1, "id"] %>% unique() %>% length(), "位 \n<br>")
+cat(" 減重門診客戶:", stat_table[stat_table[["client_type"]] == 2, "id"] %>% pull() %>% unique() %>% length(), "位 \n<br>",
+    "控糖門診客戶:", stat_table[stat_table[["client_type"]] == 1, "id"] %>% pull() %>% unique() %>% length(), "位 \n<br>")
 ```
 
 **納入標準:**
@@ -26,15 +26,15 @@ cat(" 減重門診客戶:", stat_table[stat_table[["client_type"]] == 2, "id"] %
 ```{r}
 plot_venn_2
 cat("\n<br>")
-cat(" 總共:", stat_table[stat_table[["client_type"]] == 2, "id"] %>% unique() %>% length() ,"筆 \n<br>",
-    "排除:", (stat_table[stat_table[["client_type"]] == 2, "id"] %>% unique() %>% length()) - (Reduce(intersect, list(stat_table[stat_table[["client_type"]] == 2, "id"],
+cat(" 總共:", stat_table[stat_table[["client_type"]] == 2, "id"] %>% pull() %>% unique() %>% length() ,"筆 \n<br>",
+    "排除:", (stat_table[stat_table[["client_type"]] == 2, "id"] %>% pull() %>% unique() %>% length()) - (Reduce(intersect, list(stat_table[stat_table[["client_type"]] == 2, "id"],
                        stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
                        stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
-                       stat_table[!is.na(stat_table[["note_count"]]), "id"])) %>% length()) , "筆 \n<br>",
+                       stat_table[!is.na(stat_table[["note_count"]]), "id"])) %>% pull() %>% length()) , "筆 \n<br>",
     "納入分析:", Reduce(intersect, list(stat_table[stat_table[["client_type"]] == 2, "id"],
                        stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
                        stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
-                       stat_table[!is.na(stat_table[["note_count"]]), "id"])) %>% length(), "筆 \n<br>")
+                       stat_table[!is.na(stat_table[["note_count"]]), "id"])) %>% pull() %>% length(), "筆 \n<br>")
 ```
 
 ## 客戶輪廓分析 {#porfile_ob}
@@ -53,6 +53,20 @@ gvisMerge(pie_03, pie_04, horizontal = TRUE,
           tableOptions = "cellspacing=\"5\" bgcolor=\"#AABBCC\"") %>% plot()
 
 ```
+
+**Subjects Distribution:** 肥胖相關慢性共病
+
+```{r, results='asis'}
+pie_05_MetX %>% plot()
+
+gvisMerge(gvisMerge(pie_05_DM, pie_05_Ins, horizontal = TRUE),
+          gvisMerge(pie_05_HTN, pie_05_HLP,horizontal = TRUE),
+          tableOptions = "cellspacing=\"5\" bgcolor=\"#AABBCC\"") %>% plot()
+
+```
+
+
+
 
 ## 整體成效分析 {#global_result_ob}
 
@@ -104,7 +118,7 @@ line_plot
 
         -   「水果」、「五穀雜糧」與減重成效成負相關。
 
-```{r, results='asis', fig.width = 8, fig.height= 8.5, warning=FALSE}
+```{r, results='asis', fig.width = 13, fig.height= 14, warning=FALSE}
 corrplot::corrplot(M1, p.mat = M_test1$p,
          type = "lower",
          insig = "label_sig",

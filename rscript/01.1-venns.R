@@ -2,35 +2,34 @@ library(pacman)
 pacman::p_load(magrittr, knitr, kableExtra, dplyr, readr, readxl, tibble, showtext, extraInserts, ggvenn, ggplot2,knitr, kableExtra, openxlsx, lubridate, cowplot, ggpubr, webshot)
 
 
-
 #Venn Graph
 x <- list(
   #1
   `Clinic_clients` = stat_table[["id"]] %>% unique(),
   #2
-  `Obesity` =  stat_table[stat_table[["client_type"]] == 2, "id"],
+  `Obesity` =  stat_table$id[stat_table[["client_type"]] == 2],
   #3
-  `Diabetes` =  stat_table[stat_table[["client_type"]] == 1, "id"],
+  `Diabetes` =  stat_table$id[stat_table[["client_type"]] == 1],
   #4
-  `Inbody` = stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
+  `Inbody` = stat_table$id[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]])))],
   #5
-  `Blood` = stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
+  `Blood` = stat_table$id[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]])))],
   #6
-  `Diet` = stat_table[!is.na(stat_table[["note_count"]]), "id"],
+  `Diet` = stat_table$id[!is.na(stat_table[["note_count"]])],
   #7.OB.
-  `Fit_criteria_OB` = Reduce(intersect, list(stat_table[stat_table[["client_type"]] == 2, "id"],
-                                             stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
-                                             stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
-                                             stat_table[!is.na(stat_table[["note_count"]]), "id"]
+  `Fit_criteria_OB` = Reduce(intersect, list(stat_table$id[stat_table[["client_type"]] == 2],
+                                             stat_table$id[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]])))],
+                                             stat_table$id[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]])))],
+                                             stat_table$id[!is.na(stat_table[["note_count"]])]
   )), 
   #8.DM.
-  `Fit_criteria_DM` = Reduce(intersect, list(stat_table[stat_table[["client_type"]] == 1, "id"],
-                                             stat_table[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]]))), "id"],
-                                             stat_table[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]]))), "id"],
-                                             stat_table[!is.na(stat_table[["note_count"]]), "id"]
+  `Fit_criteria_DM` = Reduce(intersect, list(stat_table$id[stat_table[["client_type"]] == 1],
+                                             stat_table$id[((!is.na(stat_table[["weight_baseline"]])) & (!is.na(stat_table[["weight_endpoint"]])))],
+                                             stat_table$id[((!is.na(stat_table[["glucose_ac_baseline"]])) & (!is.na(stat_table[["glucose_ac_endpoint"]])))],
+                                             stat_table$id[!is.na(stat_table[["note_count"]])]
   )),
   #9
-  `Quit` =  stat_table[(stat_table[["client_type"]] != 1) & (stat_table[["client_type"]] != 2), "id"]
+  `Quit` =  stat_table$id[(stat_table[["client_type"]] != 1) & (stat_table[["client_type"]] != 2)]
 )
 
 

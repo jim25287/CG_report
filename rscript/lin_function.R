@@ -1673,7 +1673,13 @@ lin_help_ggplot<- function(){
   facet_grid(client_type ~ medication_note_eng) +
   theme_bw()+
   # 標題   
-  labs(x = "Weeks", y = "difference(∆)", title = "GLP-1 Efficacy: Time Series") +
+  labs(x = "Weeks", y = "difference(∆)", title = "GLP-1 Efficacy: Time Series", fill = "分院") +
+  
+  # change x tick labels
+  scale_x_discrete(labels=c("hESC1","hESC2")) +
+  # change legend labels
+  scale_fill_discrete(labels=c("hESC1","hESC2")) +
+  
   # 文字屬性  
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold", size = 17),

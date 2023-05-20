@@ -157,8 +157,8 @@ t1 <- t %>% addmargins(margin = 1)
 t2 <- t %>% prop.table(margin = 2) %>% multiply_by(100) %>% addmargins(margin = 1) %>% round(2)
 
 table_Insulin_girc_all <- data.frame(matrix(data = paste0(t1 %>% t(), " (", t2 %>% t(), "%)"), 
-                                       nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
-                                       dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+                                            nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
+                                            dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
   cbind("Total" = t1 %>% addmargins(margin = 2) %>% t() %>% last() %>% as.numeric()) %>% 
   kable(format = "html", caption = "<b>Table: Pooled Data with Blood Test(IR View)</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
@@ -271,7 +271,7 @@ rm(list = c("t","t1", "t2"))
 
 
 #GIRC improvement path?
-  ##Pool improvement - fragment alignment/mapping: ncol:3(id, origin, aftermath: DM/I)
+##Pool improvement - fragment alignment/mapping: ncol:3(id, origin, aftermath: DM/I)
 a <- df05_biochem %>% select(id, date_blood, Pattern_major, DM)
 a <- a %>% filter((Pattern_major %in% c(levels(a$Pattern_major)[-6]) & (DM %in% c(levels(a$DM)[-4]))))
 a <- a %>% filter(id %in% (janitor::get_dupes(a, id) %>% select(id) %>% pull))
@@ -289,7 +289,10 @@ names(a) <- c("id", "date", "I_before", "DM_before", "I_after",  "DM_after")
 
 
 # df05_biochem %>% select(id, date_blood, Pattern_major, DM) %>% view()
+# exclude DM | include only OB client
 a <- a[a$DM_before != "DM" & a$DM_after != "DM",]
+#filter 1st intervention
+# a <- a %>% distinct(id, .keep_all = T)
 
 #[input] table, all: addmargins(), row:addmargins(t1:2;t2:1,2),rbind RowSum
 t <- table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified")
@@ -297,8 +300,8 @@ t1 <- t %>% addmargins(margin = 2)
 t2 <- t %>% prop.table(margin = 1) %>% multiply_by(100) %>% addmargins(margin = 2) %>% round(2)
 
 table_improvement_girc_all <- data.frame(matrix(data = paste0(t1 %>% t(), " (", t2 %>% t(), "%)"), 
-                                              nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
-                                              dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
+                                                nrow = nrow(t1), ncol = ncol(t1), byrow = TRUE, 
+                                                dimnames = list(t1 %>% rownames(),t1 %>% colnames()))) %>% 
   rbind("Total" = t1 %>% addmargins(margin = 1) %>% last() %>% as.numeric()) %>% 
   kable(format = "html", caption = "<b>Table: Improvemnt of Insulin Response Pattern in OGTT</b>", align = "c") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
@@ -331,7 +334,7 @@ vars_en <- c("id","client_type","age","gender","date_t0","date_t1",
              #blood- endpoint
              "hba1c_endpoint","glucose_ac_endpoint","insulin_endpoint","homa_ir_endpoint","homa_beta_endpoint","tg_endpoint","tc_endpoint","hdl_endpoint","ldl_endpoint", "uric_acid_endpoint", "amylase_endpoint","lipase_endpoint",
              #diet
-             "upload_day_%","note_count","pic_counts","carb_E%","protein_E%","fat_E%","calorie_day","light_G_%","light_Y_%","light_R_%","fruits","vegetables","grains","meat_bean","milk","oil",
+             "upload_day_%","note_count","pic_counts","carb_E%","protein_E%","fat_E%","calorie_day","light_G_%","light_Y_%","light_R_%","fruits_day","vegetables_day","grains_day","meat_bean_day","milk_day","oil_day",
              #others
              "gp",
              #inbody - ∆
@@ -505,7 +508,7 @@ table_02_girc <-
 
 
 # Pattern A -> Pattern B Comparison ---------------------------------------
- # [Obstacle]Cannot analyze for now: do not have post-intervened OGTT in the 1st treatment,
+# [Obstacle]Cannot analyze for now: do not have post-intervened OGTT in the 1st treatment,
 # datasets_target_issue <- Q6_stat_table_1st %>% mutate(Pattern_change = paste(Pattern_major_baseline, Pattern_major_endpoint, sep = ">"))
 # datasets_target_issue$Pattern_major_endpoint %>% table()
 # datasets_target_issue$Pattern_change %>% factor(labels = )

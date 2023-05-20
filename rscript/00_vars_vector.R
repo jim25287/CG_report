@@ -34,7 +34,7 @@ var_inbody <- c(#inbody
                 "water_weight_trunk","tbwffm"
                 )
 var_blood <- c(#Glucose/Insulin
-               "hba1c","glucose_ac","glucose_pc_1hr","glucose_pc_2hr","insulin","insulin_pc_1hr","insulin_pc_2hr","homa_ir","homa_beta","c_peptide",
+               "hba1c", "GA", "eAG", "glucose_ac","glucose_pc_1hr","glucose_pc_2hr","insulin","insulin_pc_1hr","insulin_pc_2hr","homa_ir","homa_beta","c_peptide",
                "tAUCg","tAUCi","OGIRIndex",
                #Lipid
                "tg","tc","hdl","ldl","sd_ldl",
@@ -52,11 +52,13 @@ var_diet <- c(#Obedience
               "upload_day_%","note_count","pic_counts",
               "light_G_%","light_Y_%","light_R_%",
               #3/6 Macronutrition
-              "carb_E%","protein_E%","fat_E%",
-              "fruits","vegetables","grains","meat_bean","milk","oil",
-              #Calorie
-              "calorie_day", "calorie_target","calorie_deficit_day","calorie_deficit_sum")
+              "calorie_day","carb_E%","protein_E%","fat_E%",
+              "calorie_target","carb_ep_target","protein_ep_target","fat_ep_target",
+              "calorie_day_deficit","carb_e_day_deficit","protein_e_day_deficit","fat_e_day_deficit",
+              "calorie_meal_mean","carb_ep_meal","protein_ep_meal","fat_ep_meal",
+              "fruits_day","vegetables_day","grains_day","meat_bean_day","milk_day", "oil_day")
  
+
 vars_en <- 
 Reduce(append, list(var_profile,
                     paste0(var_inbody, "_baseline"),

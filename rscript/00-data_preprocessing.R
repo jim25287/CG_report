@@ -83,6 +83,7 @@ for (i in unique(df01_profile$id)) {
 #C2. age: btd - date_t0 年齡(療程起始當天計算)
 df01_profile$age <- (lubridate::ymd(df01_profile$date_t0) - lubridate::ymd(df01_profile$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
 
+#***[初日診所]
 #C3-1.非進階
 a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name, invert = TRUE)),]
 df01_profile$client_type <- NA #client_type 
@@ -111,12 +112,67 @@ df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("�
 #C3-2.進階
 a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),]
 df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, client_type, id, clinical_adv_list, client_type, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),]
 df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, program_set, id, clinical_adv_list, program, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),]
 df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, doctor, id, clinical_adv_list, doctor, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),]
 df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, nutritionist_major, id, clinical_adv_list, nutritionist_major, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),]
 df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, nutritionist_online, id, clinical_adv_list, nutritionist_online, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),]
 df01_profile[intersect(which(df01_profile$org_name == "genesisclinic"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, medication, id, clinical_adv_list, medication_note, id)
 
+
+#***[小宙診所]
+#C3-1.非進階
+#client_type 
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, client_type, id, clinical_list_lumez, client_type, id)
+
+#program_set
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, program_set, id, clinical_list_lumez, program, id)
+
+#doctor
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, doctor, id, clinical_list_lumez, doctor, id)
+
+#nutritionist_major
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, nutritionist_major, id, clinical_list_lumez, nutritionist_major, id)
+
+#nutritionist_online
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, nutritionist_online, id, clinical_list_lumez, nutritionist_online, id)
+
+#medication
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name, invert = TRUE)),] <- lin_mapping(a, medication, id, clinical_list_lumez, medication_note, id)
+
+#C3-2.進階
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, client_type, id, clinical_adv_list_lumez, client_type, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, program_set, id, clinical_adv_list_lumez, program, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, doctor, id, clinical_adv_list_lumez, doctor, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, nutritionist_major, id, clinical_adv_list_lumez, nutritionist_major, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, nutritionist_online, id, clinical_adv_list_lumez, nutritionist_online, id)
+
+a <- df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),]
+df01_profile[intersect(which(df01_profile$org_name == "lumez"), grep("進階", df01_profile$program_name)),] <- lin_mapping(a, medication, id, clinical_adv_list_lumez, medication_note, id)
 
 
 #clean by select
@@ -146,7 +202,7 @@ df02_inbody <- df02_inbody[-which(df02_inbody$bmi >100),]
 
 # 02.3 - [Data Preprocessing] 03_FLC_self_report --------------------------------------------------
 
-df03_FLC_self_report <- tmp_03
+df03_FLC_self_report <- tmp_03 %>% select(-mobile)
 
 #adjust
 df03_FLC_self_report <- df03_FLC_self_report %>% filter(program %in% c("宋醫師專班 -FLC班","經典八週","2023 FLC-2個助教","診所八週(週一開班)-宋醫師班/初日班","宋醫師進階計畫","診所進階計畫","診所八週(週四啟動)-初日班","進階計畫","經典八週（202109新版）享瘦班"))
@@ -633,12 +689,13 @@ df09_hormone[c("hormone_L","hormone_P","hormone_t","hormone_c","hormone_l","horm
 
 
 
-# 03.1 - Create clinic datasets:topshow, genesisclinic --------------------------------------------------------------
+# 03.1 - Create clinic datasets:topshow, genesisclinic, lumez --------------------------------------------------------------
 
 #C1. Select clinic clients: topshow, genesisclinic
-table((df01_profile %>% filter((org_name == "topshow") | org_name == "genesisclinic"))$org_name)
+# table((df01_profile %>% filter((org_name == "topshow") | org_name == "genesisclinic"))$org_name)
+table((df01_profile %>% filter((org_name != "cofit") & (org_name != "bk2o_backup") & (org_name != "fitness_factory")))$org_name) %>% addmargins()
 
-clinic_id_vector <- df01_profile %>% filter((org_name == "topshow") | org_name == "genesisclinic") %>% select(id) %>% pull() %>% unique()
+clinic_id_vector <- df01_profile %>% filter((org_name != "cofit") & (org_name != "bk2o_backup") & (org_name != "fitness_factory")) %>% select(id) %>% pull() %>% unique()
 
 #C2.1.save origin version
 clinic_inbody_data <- df02_inbody %>% filter(id %in% clinic_id_vector) 
@@ -662,7 +719,7 @@ clinic_blood_data <- clinic_blood_data[with(clinic_blood_data, order(id, date_bl
 
 #C3. Map inbody & blood data to profile as as stat_table
 
-stat_tm <- df01_profile %>% filter((org_name == "topshow") | org_name == "genesisclinic") %>% filter(id %in% med_id_pool) %>% filter(class_order == 1)
+stat_tm <- df01_profile %>% filter((org_name != "cofit") & (org_name != "bk2o_backup") & (org_name != "fitness_factory")) %>% filter(id %in% med_id_pool) %>% filter(class_order == 1)
 
 #recored in both "topshow" and genesis: rm past record in "topshow"(w/most missing value), so that I can use unique id
 stat_tm <- stat_tm %>% filter( ((id %in% stat_tm[which(duplicated(stat_tm$id)),"id"])&( org_name != "topshow")) | (id %in% stat_tm[which(duplicated(stat_tm$id)),"id"]) %>% not() )
@@ -927,11 +984,11 @@ stat_table <- stat_table %>% lin_diagnosis_MetaX(c("gender","wc_endpoint","sbp_e
 
 #[Source 1,2:] df01_profile, client_type_is.na, look-up from clinic note
 #1.not clinic
-a1 <- df01_profile %>% filter(!((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow"))) 
+a1 <- df01_profile %>% filter((org_name == "cofit") | (org_name == "bk2o_backup") | (org_name == "fitness_factory")) 
 #2.clinic, !is.na:client_type #map_ref
-a2 <- df01_profile %>% filter((!is.na(client_type)) & ((org_name == "genesisclinic") | (org_name == "topshow")))
+a2 <- df01_profile %>% filter((!is.na(client_type)) & ((org_name != "cofit") & (org_name != "bk2o_backup") & (org_name != "fitness_factory")))
 #3.clinic
-a3 <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+a3 <- df01_profile %>% filter((org_name != "cofit") & (org_name != "bk2o_backup") & (org_name != "fitness_factory"))
 #4. map 2 & 3 / adv.clinic_list
 a3 <- lin_mapping(a3, client_type, id, a2, client_type, id)
 a3 <- lin_mapping(a3, client_type, id, clinical_adv_list, client_type, id)
@@ -944,8 +1001,8 @@ rm(list = c("a1","a2","a3","a4"))
 
 #[Source 3:]df01_profile, client_type_is.na, look-up from blood_first_record
 #1.not clinic
-a1 <- df01_profile %>% filter(!((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow"))) 
-df01_profile_tmp <- df01_profile[is.na(df01_profile[["client_type"]]) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), ]
+a1 <- df01_profile %>% filter((org_name == "cofit") | (org_name == "bk2o_backup") | (org_name == "fitness_factory")) 
+df01_profile_tmp <- df01_profile[is.na(df01_profile[["client_type"]]) & ((df01_profile[["org_name"]] != "cofit") & (df01_profile[["org_name"]] != "bk2o_backup") & (df01_profile[["org_name"]] != "fitness_factory")), ]
 #a2.clinic, blood_first_record #map_ref
 a2 <- df05_biochem[which(df05_biochem[["id"]] %in% df01_profile_tmp[["id"]]),]
 a2 <- a2[with(a2, order(id, date_blood)),]
@@ -956,7 +1013,7 @@ a2$client_type = NA
 a2$client_type <- ifelse(a2$DM == "DM", "1", "2")
 # table(a2$DM, a2$client_type)
 #3.clinic
-a3 <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+a3 <- df01_profile %>% filter((org_name != "cofit") & (org_name != "bk2o_backup") & (org_name != "fitness_factory"))
 #4. map 2 & 3 / blood_first_record
 a3 <- lin_mapping(a3, client_type, id, a2, client_type, id)
 #5. rbind, order
@@ -967,7 +1024,7 @@ df01_profile <- a4
 rm(list = c("a1","a2","a3","a4"))
 
 #[Source 4:]**temp adjustment - to be refine in the future: client_type_is.na : 2 Obesity
-df01_profile[(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "client_type"] <- 2
+df01_profile[is.na(df01_profile[["client_type"]]) & ((df01_profile[["org_name"]] != "cofit") & (df01_profile[["org_name"]] != "bk2o_backup") & (df01_profile[["org_name"]] != "fitness_factory")), "client_type"] <- 2
 
 # df01_profile[(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"]] == "genesisclinic") | (df01_profile[["org_name"]] == "topshow")), "id"] %>% 
 #   unique() %>% length()
@@ -976,7 +1033,8 @@ df01_profile[(is.na(df01_profile[["client_type"]])) & ((df01_profile[["org_name"
 
 
 # [Move forward] Map client_type from df01_profile to stat_table -------------------------------------------------------
-a3 <- df01_profile %>% filter((org_name == "genesisclinic") | (org_name == "topshow"))
+a3 <- df01_profile %>% filter((org_name != "cofit") & (org_name != "bk2o_backup") & (org_name != "fitness_factory"))
+
 stat_table <- lin_mapping(stat_table, client_type, id, a3, client_type, id)
 rm(a3)
 

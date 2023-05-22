@@ -15,7 +15,7 @@ WITH
         AND group_classes.id NOT IN (8, 24, 28, 34)
   --       AND group_classes.name NOT LIKE '%初日%' AND group_classes.name NOT LIKE '%宋醫師進階%' AND group_classes.name NOT LIKE '%診所進階%'
   --    Temp
-  --      AND group_classes.created_at > '2023-04-01'
+        AND group_classes.created_at > '2023-04-01'
     ),
     group_classes_of_flc_program_join_users_and_clients AS (
       SELECT DISTINCT ON (clients.id, group_class_orders.group_class_id)
@@ -38,7 +38,7 @@ WITH
         ON group_classes_of_flc_program_join_users_and_clients.client_id = notes.client_id
         AND notes.date BETWEEN group_classes_of_flc_program_join_users_and_clients.started_at AND group_classes_of_flc_program_join_users_and_clients.finished_at
       --    Temp
-      --  WHERE notes.created_at BETWEEN '2023-04-01' AND '2023-05-01'
+        WHERE notes.created_at BETWEEN '2023-04-01' AND '2023-05-01'
     ),
     note_assets_of_flc_courses AS (
       SELECT
@@ -50,7 +50,7 @@ WITH
       INNER JOIN notes_of_flc_courses
       ON notes_of_flc_courses.id = note_assets.note_id
       WHERE note_assets.url IS NOT NULL
-      -- and  note_assets.created_at BETWEEN '2023-04-01' AND '2023-05-01'
+       and  note_assets.created_at BETWEEN '2023-04-01' AND '2023-05-01'
     ),
     notes_aggregation_of_flc_courses AS (
       SELECT
@@ -61,11 +61,25 @@ WITH
         COUNT(notes.client_id) AS note_assets_count,
         COUNT(notes.client_id) FILTER (WHERE light = 'green') AS note_assets_g_light_count,
         COUNT(notes.client_id) FILTER (WHERE light = 'yellow') AS note_assets_y_light_count,
-        COUNT(notes.client_id) FILTER (WHERE light = 'red')  AS note_assets_r_light_count
+        COUNT(notes.client_id) FILTER (WHERE light = 'red')  AS note_assets_r_light_count,
+        ccs.weight, ccs.bmi, ccs.waist_circumference, ccs.body_fat_mass
       FROM notes_of_flc_courses AS notes
       LEFT JOIN note_assets_of_flc_courses AS note_assets ON note_assets.note_id = notes.id
-      GROUP BY notes.id, notes.id, notes.client_id, notes.date, notes.class_id, notes.data, notes.class_name, notes.program_name, notes.user_name, notes.group_class_id, notes.started_at, notes.finished_at, notes.birthday, notes.gender, notes.mobile, notes.current
+      INNER JOIN consulting_client_summaries ccs
+      ON ccs.client_id = notes.client_id
+      AND ccs.date = notes.date
+      GROUP BY notes.id, notes.client_id, notes.date, notes.class_id, notes.data,
+               notes.class_name, notes.program_name, notes.user_name, notes.group_class_id,
+               notes.started_at, notes.finished_at, notes.birthday, notes.gender, notes.mobile, notes.current,
+               ccs.weight, ccs.bmi, ccs.waist_circumference, ccs.body_fat_mass
     )
+--    consulting_client_summaries_of_flc_courses AS (
+--      SELECT ccs.*
+--      FROM consulting_client_summaries ccs
+--      INNER JOIN notes_aggregation_of_flc_courses
+--      ON notes_aggregation_of_flc_courses.client_id = ccs.client_id
+--      AND ccs.date = notes_aggregation_of_flc_courses.date
+--    )
   SELECT
     notes_aggregation_of_flc_courses.class_id,
     notes_aggregation_of_flc_courses.class_name AS class_name,
@@ -89,7 +103,11 @@ WITH
     (SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_r_light_count, 0))) / NULLIF(SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_g_light_count, 0)) + SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_y_light_count, 0)) + SUM(COALESCE(notes_aggregation_of_flc_courses.note_assets_r_light_count, 0)), 0) AS light_R_p,
     SUM(notes_aggregation_of_flc_courses.carbohydrate) AS carbohydrate,
     SUM(notes_aggregation_of_flc_courses.protein) AS protein,
-    SUM(notes_aggregation_of_flc_courses.fat) AS fat
+    SUM(notes_aggregation_of_flc_courses.fat) AS fat,
+    notes_aggregation_of_flc_courses.weight,
+    notes_aggregation_of_flc_courses.bmi,
+    notes_aggregation_of_flc_courses.waist_circumference,
+    notes_aggregation_of_flc_courses.body_fat_mass
   FROM notes_aggregation_of_flc_courses 
   GROUP BY
     notes_aggregation_of_flc_courses.class_id,
@@ -103,4 +121,8 @@ WITH
     notes_aggregation_of_flc_courses.birthday,
     notes_aggregation_of_flc_courses.gender,
     notes_aggregation_of_flc_courses.current->>'height',
-    notes_aggregation_of_flc_courses.date
+    notes_aggregation_of_flc_courses.date,
+    notes_aggregation_of_flc_courses.weight,
+    notes_aggregation_of_flc_courses.bmi,
+    notes_aggregation_of_flc_courses.waist_circumference,
+    notes_aggregation_of_flc_courses.body_fat_mass

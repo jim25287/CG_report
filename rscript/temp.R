@@ -1910,7 +1910,21 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       
       
       #[]BMI Obesity
+      a <- stat_table_1st_ob %>% select(grep("gp_bmi", names(.), value = TRUE))
+      names(a) <- c("before", "after")
+      a <- a %>% filter(across(everything(), ~ . != "Unclassified")) %>% table(exclude = "Unclassified") %>%
+        ftable() %>% as.matrix() %>% as.tibble() %>% 
+        cbind(baseline = levels(a$before))
       
+      gvisBarChart(a , xvar = "baseline", yvar = a %>% select(-baseline) %>% names(),
+                   options = list(isStacked = 'percent',
+                                  bar="{groupWidth:'50%'}",
+                                  title = '減重成效-Obesity',
+                                  legend = "{position:'right'}",
+                                  colors = "['#0571B0','#92C5DE','#F4A582','#CA0020']",
+                                  backgroundColor = "#f9fffb",
+                                  width = "600",
+                                  height = "600")) %>% plot()
       
       
       

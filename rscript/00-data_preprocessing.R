@@ -194,6 +194,9 @@ df02_inbody <- df02_inbody %>% mutate(so_score = round((left_arm_muscle+left_leg
 df02_inbody <- df02_inbody %>% mutate(muscle_mass_percentage = round((muscle_mass)*100/weight,2))
 #C4. name_format
 names(df02_inbody) <- names(df02_inbody) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
+#Diagnosis: Obesity
+df02_inbody$gp_bmi <- df02_inbody$bmi %>% cut(c(0,18.5,24,27,100), c("underweight", "normal", "overweight", "obesity"))
+stat_table_1st_ob$bmi_gp <- cut(stat_table_1st_ob$bmi_baseline, c(0,18.5,24,27,100), c("underweight", "normal", "overweight", "obesity"))
 #Diagnosis: HTN
 df02_inbody <- df02_inbody %>% lin_diagnosis_HTN(c("sbp", "dbp"))
 #C5. rm outlier

@@ -1373,11 +1373,20 @@ lin_diagnosis_DM <- function(df = NULL, variables){
 }
 
 
-
-
 lin_diagnosis_HTN <- function(df = NULL, variables){
   
   if (is.null(df)) {
+    cat('Blood Pressure category
+    ref: Wang, T.D., et al. 2022 Guidelines of the Taiwan Society of Cardiology and the Taiwan Hypertension Society for the Management of Hypertension. Acta Cardiol Sin. (2022). [PMID: 35673334]
+    
+
+Definition and grading of HTN: sbp, dbp (mmHg)
+<Normal>
+1. Normal < 120 and < 80
+2. Elevated 120-129 and < 80
+<Hypertension>
+3. Grade 1 130-139 or 80-89
+4. Grade 2  140 or  90\n\n')
     cat("lin_diagnosis_HTN(df, variables)","\n",
         "variables = \n",
         "1. sbp\n",
@@ -1396,14 +1405,22 @@ lin_diagnosis_HTN <- function(df = NULL, variables){
   
   setDT(df)[
     ((eval(parse(text = variables[1])) >= 130) | (eval(parse(text = variables[2])) >= 80)),
-    HTN := "HTN"]
+    HTN := "HTN(Grade 1)"]
   
   setDT(df)[
-    ((eval(parse(text = variables[1])) < 130) & (eval(parse(text = variables[2])) < 80)),
+    ((eval(parse(text = variables[1])) >= 140) | (eval(parse(text = variables[2])) >= 90)),
+    HTN := "HTN(Grade 2)"]
+  
+  setDT(df)[
+    ((eval(parse(text = variables[1])) >= 120) & (eval(parse(text = variables[2])) < 80)),
+    HTN := "Elevated"]
+  
+  setDT(df)[
+    ((eval(parse(text = variables[1])) < 120) & (eval(parse(text = variables[2])) < 80)),
     HTN := "Normal"]
   
   
-  df[["HTN"]] <- factor(df[["HTN"]], levels = (c("Normal","HTN","Unclassified")))
+  df[["HTN"]] <- factor(df[["HTN"]], levels = (c("Normal","Elevated", "HTN(Grade 1)", "HTN(Grade 2)","Unclassified")))
   
   cat("\n[Completed!]\n")
   cat("\n[執行時間]\n")
@@ -1609,7 +1626,9 @@ age_calc(ymd("1997-04-21"), ymd("2000-04-21"), units = "years")
 
 lin_help_ggplot<- function(){
   syntax <- 
-    'df %>%
+    '
+    #1. Trouble shooting: geom_line(continues x and p-value position mismatch > transform x into factor)
+    df %>%
   #set x, y, (group)
   ggplot(aes(x = var_x, y = var_y, group = variable)) + 
   #A.點
@@ -1629,7 +1648,10 @@ lin_help_ggplot<- function(){
   geom_smooth(aes(x = var_x, y = var_y, linetype = var, color = var)) +
   
   #B.線：折線圖geom_line, set y value, color 
+  geom_point() +
   geom_line(aes(y = mean, color = variable), size = 1) + 
+  geom_errorbar(aes(ymin = var - 0.01*sd, ymax = var + 0.01*sd), width = .2, 
+                position=position_dodge(0.05)) +
   
   geom_line(aes(diet_compliance/10, predicted - 1*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
   geom_line(aes(diet_compliance/10, predicted + 1*sd), color = "grey30", lwd = 0.1, alpha = 0.2) + 
@@ -1642,7 +1664,12 @@ lin_help_ggplot<- function(){
   scale_fill_manual(values = RColorBrewer::brewer.pal(6, "RdBu")) +
 
   geom_bar(aes(fill = nutritionist_online == "All"), stat = "identity", position = position_dodge(0.8)) +
+  
+  #D. color
+  scale_color_brewer(palette="Paired") +
   scale_fill_manual(guide = "none", breaks = c(FALSE, TRUE), values=c("grey30", "gold")) +  
+  
+  #E. axis limit/tick
   
   #x axis range
   xlim(0,25)+
@@ -1652,10 +1679,20 @@ lin_help_ggplot<- function(){
   #geom_vline(xintercept = c(8), colour = c("black"), linetype = "dashed", lwd = 0.2)+
   #y axis range
   ylim(-30,20)+
-  #x axis 刻度
+  #y axis 刻度
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
   scale_y_continuous(name = "Glucose(µg/dL)",
                      sec.axis = sec_axis(~(.-80) ,name = "Insulin(µU/mL)"))+
-  #D.字：文字註解
+  # change x tick labels
+  scale_x_discrete(labels=c("hESC1","hESC2")) +
+  # change legend labels
+  scale_fill_discrete(labels=c("hESC1","hESC2")) +
+                     
+  
+  #F. Title 標題   
+  labs(x = "Weeks", y = "difference(∆)", title = "GLP-1 Efficacy: Time Series", fill = "分院") +
+  
+  #G.字：文字註解
   # geom_text(data = subset(a, percentage > 5), aes(label = paste0(percentage,"%")), size = 5, position = position_stack(vjust = 0.8)) +
   annotate("text", x = min(dataset$diet_compliance/10), y = 15:12, hjust = 0, fontface = "bold",
            label = c(paste0("ID: ", look_up_profile$id), 
@@ -1663,24 +1700,23 @@ lin_help_ggplot<- function(){
                      paste0("Weight Loss: ", look_up_profile$delta_weight_p, " (%)"),
                      paste0("PR", look_up_profile$PR))
   )
-  #四象限
+  #H. Ref Line 四象限
+  
   # geom_vline(xintercept = 50, lwd = 1) +
   # geom_hline(yintercept = 50, lwd = 1) +
+  
   #y axis參考線
   #geom_hline(yintercept = c(0), colour = c("black"), linetype = "dashed", lwd =0.2)+
+  
+  #I. Facet
   #分面 facet_grid, facet_null(least use), 及facet_wrap
   #facet_wrap(vars(client_type ,medication_note_eng), ncol = 2L)+
   facet_grid(client_type ~ medication_note_eng) +
+  
+  #J. Theme
   theme_bw()+
-  # 標題   
-  labs(x = "Weeks", y = "difference(∆)", title = "GLP-1 Efficacy: Time Series", fill = "分院") +
   
-  # change x tick labels
-  scale_x_discrete(labels=c("hESC1","hESC2")) +
-  # change legend labels
-  scale_fill_discrete(labels=c("hESC1","hESC2")) +
-  
-  # 文字屬性  
+  #K. 文字屬性  
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
     axis.title.x = element_text(hjust = 0.5, face = "bold", size = 14),
@@ -1700,6 +1736,26 @@ lin_help_ggplot<- function(){
     legend.box.just = "right",
     legend.margin = margin(6, 6, 6, 6)
   ) + 
+  #L. Statistics: p value
+# library(rstatix)
+#     stat.test <- df %>%
+#   group_by(dose) %>%
+#   t_test(len ~ supp) %>%
+#   adjust_pvalue(method = "bonferroni") %>%
+#   add_significance("p.adj")
+# stat.test <- stat.test %>%
+# add_xy_position(x = "dose", fun = "mean_sd", dodge = 0.8) %>%
+#   filter(supp == "VC")
+# stat.test
+
+    # For line chart
+  stat_compare_means(aes(group = gp), label = "p.signif",
+                   label.y = c(16, 25, 29)) +
+    # library(ggpubr)
+  stat_pvalue_manual(
+      stat.test, label = "p.adj.signif", tip.length = 0.0,
+      bracket.nudge.y = 1, step.increase = 0.01, hide.ns = FALSE 
+    ) +
     coord_flip()'
   
   
@@ -1794,6 +1850,62 @@ cor_table_01 <- M1_df %>% gvisTable(options=list(frozenColumns = 2,
 ))'
   
   
+  # show syntax:
+  cat(syntax)
+  # run syntax:
+  # eval(parse(text = syntax))
+}
+
+
+
+
+lin_help_survival_rate<- function(){
+  syntax <-
+    '#cut week
+test$weeks <- ceiling(difftime(test$date, test$date_flc_t0, units = "weeks"))
+#cut days
+test$days <- ceiling(difftime(test$date, test$date_flc_t0, units = "days"))
+
+# survival plot
+
+library(survival)
+library(survminer)
+
+#last upload day
+a <- 
+  test %>%
+  group_by(client_id) %>%
+  filter(row_number() == n()) %>% 
+  view()
+a <- a %>% select(client_id, days, program, gender, age)
+a$status <- 2
+
+# plot
+fit<- survfit(Surv(days, status) ~ gender, data = a)
+surv <- 
+ggsurvplot(fit, 
+           pval = FALSE, conf.int = TRUE,
+           risk.table = TRUE, , risk.table.y.text.col = FALSE,
+           # surv.median.line = "hv",
+           break.time.by = 7,
+           fontsize = 3, 
+           font.main = 12,
+           # font.tickslab = 10,
+           legend.title = "Sex",
+           legend.labs = c("Men", "Women"),
+           linetype = "strata",
+           title="FLC Program Adhesion",
+           xlab="Days", ylab="", 
+           ggtheme = theme_survminer() +
+             theme(plot.title = element_text(hjust = 0.5)),
+           # legend =  "none",
+           # tables.theme = clean_theme()
+             )
+surv$plot + 
+  geom_hline(yintercept = 0.75, color="black",  linetype = "dashed", lwd = 0.5) +
+  geom_vline(xintercept = 42, color="black",  linetype = "dashed", lwd = 0.5)'
+
+
   # show syntax:
   cat(syntax)
   # run syntax:

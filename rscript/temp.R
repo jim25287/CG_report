@@ -1926,11 +1926,26 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       
       
       
-      #[v]Insulin Response / DM #fix P1 > P5
+      #[v]Insulin Response
       a <- df05_biochem %>% select(id, date_blood, Pattern_major, DM)
       a <- a %>% filter(((Pattern_major %in% c(levels(a$Pattern_major)[-6])) & (DM %in% c(levels(a$DM)[-4]))))
-      a <- a %>% filter(id %in% (janitor::get_dupes(a, id) %>% select(id) %>% pull))
+      a <- dplyr::add_count(a, id) %>% filter(n > 1) %>% select(-n)
       a <- a[with(a, order(id, date_blood)),]
+      
+      
+      # Filter by id, focus on best improvement record
+      a <- a %>% lin_fac_int_format(Pattern_major, to = "int")
+      a <- rbind(
+        a %>% distinct(id, .keep_all = T),
+        a %>%
+          group_by(id) %>%
+          filter(Pattern_major_int == (Pattern_major_int %>% min())) %>%
+          group_by(id) %>%
+          slice(n())
+      )
+      a <- a[with(a, order(id, date_blood)),]
+      a <- a %>% select(-Pattern_major_int)
+        
       
       a$Pattern_major_after <- NA
       a$Pattern_major_after[1:nrow(a)-1] <- a[["Pattern_major"]][2:nrow(a)] %>% as.character()
@@ -1941,13 +1956,9 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       library(dplyr)
       a <- a %>% group_by(id) %>% slice(1:(n()-1))
       names(a) <- c("id", "date", "I_before", "DM_before", "I_after",  "DM_after")
+      a$I_after <- factor(a$I_after, levels = levels(a$I_before))
+      a$DM_after <- factor(a$DM_after, levels = levels(a$DM_before))
       
-      
-      # df05_biochem %>% select(id, date_blood, Pattern_major, DM) %>% view()
-      # exclude DM | include only OB client
-      # a <- a[a$DM_before != "DM" & a$DM_after != "DM",]
-      #filter 1st intervention
-      # a <- a %>% distinct(id, .keep_all = T)
       
       #[input] table, all: addmargins(), row:addmargins(t1:2;t2:1,2),rbind RowSum
       a1 <- table(Origin = a$I_before, Change = a$I_after, exclude = "Unclassified") %>% 
@@ -1964,6 +1975,41 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
                                   width = "600",
                                   height = "600")) %>% plot()
       
+      
+      
+      #[v]DM
+      a <- df05_biochem %>% select(id, date_blood, Pattern_major, DM)
+      a <- a %>% filter(((Pattern_major %in% c(levels(a$Pattern_major)[-6])) & (DM %in% c(levels(a$DM)[-4]))))
+      a <- dplyr::add_count(a, id) %>% filter(n > 1) %>% select(-n)
+      a <- a[with(a, order(id, date_blood)),]
+      
+      
+      # Filter by id, focus on best improvement record
+      a <- a %>% lin_fac_int_format(DM, to = "int")
+      a <- rbind(
+        a %>% distinct(id, .keep_all = T),
+        a %>%
+          group_by(id) %>%
+          filter(DM_int == (DM_int %>% min())) %>%
+          group_by(id) %>%
+          slice(n())
+      )
+      a <- a[with(a, order(id, date_blood)),]
+      a <- a %>% select(-DM_int)
+      
+      
+      a$Pattern_major_after <- NA
+      a$Pattern_major_after[1:nrow(a)-1] <- a[["Pattern_major"]][2:nrow(a)] %>% as.character()
+      a$DM_after <- NA
+      a$DM_after[1:nrow(a)-1] <- a[["DM"]][2:nrow(a)] %>% as.character()
+      
+      
+      library(dplyr)
+      a <- a %>% group_by(id) %>% slice(1:(n()-1))
+      names(a) <- c("id", "date", "I_before", "DM_before", "I_after",  "DM_after")
+      a$I_after <- factor(a$I_after, levels = levels(a$I_before))
+      a$DM_after <- factor(a$DM_after, levels = levels(a$DM_before))
+      
       a2 <- table(Origin = a$DM_before, Change = a$DM_after, exclude = "Unclassified") %>% 
         ftable() %>% as.matrix() %>% as.tibble() %>% 
         cbind(baseline = levels(a$DM_before)[-length(levels(a$DM_before))])
@@ -1973,7 +2019,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
                                   bar="{groupWidth:'50%'}",
                                   title = '減重成效-Diabetes',
                                   legend = "{position:'right'}",
-                                  colors="['#628bd6','#f8e05c','#ffc081','#ff834a','#ff5959']",
+                                  colors="['#628bd6','#ffc081','#ff5959']",
                                   backgroundColor = "#f9fffb",
                                   width = "600",
                                   height = "600")) %>% plot()
@@ -2000,13 +2046,14 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       pub_df_cofit <- pub_df_cofit %>% select(-c(age))
       pub_df_cofit$age <- (lubridate::ymd(pub_df_cofit$date_flc_t0) - lubridate::ymd(pub_df_cofit$btd)) %>% as.numeric() %>% divide_by(365) %>% floor()
       #reorder
-      pub_df_cofit <- pub_df_cofit[with(pub_df_cofit, order(client_id, date)),]
+      pub_df_cofit <- pub_df_cofit[with(pub_df_cofit, order(client_id, date_flc_t0, date)),]
       #cut week
       pub_df_cofit$weeks <- ceiling(difftime(pub_df_cofit$date, pub_df_cofit$date_flc_t0, units = "weeks"))
       #filter last record of the week as the observation.
       pub_df_cofit <- pub_df_cofit %>%
-        select(client_id, weeks, date_flc_t0, date_flc_t1, carbohydrate, age, gender) %>% 
-        group_by(client_id, weeks) %>% 
+        select(client_id, weeks, date_flc_t0, date_flc_t1, weight, age, gender) %>% 
+        # group_by(client_id, weeks) %>% 
+        group_by(client_id, date_flc_t0, weeks) %>%
         filter(row_number() == n()) %>% ungroup()
       
       
@@ -2016,28 +2063,33 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       # pub_df_cofit %>% filter(weeks %in% c(4)) %>% select(client_id) %>% pull() %>% unique() %>% length()
       # pub_df_cofit %>% filter(weeks %in% c(5, 6, 7, 8)) %>% select(client_id) %>% pull() %>% unique() %>% length()
       
-      pub_df_cofit <- Reduce(rbind, list(pub_df_cofit %>% filter(weeks == 0),
-                                         pub_df_cofit %>% filter(weeks %in% c(4)) %>% group_by(client_id) %>% 
+      pub_df_cofit <- Reduce(rbind, list(pub_df_cofit %>% filter(weeks %in% c(0, 1)) %>% group_by(client_id, date_flc_t0) %>% 
+                                           filter(row_number() == 1),
+                                         pub_df_cofit %>% filter(weeks %in% c(3, 4)) %>% group_by(client_id, date_flc_t0) %>% 
                                            filter(row_number() == n()),
-                                         pub_df_cofit %>% filter(weeks %in% c(5, 6, 7, 8)) %>% group_by(client_id) %>% 
-                                           filter(row_number() == n())))
+                                         pub_df_cofit %>% filter(weeks %in% c(5, 6, 7, 8)) %>% group_by(client_id, date_flc_t0) %>% 
+                                           filter(row_number() == n()))) 
       
-      pub_df_cofit$weeks <- ifelse(pub_df_cofit$weeks %in% c(4), 4, pub_df_cofit$weeks)
+      pub_df_cofit$weeks <- ifelse(pub_df_cofit$weeks %in% c(0, 1), 0, pub_df_cofit$weeks)
+      pub_df_cofit$weeks <- ifelse(pub_df_cofit$weeks %in% c(3, 4), 4, pub_df_cofit$weeks)
       pub_df_cofit$weeks <- ifelse(pub_df_cofit$weeks %in% c(5, 6, 7, 8), 8, pub_df_cofit$weeks)
       
       aa <- pub_df_cofit
       aa <- 
         aa %>% 
-        distinct(client_id, .keep_all = TRUE)
+        distinct(client_id, date_flc_t0, .keep_all = TRUE)
       
-      pub_df_cofit <- Reduce(function(x, y) left_join(x, y, by = "client_id", multiple = "first"),
+      pub_df_cofit <- Reduce(function(x, y) left_join(x, y, by = c("client_id", "date_flc_t0"), multiple = "first"),
                              list(
                                aa,
-                               filter(pub_df_cofit, weeks == 0) %>% select(client_id, carbohydrate) %>% dplyr::rename(weight_w0 = carbohydrate),
-                               filter(pub_df_cofit, weeks == 4) %>% select(client_id, carbohydrate) %>% dplyr::rename(weight_w4 = carbohydrate),
-                               filter(pub_df_cofit, weeks == 8) %>% select(client_id, carbohydrate) %>% dplyr::rename(weight_w8 = carbohydrate)
+                               filter(pub_df_cofit, weeks == 0) %>% select(client_id, weight) %>% dplyr::rename(weight_w0 = weight),
+                               filter(pub_df_cofit, weeks == 4) %>% select(client_id, weight) %>% dplyr::rename(weight_w4 = weight),
+                               filter(pub_df_cofit, weeks == 8) %>% select(client_id, weight) %>% dplyr::rename(weight_w8 = weight)
                              )
       )
+      pub_df_cofit <- pub_df_cofit %>% distinct(client_id, date_flc_t0, .keep_all = TRUE)
+      
+      
       rm(list = c("aa"))
       
       pub_df_cofit <- 
@@ -2047,41 +2099,18 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         mutate(delta_weight_w8 = ((weight_w8 - weight_w0)*100/weight_w0) %>% round(2)) 
       
       pub_df_cofit <- 
-        pub_df_cofit %>% reshape2::melt(id.var = c("client_id"),
+        pub_df_cofit %>% reshape2::melt(id.var = c("client_id", "gender"),
                                         measure.vars = c("delta_weight_w0", "delta_weight_w4", "delta_weight_w8"),
                                         variable.name = "weeks",
                                         value.name = "weight")
       
       pub_df_cofit$weeks <- pub_df_cofit$weeks %>% gsub("delta_weight_w",., replacement = "") %>% as.numeric()
       
+      pub_df_cofit$weight <- ifelse(is.nan(pub_df_cofit$weight), NA, pub_df_cofit$weight)
+      pub_df_cofit$weight <- ifelse(!is.finite(pub_df_cofit$weight), NA, pub_df_cofit$weight)
+      
       #***[note: gp]
       pub_df_cofit$gp <- "Cofit"
-      
-      
-      
-      # pub_df_cofit %>%
-      #   # Get plot y value
-      #   group_by(weeks) %>% 
-      #   summarise(
-      #     var = pic_count %>% mean(na.rm = TRUE) %>% round(2)
-      #   ) %>% 
-      #   # Filter the time point
-      #   filter(weeks %in% c(0,4,8)) %>% 
-      #   mutate(time = as.numeric(weeks)) %>% 
-      #   # - group = gp(cofit, free)
-      #   ggplot(aes(x = time, y = var, group = 1)) +
-      #   # for publication
-      #   geom_line() +
-      #   # commercial analysis & visualization
-      #   geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = FALSE, color = "firebrick", lwd = 1) +
-      #   labs(x = "Weeks", y = "Weight Loss(kg)", title = "Weight Loss") +
-      #   theme_bw()+
-      #   theme(
-      #     plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
-      #     axis.title.x = element_text(hjust = 0.5, face = "bold", size = 14),
-      #     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14),
-      #   ) 
-      
       
       
       
@@ -2147,7 +2176,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         mutate(delta_weight_w8 = ((weight_w8 - weight_w0)*100/weight_w0) %>% round(2)) 
       
       pub_df_ctrl <- 
-        pub_df_ctrl %>% reshape2::melt(id.var = c("client_id"),
+        pub_df_ctrl %>% reshape2::melt(id.var = c("client_id", "gender"),
                                        measure.vars = c("delta_weight_w0", "delta_weight_w4", "delta_weight_w8"),
                                        variable.name = "weeks",
                                        value.name = "weight")
@@ -2165,6 +2194,12 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       
       pub_df <- rbind(pub_df_cofit, pub_df_ctrl)
       
+       #outliers
+      pub_df$weight <- ifelse((pub_df$weight < quantile(pub_df$weight, 0.0001, na.rm = TRUE)) | (pub_df$weight > quantile(pub_df$weight, 0.99985, na.rm = TRUE)),
+                              pub_df$weight %>% mean(),
+                              pub_df$weight) %>% summary()
+        
+        
       #trouble shooting: geom_line(continues x and p-value position mismatch > transform x into factor)
       pub_df$weeks <- factor(pub_df$weeks)
       
@@ -2176,37 +2211,143 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         adjust_pvalue(method = "bonferroni") %>%
         add_significance("p.adj")
       stat.test <- stat.test %>%
-        add_xy_position(x = "weeks", fun = "mean", dodge = 0.08)
+        add_xy_position(x = "weeks", fun = "mean")
       
-      pub_df %>%
-        group_by(gp, weeks) %>% 
-        summarise(
-          var = weight %>% mean(na.rm = T),
-          sd = weight %>% sd(na.rm = T)
-        ) %>% 
-        ggplot(aes(x = weeks, y = var, group = gp, color = gp)) +
+      # pub_df %>%
+      #   group_by(gp, weeks, gender) %>% 
+      #   summarise(
+      #     var = weight %>% mean(na.rm = T),
+      #     sd = weight %>% sd(na.rm = T)
+      #   ) %>% 
+      #   ggplot(aes(x = weeks, y = var, group = gp, color = gp)) +
+      #   # for publication
+      #   geom_line() +
+      #   geom_point() +
+      #   geom_errorbar(data = . %>% filter(weeks != 0),
+      #                 aes(ymin = var - 1.0*sd, ymax = var + 1.0*sd), width = .1) +
+      #   # commercial analysis & visualization
+      #   # geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = FALSE, color = "firebrick", lwd = 1) +
+      #   labs(x = "Weeks", y = "Weight Loss(%)", title = "Weight Loss",  color = "Program") +
+      #   scale_color_brewer(palette="Paired", direction = -1) + 
+      #   scale_y_continuous(expand = expansion(mult = c(0.2, 0.2))) +
+      #   theme_bw() +
+      #   theme(
+      #     plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
+      #     axis.title.x = element_text(hjust = 0.5, face = "bold", size = 14),
+      #     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14),
+      #   ) +
+      #   stat_pvalue_manual(
+      #     stat.test, label = "p.adj.signif", tip.length = 0.0, 
+      #     bracket.size = 0, bracket.nudge.y = 2.0, step.increase = 0.05, hide.ns = FALSE 
+      #   ) 
+      #   
+      # 
+      full_join(pub_df %>%
+                  group_by(gp, weeks, gender) %>% 
+                  summarise(
+                    var = weight %>% mean(na.rm = T),
+                    sd = weight %>% sd(na.rm = T),
+                    se = ((weight %>% sd(na.rm = T))/sqrt(n())) %>% round(2),
+                    N = n()
+                  ),
+                pub_df %>%
+                  group_by(gp, weeks) %>% 
+                  summarise(
+                    var = weight %>% mean(na.rm = T),
+                    sd = weight %>% sd(na.rm = T),
+                    se = ((weight %>% sd(na.rm = T))/sqrt(n())) %>% round(2),
+                    N = n()
+                  ) %>% add_column(gender = "All")
+                ) %>% 
+        filter(gender == "All") %>% 
+        ggplot(aes(x = weeks, y = var, group = interaction(gender, gp), color = interaction(gender, gp))) +
         # for publication
         geom_line() +
         geom_point() +
-        geom_errorbar(aes(ymin = var - 0.01*sd, ymax = var + 0.01*sd), width = .2, 
-                      position=position_dodge(0.05)) +
+        geom_errorbar(data = . %>% filter(weeks != 0) %>% filter(gender == "All"),
+                      aes(ymin = var - 1.0*sd, ymax = var + 1.0*sd), width = .1) +
+                      # aes(ymin = var , ymax = var  ), width = .1) +
         # commercial analysis & visualization
         # geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = FALSE, color = "firebrick", lwd = 1) +
-        labs(x = "Weeks", y = "Weight Loss(%)", title = "Weight Loss",  color = "Program") +
-        scale_color_brewer(palette="Paired") + 
-        scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
-        theme_bw() +
+        labs(x = "Weeks", y = "Weight Loss(%)", title = "Weight Loss") +
+        scale_color_manual(values = 
+                             #(All)Cofit x Control
+                             c("#2171B5", "#252525"),
+                             # Gender
+                             # c("#08519C", "#2171B5", "#6BAED6",
+                             #   "#252525", "#737373", "#969696"), 
+                           name = "Program", 
+                           labels = c("Cofit", "Control")
+                           # Gender
+                           # labels = c("Cofit", "Female(Cofit)","Male(Cofit)", "Control","Female(Contro)","Male(Contro)")
+        )  +
+        scale_y_continuous(breaks = seq(-10, 5, 5), expand = expansion(mult = c(0.2, 0.3))) +
+        theme_classic() +
         theme(
-          plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
-          axis.title.x = element_text(hjust = 0.5, face = "bold", size = 14),
-          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14),
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.x = element_text(hjust = 0.5, face = "bold", size = 10),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 10),
         ) +
         stat_pvalue_manual(
           stat.test, label = "p.adj.signif", tip.length = 0.0, 
-          bracket.size = 0, bracket.nudge.y = 0.1, step.increase = 0.05, hide.ns = FALSE 
+          bracket.size = 0, bracket.nudge.y = 2.0, step.increase = 0.05, hide.ns = FALSE 
         )
       
       
+      
+      
+      full_join(pub_df %>%
+                  group_by(gp, weeks, gender) %>% 
+                  summarise(
+                    var = weight %>% mean(na.rm = T),
+                    sd = weight %>% sd(na.rm = T),
+                    se = ((weight %>% sd(na.rm = T))/sqrt(n())) %>% round(2),
+                    N = n()
+                  ),
+                pub_df %>%
+                  group_by(gp, weeks) %>% 
+                  summarise(
+                    var = weight %>% mean(na.rm = T),
+                    sd = weight %>% sd(na.rm = T),
+                    se = ((weight %>% sd(na.rm = T))/sqrt(n())) %>% round(2),
+                    N = n()
+                  ) %>% add_column(gender = "All")
+      ) %>% 
+        filter(gender %in% c("female", "male")) %>% 
+        ggplot(aes(x = weeks, y = var, group = interaction(gender, gp), color = interaction(gender, gp))) +
+        # for publication
+        geom_line() +
+        geom_point() +
+        # geom_errorbar(data = . %>% filter(weeks != 0) %>% filter(gender == "All"),
+        #               aes(ymin = var - 1.0*sd, ymax = var + 1.0*sd), width = .1) +
+        # aes(ymin = var , ymax = var  ), width = .1) +
+        # commercial analysis & visualization
+        # geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = FALSE, color = "firebrick", lwd = 1) +
+        labs(x = "Weeks", y = "Weight Loss(%)", title = "Weight Loss") +
+        scale_color_manual(values = 
+                             #(All)Cofit x Control
+                             # c("#2171B5", "#252525"),
+                           # Gender
+                           c("#2171B5", "#6BAED6",
+                             "#737373", "#969696"),
+                           name = "Program", 
+                           # labels = c("Cofit", "Control")
+                           # Gender
+                           labels = c("Female(Cofit)","Male(Cofit)", "Female(Control)","Male(Control)")
+        )  +
+        scale_y_continuous(breaks = seq(-10, 5, 5), expand = expansion(mult = c(0.5, 0.3))) +
+        theme_classic() +
+        theme(
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 12),
+          axis.title.x = element_text(hjust = 0.5, face = "bold", size = 10),
+          axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 10),
+        ) +
+        stat_pvalue_manual(
+          stat.test, label = "p.adj.signif", tip.length = 0.0, 
+          bracket.size = 0, bracket.nudge.y = 2.0, step.increase = 0.05, hide.ns = FALSE 
+        )
+      
+      table(pub_df$gp, pub_df$weeks, !is.na(pub_df$weight)) %>% ftable()
       
       
       

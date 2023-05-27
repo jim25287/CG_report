@@ -19,8 +19,8 @@ library(googlesheets4)
 gs4_auth(email = "mr.berlin.lin@gmail.com")
 vars_table <- googlesheets4::read_sheet(ss = 'https://docs.google.com/spreadsheets/d/1T2swdx1cbfmUSUNQCQpbxa4aIJDTLD0oVKj3AuvNAuM/edit?usp=sharing', 
                                         sheet = "vars_table",
-                                        col_types = "iccccc")
-names(vars_table) <- c("num", "item_id", "ch", "en", "raw_en", "field")
+                                        col_types = "icccccc")
+names(vars_table) <- c("num", "item_id", "ch", "en", "raw_en", "pub_en","field")
 
 
 
@@ -678,7 +678,7 @@ df08_3D_scanner <- df08_3D_scanner %>% as_tibble()
 
 df08_3D_scanner <- df08_3D_scanner[names(df08_3D_scanner)] %>% lapply(as.numeric)
 df08_3D_scanner$client_id <- df08_3D_scanner$client_id %>% as.integer()
-
+df08_3D_scanner <- df08_3D_scanner %>% as.tibble()
 
 
 # 02.9 - [Data Preprocessing] 09_hormone --------------------------------------------------

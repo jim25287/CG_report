@@ -12,7 +12,9 @@
 
 
 
-
+client_monthly_stat_report_total_id <- df01_profile %>%
+  filter((org_name != "cofit") & (org_name != "bk2o_backup") & (org_name != "fitness_factory")) %>%
+  select(id) %>% pull() %>% unique() %>% length()
 
 
 

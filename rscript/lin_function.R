@@ -1313,6 +1313,32 @@ lin_conv_food <- function(df = NULL, variables){
 
 
 
+lin_fac_int_format <- function(df = NULL, variable, to = NULL, levels){
+  if (is.null(df)) {
+    cat(
+      "try: lin_fac_int_format(df, variable, to = c('int','factor'), levels = fatcor_varialbe)\n\n"
+    )
+  }
+  
+  variable_chr <- deparse(substitute(variable))
+  
+  if (to == "int") {
+    df[[paste0(variable_chr, "_int")]] <- as.integer(df[[variable_chr]])
+  }
+  
+  if (to == "factor") {
+    levels_chr <- deparse(substitute(levels))
+    cut_int <- seq(0, df %>% select(levels) %>% pull() %>% levels() %>% length())
+    cut_labels <- df %>% select(levels) %>% pull() %>% levels()
+    
+    df[[paste0(variable_chr, "_factor")]] <- df[[variable_chr]] %>% cut(cut_int, cut_labels)
+  }
+  return(df)
+}
+
+
+
+
 # [Function 18:] Diagnosis ------------------------------------------------
 
 lin_diagnosis_DM <- function(df = NULL, variables){
@@ -1629,8 +1655,11 @@ lin_help_ggplot<- function(){
     '
     #1. Trouble shooting: geom_line(continues x and p-value position mismatch > transform x into factor)
     df %>%
+    #omit NA in the specific var
+    filter(!is.na(!!as.name(a))) %>%
   #set x, y, (group)
-  ggplot(aes(x = var_x, y = var_y, group = variable)) + 
+  ggplot(aes(x = var_x, y = var_y, group = variable, color = factor(gp, levels = c("diet_record", "weight_record")))) + 
+        ggplot(aes(x = weeks, y = var, group = interaction(gender, gp), color = interaction(gender, gp))) +
   #A.點
   geom_point(data = look_up_profile, aes(x = diet_compliance/10, y = delta_weight_p),
              shape = 23, fill = "red", color = "black", size = 2, stroke = 2) +
@@ -1666,7 +1695,10 @@ lin_help_ggplot<- function(){
   geom_bar(aes(fill = nutritionist_online == "All"), stat = "identity", position = position_dodge(0.8)) +
   
   #D. color
-  scale_color_brewer(palette="Paired") +
+  scale_color_manual(values = RColorBrewer::brewer.pal(4, "Paired"), 
+                     name = "Car Type", 
+                     labels = c("2 Seater","Midsize")
+                     )  +
   scale_fill_manual(guide = "none", breaks = c(FALSE, TRUE), values=c("grey30", "gold")) +  
   
   #E. axis limit/tick

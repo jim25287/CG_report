@@ -66,9 +66,9 @@ options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 # tmp_03_day <- DBI::dbGetQuery(db, readr::read_file(paste0(path_sql, "10_daily_flc.sql")))
 # lin_connect_db("exit")
 # rm(path_sql)
-
+# 
 # tmp_03[tmp_03 %>% select_if(is.numeric) %>% select_if(~ !is.integer(.)) %>% names()]  %<>% lapply(as.numeric)
-
+# 
 # tmp_06[c("note_counts","pic_counts","essay_count","light_green_count","light_yellow_count","light_red_count","carbohydrate","protein","fat","calorie","grains_target","fruits_target","vegetables_target","meat_beans_low_fat_target","meat_beans_medium_fat_target","meat_beans_high_fat_target","milk_whole_fat_target","milk_low_fat_target","milk_skim_target","oil_target")] %<>% lapply(as.numeric)
 
 
@@ -89,14 +89,13 @@ pacman::p_load(magrittr, knitr, kableExtra, dplyr, readr, readxl, tibble, showte
 font_add(family = "berlin_default", regular = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/data/font/STHeiti Light.ttc")
 showtext_auto(enable = TRUE)
 
-source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-main_page_stat.R")
-
-
 
 ```
 
 ```{r input plot rscript, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 # source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-data_preprocessing.R")
+
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00-main_page_stat.R")
 
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/00_vars_vector.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/01.1-venns.R")
@@ -156,7 +155,7 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 client_monthly_stat_report %>% plot()
 ```
 
-**#＃總計「累積服務客戶數」:** [**`r client_monthly_stat_report_total_client`**]{.underline}**(人次)**
+**#＃總計「累積服務客戶數」:** [**`r client_monthly_stat_report_total_id`**]{.underline}**(人次)**
 
 **2.初日減重門診 - 單次療程**(分析人數: `r success_df_freq[["Total"]] %>% max()`)：
 

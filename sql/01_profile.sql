@@ -85,13 +85,15 @@ WITH surveys AS (
 )
 
 SELECT
-  clients.id, clients.name, clients.gender, clients.birthday AS btd, clients.mobile, programs.name AS program_name, orgs.name AS org_name, group_classes.started_at AS date_T0, group_classes.finished_at AS date_T1,
+  clients.id, clients.name, clients.gender, clients.birthday AS btd, group_classes.id AS class_id, users.real_name AS neutrionist_real_name, CONCAT(users.first_name, users.last_name) AS user_name, clients.mobile, programs.name AS program_name, orgs.name AS org_name, group_classes.started_at AS date_T0, group_classes.finished_at AS date_T1,
   surveys.*
 FROM clients
 INNER JOIN group_class_orders
 ON group_class_orders.client_id = clients.id
 INNER JOIN group_classes
 ON group_classes.id = group_class_orders.group_class_id
+INNER JOIN users
+ON group_classes.user_id = users.id
 INNER JOIN programs
 ON programs.id = group_classes.program_id
 LEFT JOIN orgs

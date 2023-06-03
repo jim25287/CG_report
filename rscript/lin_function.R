@@ -93,6 +93,8 @@ lin_print_colname = function(data){
   if (is.vector(data)) {
     cat("Format: \"text\" \n")
     cat(paste0("c(","\"", paste(data, collapse = "\",\""),"\"",")"))
+    cat("\nFormat: \'text\' \n")
+    cat(paste0("c(","\'", paste(data, collapse = "\',\'"),"\'",")"))
     cat("\nFormat: \`text\` \n")
     cat(paste0("c(","\`", paste(data, collapse = "\`,\`"),"\`",")"))
   }else{
@@ -1726,6 +1728,8 @@ lin_help_ggplot<- function(){
   
   #G.字：文字註解
   # geom_text(data = subset(a, percentage > 5), aes(label = paste0(percentage,"%")), size = 5, position = position_stack(vjust = 0.8)) +
+  # geom_text(data = . %>% filter(var != 0), aes(label = paste0(var)), size = 3, nudge_x = 2, nudge_y = 1) +
+
   annotate("text", x = min(dataset$diet_compliance/10), y = 15:12, hjust = 0, fontface = "bold",
            label = c(paste0("ID: ", look_up_profile$id), 
                      paste0("Diet score: ", round(look_up_profile$diet_compliance/10, 1), " /10"),
@@ -1741,9 +1745,15 @@ lin_help_ggplot<- function(){
   #geom_hline(yintercept = c(0), colour = c("black"), linetype = "dashed", lwd =0.2)+
   
   #I. Facet
+  
+  #Grid Background
+  #geom_rect(aes(fill = gender),xmin = -Inf,xmax = Inf,
+            ymin = -Inf,ymax = Inf, alpha = 0.01, show.legend = F) +
+  
   #分面 facet_grid, facet_null(least use), 及facet_wrap
   #facet_wrap(vars(client_type ,medication_note_eng), ncol = 2L)+
-  facet_grid(client_type ~ medication_note_eng) +
+  #facet_wrap(. ~ gender) +  # Facet by gender
+  #facet_grid(client_type ~ medication_note_eng) +
   
   #J. Theme
   theme_bw()+
@@ -1767,6 +1777,11 @@ lin_help_ggplot<- function(){
     legend.justification = c("right", "top"),
     legend.box.just = "right",
     legend.margin = margin(6, 6, 6, 6)
+    
+    #Facet setting
+    strip.background = element_rect(colour="black", fill="white", size = 1.0, linetype = "solid"),
+    strip.text = element_text(hjust = 0.5, face = "bold", size = 10),
+    
   ) + 
   #L. Statistics: p value
 # library(rstatix)
@@ -1863,6 +1878,19 @@ stat_table_1st_ob %>% group_by(age_gp) %>% summarise(n = n()) %>% gvisPieChart(o
                                                                                               width = "600",
                                                                                               height = "400"))
 
+
+#bar 
+gvisBarChart(a , xvar = "xvar", yvar = a %>% select(-xvar) %>% names(),
+             options = list(isStacked = \'percent\',
+                            bar="{groupWidth:\'50%\'}",
+                            title = \'性別x年齡分佈\',
+                            legend="bottom",
+                            # colors = "[\'#d9e3f0\',\'#ff8080\']",
+  backgroundColor = "#f9fffb",
+  width = "800",
+  height = "300")) %>% plot()
+
+
 #column
 gvisColumnChart(b , xvar = "var", yvar = b %>% select(-var) %>% names() %>% rev(),
                 options = list(isStacked = "percent"\
@@ -1872,7 +1900,10 @@ gvisColumnChart(b , xvar = "var", yvar = b %>% select(-var) %>% names() %>% rev(
                                colors = col_color,
                                backgroundColor = "#f9fffb",
                                width = "600",
-                               height = "600"))
+                               height = "600",
+                               # chartArea: {width: \'100%\', height: \'100%\'}
+                               # chartArea = "{left: 50, width: \'70%\'}"
+                               ))
 #line
 gvisLineChart(a, xvar = "pre_post", yvar = c("weight", "bf")) %>% plot()
 

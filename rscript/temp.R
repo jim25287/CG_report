@@ -1859,6 +1859,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         ftable() %>% as.matrix() %>% as.tibble() %>% 
         cbind(baseline = levels(a$before)[-length(levels(a$before))])
       
+      ggvix_plot_1 <- 
       gvisBarChart(a , xvar = "baseline", yvar = a %>% select(-baseline) %>% names(),
                    options = list(isStacked = 'percent',
                                   bar="{groupWidth:'50%'}",
@@ -1877,6 +1878,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         ftable() %>% as.matrix() %>% as.tibble() %>% 
         cbind(baseline = levels(a$before)[-length(levels(a$before))])
       
+      ggvix_plot_2 <-
       gvisBarChart(a , xvar = "baseline", yvar = a %>% select(-baseline) %>% names(),
                    options = list(isStacked = 'percent',
                                   bar="{groupWidth:'50%'}",
@@ -1894,6 +1896,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         ftable() %>% as.matrix() %>% as.tibble() %>% 
         cbind(baseline = levels(a$before)[-length(levels(a$before))])
       
+      ggvix_plot_3 <-
       gvisBarChart(a , xvar = "baseline", yvar = a %>% select(-baseline) %>% names(),
                    options = list(isStacked = 'percent',
                                   bar="{groupWidth:'50%'}",
@@ -1912,6 +1915,8 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         ftable() %>% as.matrix() %>% as.tibble() %>% 
         cbind(baseline = levels(a$before))
       
+      
+      ggvix_plot_4 <-
       gvisBarChart(a , xvar = "baseline", yvar = a %>% select(-baseline) %>% names(),
                    options = list(isStacked = 'percent',
                                   bar="{groupWidth:'50%'}",
@@ -1965,10 +1970,12 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         ftable() %>% as.matrix() %>% as.tibble() %>% 
         cbind(baseline = levels(a$I_before)[-length(levels(a$I_before))])
       
+      
+      ggvix_plot_5 <-
       gvisBarChart(a1 , xvar = "baseline", yvar = a1 %>% select(-baseline) %>% names(),
                    options = list(isStacked = 'percent',
                                   bar="{groupWidth:'50%'}",
-                                  title = '減重成效-Insulin Resistance',
+                                  title = '治療成效-Insulin Resistance',
                                   legend = "{position:'right'}",
                                   colors="['#628bd6','#f8e05c','#ffc081','#ff834a','#ff5959']",
                                   backgroundColor = "#f9fffb",
@@ -2014,10 +2021,12 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
         ftable() %>% as.matrix() %>% as.tibble() %>% 
         cbind(baseline = levels(a$DM_before)[-length(levels(a$DM_before))])
       
+      
+      ggvix_plot_6 <-
       gvisBarChart(a2 , xvar = "baseline", yvar = a2 %>% select(-baseline) %>% names(),
                    options = list(isStacked = 'percent',
                                   bar="{groupWidth:'50%'}",
-                                  title = '減重成效-Diabetes',
+                                  title = '治療成效-Diabetes',
                                   legend = "{position:'right'}",
                                   colors="['#628bd6','#ffc081','#ff5959']",
                                   backgroundColor = "#f9fffb",

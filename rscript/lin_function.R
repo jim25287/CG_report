@@ -155,7 +155,7 @@ lin_pie_chart <- function(df, variable, title, print = FALSE){
                        size = 3.5, nudge_x = 1, show.legend = FALSE) +
       guides(fill = guide_legend(title = "Group")) +
       theme_void()+
-      theme(plot.title = element_text(size=10,face="bold",hjust = 0.5, vjust = 1.0,
+      theme(plot.title = element_text(size=14,face="bold",hjust = 0.5, vjust = 1.0,
                                       margin = margin(0,0,0,0)),
             legend.text = element_text(size = 10),
             plot.margin = margin(1, 1, 1, 1, "cm")

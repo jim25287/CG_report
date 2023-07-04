@@ -196,7 +196,6 @@ df02_inbody <- df02_inbody %>% mutate(muscle_mass_percentage = round((muscle_mas
 names(df02_inbody) <- names(df02_inbody) %>% lin_ch_en_format(., format = "en", origin = "raw_en")
 #Diagnosis: Obesity
 df02_inbody$gp_bmi <- df02_inbody$bmi %>% cut(c(0,18.5,24,27,100), c("underweight", "normal", "overweight", "obesity"))
-stat_table_1st_ob$bmi_gp <- cut(stat_table_1st_ob$bmi_baseline, c(0,18.5,24,27,100), c("underweight", "normal", "overweight", "obesity"))
 #Diagnosis: HTN
 df02_inbody <- df02_inbody %>% lin_diagnosis_HTN(c("sbp", "dbp"))
 #C5. rm outlier
@@ -299,7 +298,7 @@ df04_non_FLC_self_report <- df04_non_FLC_self_report[with(df04_non_FLC_self_repo
 # Group the data by id and find the earliest date for each id
 earliest_dates <- df04_non_FLC_self_report %>%
   group_by(id) %>%
-  summarize(earliest_date = min(date_free_version))
+  summarise(earliest_date = min(date_free_version))
 
 # Join the original data frame with the earliest date to find the row with the earliest date for each id
 earliest_rows <- df04_non_FLC_self_report %>%
@@ -614,14 +613,25 @@ df06_Diet_day <- df06_Diet_day %>% select(c("client_id","date_diet","note_counts
 #[Revised: improve 99.39% efficiency]
 # 使用者    系統    流逝  N = 2,266,313
 # 262.179   1.250 263.339 
+
+#[Imputation 1: Mean Imp., 假設：飲食表現良好，]
+# df06_Diet_day <- df06_Diet_day %>% 
+#   group_by(client_id) %>% 
+#   mutate_at(vars(-c("client_id","date_diet")),
+#             ~ifelse(calorie_day < 500 | is.na(calorie_day), NA, .)) %>% 
+#   mutate_at(vars(-c("client_id","date_diet")),
+#             ~ifelse(is.na(calorie_day), round(mean(., na.rm = TRUE), 2), .)) %>%
+#   ungroup() 
+
+
+#[Imputation 2: remove Imp.]
 df06_Diet_day <- df06_Diet_day %>% 
   group_by(client_id) %>% 
   mutate_at(vars(-c("client_id","date_diet")),
             ~ifelse(calorie_day < 500 | is.na(calorie_day), NA, .)) %>% 
-  mutate_at(vars(-c("client_id","date_diet")),
-            ~ifelse(is.na(calorie_day), round(mean(., na.rm = TRUE), 2), .)) %>%
   ungroup() 
 
+df06_Diet_day <- df06_Diet_day %>% lin_exclude_NA_col("calorie_day")
 
 # # debug
 # df06_Diet_day %>%
@@ -1038,13 +1048,18 @@ df01_profile[is.na(df01_profile[["client_type"]]) & ((df01_profile[["org_name"]]
 # [Move forward] Map client_type from df01_profile to stat_table -------------------------------------------------------
 a3 <- df01_profile %>% filter((org_name != "cofit") & (org_name != "bk2o_backup") & (org_name != "fitness_factory"))
 
+stat_table <- stat_table %>% as.data.frame()
+a3 <- a3 %>% as.data.frame()
+
 stat_table <- lin_mapping(stat_table, client_type, id, a3, client_type, id)
 rm(a3)
-
+stat_table$client_type <- stat_table$client_type %>% as.numeric()
 #rm Inf/-Inf as NA.
 df <- stat_table
 df <- df %>% 
   mutate_if(is.numeric, ~ifelse(is.infinite(.), NA, .))
+
+
 
 #Create OB. dataset
 stat_table_1st_ob <- df %>% filter((client_type == 2) & 

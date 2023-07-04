@@ -1933,6 +1933,8 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       
       #[v]Insulin Response
       a <- df05_biochem %>% select(id, date_blood, Pattern_major, DM)
+      # a <- left_join(df05_biochem, df01_profile %>% select(id, client_type), by = c("id"), multiple = "first")
+      # a <- df05_biochem %>% filter(client_type == "2")
       a <- a %>% filter(((Pattern_major %in% c(levels(a$Pattern_major)[-6])) & (DM %in% c(levels(a$DM)[-4]))))
       a <- dplyr::add_count(a, id) %>% filter(n > 1) %>% select(-n)
       a <- a[with(a, order(id, date_blood)),]
@@ -2031,10 +2033,10 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
                                   colors="['#628bd6','#ffc081','#ff5959']",
                                   backgroundColor = "#f9fffb",
                                   width = "600",
-                                  height = "600")) %>% plot()
+                                  height = "600"))
       
       
-      
+    gvisMerge(ggvix_plot_5, ggvix_plot_6, horizontal = T) %>% plot()
       
 
 # 0522: Cofit x TMU -------------------------------------------------------

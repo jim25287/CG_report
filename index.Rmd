@@ -47,7 +47,7 @@ options(knitr.graphics.auto_pdf = TRUE, gvis.plot.tag = 'chart')
 ```
 
 ```{r input df from PostgreSQL, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-# source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/lin_function.R")
 # 
 # # Does source() rscript need to move to the same project dir??
 # lin_connect_db("connect")
@@ -143,6 +143,7 @@ source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscrip
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/05.urine_ketone.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/06.prediction.R")
 source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/91.publication.R")
+source("~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/CG_report/rscript/improvement_2_4_6mo.R")
 
 
 ```

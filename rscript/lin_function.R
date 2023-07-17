@@ -998,7 +998,7 @@ lin_ch_en_format <- function(x, format, origin){
 lin_connect_db <- function(options = NULL){
   
   # #Info
-  # host = '35.201.248.55'x
+  # host = '35.201.248.55'
   # pw = 'zCxHjp0Byy11Jm2D'
   # db = 'warehouse_production'
   # user = 'postgres'
@@ -1401,6 +1401,62 @@ lin_diagnosis_DM <- function(df = NULL, variables){
 }
 
 
+lin_diagnosis_DM_x_OGTT <- function(df = NULL, variables){
+  
+  if (is.null(df)) {
+    cat("lin_diagnosis_DM(df, variables)","\n",
+        "variables = \n",
+        "1. hba1c\n",
+        "2. glucose_ac\n",
+        "3. glucose_pc_1hr\n",
+        "4. glucose_pc_2hr\n",
+        "try: df %>% names() %>% grep(\"hba1c|glucose\", ., value = TRUE)\n\n"
+    )
+  }
+  
+  
+  # Start the clock!
+  ptm <- proc.time()
+  
+  library(data.table)
+  library(magrittr)
+  
+  
+  df[["DM"]] <- "Unclassified"
+  
+  setDT(df)[
+    ((eval(parse(text = variables[1])) >= 5.7) & (eval(parse(text = variables[1])) < 6.5)) |
+      ((eval(parse(text = variables[2])) >= 100) & (eval(parse(text = variables[2])) < 126)),
+    DM := "Pre-DM"]
+  
+  setDT(df)[
+    (eval(parse(text = variables[1])) >= 6.5) |
+      (eval(parse(text = variables[2])) >= 126),
+    DM := "DM"]
+  
+  setDT(df)[
+    (eval(parse(text = variables[1])) < 5.7) &
+      (eval(parse(text = variables[2])) < 100),
+    DM := "Normal"]
+  
+  
+  df[["DM"]] <- factor(df[["DM"]], levels = (c("Normal","Pre-DM","DM","Unclassified")))
+  
+  cat("\n[Completed!]\n")
+  cat("\n[執行時間]\n")
+  print(proc.time() - ptm)
+  
+  cat("\n[Result]\n")
+  
+  result <- table(df[["DM"]]) %>% addmargins() %>% as.data.frame()
+  
+  print(result)
+  return(df)
+  
+}
+
+
+
 lin_diagnosis_HTN <- function(df = NULL, variables){
   
   if (is.null(df)) {
@@ -1605,8 +1661,11 @@ Def: 3 in 5.
   setDT(df)[gender == "female" & hdl < hdl_threshold_female, score := score + 1]
   
   # Diagnose metabolic syndrome
-  setDT(df)[score >= 3, MetaX := "Metabolic Syndrome"]
-  setDT(df)[score < 3, MetaX := "Normal"]
+  # setDT(df)[score >= 3, MetaX := "Metabolic Syndrome"]
+  # setDT(df)[score < 3, MetaX := "Normal"]
+  
+  setDT(df)[complete.cases(gender, wc, sbp, dbp, glucose_ac, tg, hdl) & score >= 3, MetaX := "Metabolic Syndrome"]
+  setDT(df)[complete.cases(gender, wc, sbp, dbp, glucose_ac, tg, hdl) & score < 3, MetaX := "Normal"]
   
   df <- df %>% dplyr::select(-score)
   
@@ -1763,6 +1822,10 @@ lin_help_ggplot<- function(){
     plot.title = element_text(hjust = 0.5, face = "bold", size = 17),
     axis.title.x = element_text(hjust = 0.5, face = "bold", size = 14),
     axis.title.y.left = element_text(hjust = 0.5, face = "bold", size = 14),
+    
+    # axis文字
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
     
     
     # 雙Y軸座標 x 軸線aes

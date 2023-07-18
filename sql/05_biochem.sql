@@ -77,7 +77,11 @@ SELECT
   measurements.data->>'lipase' AS lipase,
   measurements.data->>'apoli_a1' AS apoli_a1,
   measurements.data->>'apoli_b' AS apoli_b,
-  measurements.data->>'apolib_ai_ratio' AS apolib_ai_ratio
+  measurements.data->>'apolib_ai_ratio' AS apolib_ai_ratio,
+  measurements.data->>'glycatedalbumin' AS glycated_albumin,
+  measurements.data->>'blood_vitamin_d' AS blood_vitamin_d
+  
+
 FROM measurements
 INNER JOIN clients ON clients.id = measurements.member_id
 WHERE measurements.provider = 'soft_bio'

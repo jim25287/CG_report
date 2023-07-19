@@ -460,7 +460,8 @@ df05_biochem[c("glucose_ac","glucose_pc_1hr","glucose_pc_2hr","insulin","insulin
          "triglyceride","total_cholesterol","high_density_lipoprotein","low_density_lipoprotein_cholesterol","sd_ldl",
          "c_peptide","egfr","blood_creatinine","uric_acid","tsh","prolactin","fsh","lh","e2","testosterone","progesterone","dhea_s","shbg","amh","t3","t3_reverse","t4_free","psa",
          "urine_spe_gravity", "urine_ph",
-         "wbc","rbc","hb","esr","mcv","mch","mchc","platelet","rdw_sd","rdw_cv","neutrophils","lymphocytes","monocytes","eosinophils","basophils","monocytes_percent","eosinophils_percent","basophils_percent","alt_gpt","ast_got","amylase","lipase","apoli_a1","apoli_b","apolib_ai_ratio")] %<>% 
+         "wbc","rbc","hb","esr","mcv","mch","mchc","platelet","rdw_sd","rdw_cv","neutrophils","lymphocytes","monocytes","eosinophils","basophils","monocytes_percent","eosinophils_percent","basophils_percent","alt_gpt","ast_got","amylase","lipase","apoli_a1","apoli_b","apolib_ai_ratio",
+         "glycated_albumin", "blood_vitamin_d")] %<>% 
   lapply(as.numeric)
 
 df05_biochem <- lin_mapping(df05_biochem, gender, client_id, df01_profile, gender, id) #men
@@ -487,7 +488,7 @@ df05_biochem <- df05_biochem %>% lin_diagnosis_DM(c("hba1c", "glucose_ac", "gluc
 df05_biochem <- df05_biochem %>% lin_diagnosis_HLP(c("gender","tg","tc","hdl","ldl"))
 
 #GA, eAG
-df05_biochem <- lin_conv_GA(df05_biochem, hba1c, GA)
+# df05_biochem <- lin_conv_GA(df05_biochem, hba1c, GA)
 df05_biochem <- lin_conv_eAG(df05_biochem, hba1c, eAG)
 
 

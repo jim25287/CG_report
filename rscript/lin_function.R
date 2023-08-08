@@ -149,11 +149,11 @@ lin_pie_chart <- function(df, variable, title, print = FALSE){
     ggplot(baseline_gp_dist, aes(x = "" , y = percentage, fill = .)) +
       geom_col(width = 1, color = "#000000") +
       coord_polar(theta = "y") +
-      scale_fill_brewer( palette =  "Pastel1", direction = 0.5) +
+      scale_fill_brewer(palette =  "Pastel1", direction = -1) +
       geom_label_repel(data = subset(baseline_gp_dist_2, percentage != 0),
                        aes(y = pos, label = paste0(percentage, "%")),
                        size = 3.5, nudge_x = 1, show.legend = FALSE) +
-      guides(fill = guide_legend(title = "Group")) +
+      guides(fill = guide_legend(title = "ECW/TBW Ratio")) +
       theme_void()+
       theme(plot.title = element_text(size=14,face="bold",hjust = 0.5, vjust = 1.0,
                                       margin = margin(0,0,0,0)),
@@ -1176,7 +1176,7 @@ lin_chisq.test <- function(df, cate1, cate2, output=F){
 
 # [Function 17:] Conversion ----------------------------------------------------------------------
 
-lin_conv_GA <- function(df = NULL, hba1c_var = NULL, GA_var_name = NULL){
+lin_conv_GA <- function(df = NULL, hba1c_var = NULL, GA_var_name = NULL, invert = FALSE){
   library(dplyr)
   if (is.null(df)) {
     cat("Conversion formula: HbA1C = (GA*0.216)+2.978\n")
@@ -1184,7 +1184,13 @@ lin_conv_GA <- function(df = NULL, hba1c_var = NULL, GA_var_name = NULL){
   } else {
     hba1c_var_chr <- deparse(substitute(hba1c_var))
     GA_var_name_chr <- deparse(substitute(GA_var_name))
-    df[[GA_var_name_chr]] <- round((df[[hba1c_var_chr]] -2.978)/0.216, 2)
+    if (invert == FALSE) {
+      df[[GA_var_name_chr]] <- round((df[[hba1c_var_chr]] -2.978)/0.216, 2)  
+    }else if (invert == TRUE) {
+      df[[GA_var_name_chr]] <- round((df[[hba1c_var_chr]] * 0.216) + 2.978, 1)  
+    }
+    
+    
     return(df)
   }
 }
@@ -1686,6 +1692,9 @@ Def: 3 in 5.
 
 
 
+
+
+
 # [999. Hint:] ------------------------------------------------------------
 
 
@@ -1768,6 +1777,7 @@ lin_help_ggplot<- function(){
   xlim(0,25)+
   #x axis 刻度
   scale_x_continuous(breaks = seq(8,24,8))+
+  scale_x_date(date_labels = "%b-%Y", date_breaks = "1 month") +
   #x axis參考線
   #geom_vline(xintercept = c(8), colour = c("black"), linetype = "dashed", lwd = 0.2)+
   #y axis range
@@ -1787,6 +1797,7 @@ lin_help_ggplot<- function(){
   
   #G.字：文字註解
   # geom_text(data = subset(a, percentage > 5), aes(label = paste0(percentage,"%")), size = 5, position = position_stack(vjust = 0.8)) +
+  # geom_text(aes(label = paste0(Freq,"%")), size = 3, position = position_dodge(0.5), vjust = -0.5) +
   # geom_text(data = . %>% filter(var != 0), aes(label = paste0(var)), size = 3, nudge_x = 2, nudge_y = 1) +
 
   annotate("text", x = min(dataset$diet_compliance/10), y = 15:12, hjust = 0, fontface = "bold",
@@ -1863,7 +1874,8 @@ lin_help_ggplot<- function(){
                    label.y = c(16, 25, 29)) +
     # library(ggpubr)
   stat_pvalue_manual(
-      stat.test, label = "p.adj.signif", tip.length = 0.0,
+      stat.test, color = "ecw_condition", step.group.by = "ecw_condition",
+      label = "p.adj.signif", tip.length = 0.0,
       bracket.nudge.y = 1, step.increase = 0.01, hide.ns = FALSE 
     ) +
     coord_flip()'
@@ -2058,3 +2070,107 @@ surv$plot +
 
 
 
+
+# time_series_by_id -------------------------------------------------------
+
+time_series_by_id <- function(){
+  
+  #[1]
+  df = df02_inbody
+  vector_id = stat_table_1st_dm$id %>% unique()
+  #[2]
+  path = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/tmp_dir/"
+  #[3]
+  plots = vector('list', length(vector_id))
+  n = 1
+  
+  for (i in vector_id) {
+    if (n == 1) {
+      start_time <- Sys.time()
+    }
+    #[4,5]
+    date = sym("date_inbody")
+    variable = sym("ecw_ratio")
+    
+    #[6. perimeters]
+    plots[[n]] <- 
+      df %>% filter(id == i) %>% 
+      ggplot(aes(x = !!date, y = !!variable)) +
+      geom_line(size = 0.5) + 
+      geom_point(size = 0.7, shape = 21, fill = "red", stroke = 1) +
+      geom_hline(yintercept = c(0.36, 0.39), colour = c("black", "red"), linetype = "dashed", lwd = 0.2) +
+      scale_x_date(date_labels = "%b-%Y", date_breaks = "1 month") +
+      ylim(0.35, 0.40) +
+      labs(x = "Date", y = "ECW Ratio", title = paste0("ID:", i, " (", n, "/", length(vector_id),") ", "(Program:DM)")) +
+      theme_minimal() +
+      theme(
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14)
+      )
+    
+    #[7. file_name]
+    jpeg(paste0(path, "ecw_", i,  "_", Sys.Date(), ".jpg"),  
+         type = "quartz",
+         res = 300,
+         width = 2100, height = 900, units = "px")
+    print(plots[[n]])
+    dev.off()
+    
+    n = n + 1
+    
+    progress(n, max = length(vector_id))
+    if (n == length(vector_id)) {
+      cat("-----[Completed!!]-----", rep("\n", 3))
+    }
+    
+    # print(plots[[n]])
+    # Sys.sleep(5)
+  }
+  
+}
+
+# df = df02_inbody
+# vector_id = stat_table_1st_dm$id %>% unique()
+# date = parse(text = date_inbody)
+# variable = parse(text = ecw_ratioeval)
+# path = "~/Lincoln/02.Work/04. R&D/02. HIIS_OPP/00.Gitbook/01.CG/tmp_dir/"
+# 
+# n = 1
+# plots = vector('list', length(vector_id))
+# 
+# for (i in vector_id) {
+#   if (n == 1) {
+#     start_time <- Sys.time()
+#   }
+#   
+#   plots[[n]] <- 
+#     df %>% filter(id == i) %>% 
+#     ggplot(aes(x = date, y = variable)) +
+#     geom_line(size = 0.5) + 
+#     geom_point(size = 0.7, shape = 21, fill = "red", stroke = 1) +
+#     geom_hline(yintercept = c(0.36, 0.39), colour = c("black", "red"), linetype = "dashed", lwd = 0.2) +
+#     scale_x_date(date_labels = "%b-%Y", date_breaks = "1 month") +
+#     ylim(0.35, 0.40) +
+#     labs(x = "Date", y = "ECW Ratio", title = paste0("ID:", i, " (", n, "/", length(vector_id),") ", "(Program:DM)")) +
+#     theme_minimal() +
+#     theme(
+#       plot.title = element_text(hjust = 0.5, face = "bold", size = 14)
+#     )
+#   
+#   
+#   jpeg(paste0(path, "ecw_", i,  "_", Sys.Date(), ".jpg"),  
+#        type = "quartz",
+#        res = 300,
+#        width = 2100, height = 900, units = "px")
+#   print(plots[[n]])
+#   dev.off()
+#   
+#   n = n + 1
+#   
+#   progress(n, max = length(vector_id))
+#   if (n == length(vector_id)) {
+#     cat("-----[Completed!!]-----", rep("\n", 3))
+#   }
+#   
+#   # print(plots[[n]])
+#   # Sys.sleep(5)
+# }

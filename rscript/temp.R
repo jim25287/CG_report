@@ -2362,3 +2362,7 @@ dashboard_table_blood <- dashboard_table_blood %>% filter(id %in% dashboard_tabl
       
       
       
+      
+
+      x <- lin_conv_GA(x, hba1c_var = GA, invert = TRUE, GA_var_name = hba1c_conv)
+      

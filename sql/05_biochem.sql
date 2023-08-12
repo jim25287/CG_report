@@ -79,7 +79,8 @@ SELECT
   measurements.data->>'apoli_b' AS apoli_b,
   measurements.data->>'apolib_ai_ratio' AS apolib_ai_ratio,
   measurements.data->>'glycatedalbumin' AS glycated_albumin,
-  measurements.data->>'blood_vitamin_d' AS blood_vitamin_d
+  measurements.data->>'blood_vitamin_d' AS blood_vitamin_d,
+  measurements.data->>'gad' AS anti_gad
   
 
 FROM measurements

@@ -1553,28 +1553,30 @@ lin_diagnosis_HLP <- function(df = NULL, variables){
   
   setDT(df)[
     (eval(parse(text = variables[1])) == "male") &
-      ((eval(parse(text = variables[2])) >= 150) | (eval(parse(text = variables[3])) >= 200) |
-         (eval(parse(text = variables[4])) >= 130) | (eval(parse(text = variables[5])) <= 40)),
+      ((eval(parse(text = variables[2])) >= 150) | 
+         ((eval(parse(text = variables[3])) >= 200) & 
+            (eval(parse(text = variables[4])) >= 130) | (eval(parse(text = variables[5])) <= 40))),
     HLP := "HLP"]
-  
   
   setDT(df)[
     (eval(parse(text = variables[1])) == "male") &
-      (!(eval(parse(text = variables[2])) >= 150) & !(eval(parse(text = variables[3])) >= 200) &
-         !(eval(parse(text = variables[4])) >= 130) & !(eval(parse(text = variables[5])) <= 40)),
+      !((eval(parse(text = variables[2])) >= 150) | 
+         ((eval(parse(text = variables[3])) >= 200) & 
+            (eval(parse(text = variables[4])) >= 130) | (eval(parse(text = variables[5])) <= 40))),
     HLP := "Normal"]
-  
   
   setDT(df)[
     (eval(parse(text = variables[1])) == "female") &
-      ((eval(parse(text = variables[2])) >= 150) | (eval(parse(text = variables[3])) >= 200) |
-         (eval(parse(text = variables[4])) >= 130) | (eval(parse(text = variables[5])) <= 50)),
+      ((eval(parse(text = variables[2])) >= 150) | 
+         ((eval(parse(text = variables[3])) >= 200) & 
+            (eval(parse(text = variables[4])) >= 130) | (eval(parse(text = variables[5])) <= 50))),
     HLP := "HLP"]
   
   setDT(df)[
     (eval(parse(text = variables[1])) == "female") &
-      (!(eval(parse(text = variables[2])) >= 150) & !(eval(parse(text = variables[3])) >= 200) &
-         !(eval(parse(text = variables[4])) >= 130) & !(eval(parse(text = variables[5])) <= 50)),
+      !((eval(parse(text = variables[2])) >= 150) | 
+          ((eval(parse(text = variables[3])) >= 200) & 
+             (eval(parse(text = variables[4])) >= 130) | (eval(parse(text = variables[5])) <= 50))),
     HLP := "Normal"]
   
   
